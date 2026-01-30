@@ -21,3 +21,158 @@ body {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* React Day Picker Custom Styling */
+.rdp-custom {
+  --rdp-accent-color: #072720;
+  --rdp-background-color: #EFE7E7;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.rdp-custom .rdp-months {
+  display: flex;
+  gap: 2rem;
+}
+
+.rdp-custom .rdp-month {
+  flex: 1;
+}
+
+.rdp-custom .rdp-caption {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.rdp-custom .rdp-caption_label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #072720;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.rdp-custom .rdp-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.rdp-custom .rdp-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.rdp-custom .rdp-button:hover:not(:disabled) {
+  background-color: #EFE7E7;
+}
+
+.rdp-custom .rdp-nav_button {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rdp-custom .rdp-head_cell {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.rdp-custom .rdp-weekday:nth-child(6),
+.rdp-custom .rdp-weekday:nth-child(7) {
+  color: #ef4444;
+}
+
+.rdp-custom .rdp-day {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.rdp-custom .rdp-day_button {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #072720;
+  font-weight: 500;
+}
+
+.rdp-custom .rdp-day:hover:not(.rdp-day_disabled) .rdp-day_button {
+  background-color: #EFE7E7;
+}
+
+.rdp-custom .rdp-day_selected .rdp-day_button {
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+}
+
+.rdp-custom .rdp-day_range_middle .rdp-day_button {
+  background-color: #dbeafe;
+  color: #072720;
+}
+
+.rdp-custom .rdp-day_disabled .rdp-day_button {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.rdp-custom .rdp-day_today:not(.rdp-day_selected) .rdp-day_button {
+  font-weight: 600;
+  color: #072720;
+}
+
+/* Mobile: Single month view */
+@media (max-width: 768px) {
+  .rdp-custom .rdp-months {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rdp-custom .rdp-month:nth-child(2) {
+    display: none;
+  }
+}
+/* Custom scale for villa card image hover */
+.group:hover .group-hover\:scale-103 {
+  transform: scale(1.03);
+}
+
+/* Hide scrollbar for horizontal scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
