@@ -73,7 +73,7 @@ export default function RecentlyVisited() {
               Recently Visited
             </h2>
             <p className="text-gray-600">
-              Properties you've recently explored
+              Properties you&apos;ve recently explored
             </p>
           </div>
           <button className="hidden md:block text-[#072720] font-medium hover:underline transition-all">

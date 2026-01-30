@@ -30,7 +30,7 @@ export default function OfferCard({ offer }) {
 
       {/* Terms & Conditions */}
       <button className="text-sm text-gray-500 hover:text-[#072720] hover:underline transition-colors mb-4">
-        T&C's apply
+        T&amp;C&apos;s apply
       </button>
 
       {/* Coupon Code Row */}

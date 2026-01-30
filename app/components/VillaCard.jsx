@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function VillaCard({
   images = [],
@@ -52,11 +53,13 @@ export default function VillaCard({
         {/* Image Display */}
         <div className="relative w-full h-full">
           {images.map((image, index) => (
-            <img
+            <Image
               key={index}
               src={image}
               alt={`${title} - Image ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out group-hover:scale-103 ${
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={`object-cover transition-all duration-500 ease-in-out group-hover:scale-103 ${
                 index === currentImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
             />

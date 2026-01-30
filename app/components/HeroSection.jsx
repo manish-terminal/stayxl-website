@@ -9,7 +9,8 @@ export default function HeroSection() {
 
   // Fade-in animation on load
   useEffect(() => {
-    setIsVisible(true);
+    const timer = setTimeout(() => setIsVisible(true), 10);
+    return () => clearTimeout(timer);
   }, []);
 
   // Dummy slides data
@@ -30,8 +31,6 @@ export default function HeroSection() {
       subtitle: 'Book Your Dream Villa Today',
     },
   ];
-
-  const currentSlide = slides[0]; // You can make this dynamic if needed
 
   return (
     <section className="relative h-[85vh] min-h-[500px] w-full ">
