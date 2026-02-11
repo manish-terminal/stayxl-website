@@ -318,15 +318,7 @@ export default function PrivePage() {
             ))}
           </div>
 
-          {/* Load More CTA */}
-          <div className="text-center mt-12">
-            <button className="inline-flex items-center gap-2 px-8 py-3.5 border border-white/15 text-white text-xs tracking-[0.2em] uppercase font-medium rounded-full hover:bg-[#C09A59] hover:border-[#C09A59] transition-all duration-400">
-              View All Villas
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-              </svg>
-            </button>
-          </div>
+
         </div>
       </section>
 
