@@ -34,13 +34,13 @@ export default function BookingSearchBar() {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-6 -mb-16 md:-mb-20 relative z-20">
-      {/* Main Search Card */}
-      <div className="bg-white rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow duration-300 overflow-visible">
+      {/* Main Search Card — visual anchor */}
+      <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.12)] overflow-visible">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
             {/* Location Input */}
             <div className="p-4 md:p-6 border-b md:border-b-0 md:border-r border-gray-200">
-              <label className="block text-xs font-medium text-[#072720]/60 mb-2">
+              <label className="block text-[10px] font-semibold tracking-widest uppercase text-[#072720]/40 mb-2">
                 Location
               </label>
               <input
@@ -61,7 +61,7 @@ export default function BookingSearchBar() {
             {/* Guests */}
             <div className="p-4 md:p-6 flex items-end">
               <div className="flex-1">
-                <label className="block text-xs font-medium text-[#072720]/60 mb-2">
+                <label className="block text-[10px] font-semibold tracking-widest uppercase text-[#072720]/40 mb-2">
                   Guests
                 </label>
                 <select
@@ -108,7 +108,7 @@ export default function BookingSearchBar() {
           <div className="hidden md:block p-4 border-t border-gray-200">
             <button
               type="submit"
-              className="w-full bg-[#072720] text-white font-semibold text-lg rounded-lg hover:bg-[#072720]/90 transition-colors duration-300 py-4 flex items-center justify-center"
+              className="w-full bg-[#072720] text-white font-medium text-sm tracking-widest uppercase rounded-xl hover:bg-[#0a3a30] transition-colors duration-300 py-4 flex items-center justify-center"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -55,7 +55,7 @@ export default function DateRangePicker({ onDateChange }) {
       <div className="grid grid-cols-2 gap-4">
         {/* Check-in Input */}
         <div>
-          <label className="block text-xs font-medium text-[#072720]/60 mb-2">
+          <label className="block text-[10px] font-semibold tracking-widest uppercase text-[#072720]/40 mb-2">
             Check-in
           </label>
           <input
@@ -70,7 +70,7 @@ export default function DateRangePicker({ onDateChange }) {
 
         {/* Check-out Input */}
         <div>
-          <label className="block text-xs font-medium text-[#072720]/60 mb-2">
+          <label className="block text-[10px] font-semibold tracking-widest uppercase text-[#072720]/40 mb-2">
             Check-out
           </label>
           <input

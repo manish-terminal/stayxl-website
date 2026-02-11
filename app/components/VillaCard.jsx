@@ -47,7 +47,7 @@ export default function VillaCard({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 cursor-pointer overflow-hidden group">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 cursor-pointer overflow-hidden group">
       {/* Image Section */}
       <div className="relative aspect-[4/3] overflow-hidden">
         {/* Image Display */}
@@ -116,47 +116,47 @@ export default function VillaCard({
       </div>
 
       {/* Card Content */}
-      <div className="p-5">
+      <div className="px-5 pt-4 pb-5">
         {/* Title */}
-        <h3 className="text-lg font-semibold text-[#072720] mb-1 line-clamp-2 font-serif">
+        <h3 className="text-xl font-bold text-[#072720] mb-1.5 line-clamp-2 font-serif leading-snug">
           {title}
         </h3>
 
         {/* Location */}
-        <p className="text-sm text-gray-500 mb-3">
+        <p className="text-[11px] tracking-widest uppercase text-gray-400 mb-2">
           {location}
         </p>
 
         {/* Meta Info Row */}
-        <div className="flex items-center gap-3 text-sm text-gray-600 mb-4">
+        <div className="flex items-center gap-2.5 text-xs text-gray-400 mb-3">
           <div className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             <span>{guests} Guests</span>
           </div>
-          <div className="w-px h-4 bg-gray-300" />
+          <span className="text-gray-200">·</span>
           <div className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            <span>{bedrooms} Bedrooms</span>
+            <span>{bedrooms} Beds</span>
           </div>
-          <div className="w-px h-4 bg-gray-300" />
+          <span className="text-gray-200">·</span>
           <div className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
             </svg>
-            <span>{bathrooms} Bathrooms</span>
+            <span>{bathrooms} Baths</span>
           </div>
         </div>
 
         {/* Amenities Chips */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-1.5 mb-4">
           {amenities.slice(0, 3).map((amenity, index) => (
             <div
               key={index}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-xs text-[#072720] hover:border-[#072720] transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100 text-[11px] text-gray-500 hover:border-gray-300 hover:text-[#072720] transition-colors"
             >
               {amenityIcons[amenity]}
               <span>{amenity}</span>
@@ -165,9 +165,10 @@ export default function VillaCard({
         </div>
 
         {/* Price Section */}
-        <div className="pt-3 border-t border-gray-200">
-          <p className="text-lg font-semibold text-[#072720]">
-            ₹{price.toLocaleString('en-IN')} <span className="text-sm font-normal text-gray-600">/ night</span>
+        <div className="pt-4 border-t border-gray-100">
+          <p className="font-serif text-xl font-bold text-[#072720] tracking-tight">
+            ₹{price.toLocaleString('en-IN')}
+            <span className="text-xs font-sans font-normal text-gray-400 ml-1">/ night</span>
           </p>
         </div>
       </div>

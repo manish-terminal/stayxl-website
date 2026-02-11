@@ -49,8 +49,8 @@ export default function HeroSlider({ slides }) {
             style={{ backgroundImage: `url(${slide.image})` }}
           ></div>
 
-          {/* Dark Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#072720]/70 via-[#072720]/60 to-[#072720]/70"></div>
+          {/* Dark Gradient Overlay — neutral, no color hue */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60"></div>
         </div>
       ))}
 
@@ -60,16 +60,16 @@ export default function HeroSlider({ slides }) {
           {/* Left Arrow */}
           <button
             onClick={prevSlide}
-            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all duration-300 flex items-center justify-center group"
+            className="absolute left-5 md:left-10 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/80 hover:bg-white/20 hover:text-white hover:scale-105 transition-all duration-300 flex items-center justify-center group"
             aria-label="Previous slide"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 group-hover:-translate-x-0.5 transition-transform"
+              className="h-5 w-5 group-hover:-translate-x-0.5 transition-transform"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2}
+              strokeWidth={1.5}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
@@ -78,16 +78,16 @@ export default function HeroSlider({ slides }) {
           {/* Right Arrow */}
           <button
             onClick={nextSlide}
-            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all duration-300 flex items-center justify-center group"
+            className="absolute right-5 md:right-10 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/80 hover:bg-white/20 hover:text-white hover:scale-105 transition-all duration-300 flex items-center justify-center group"
             aria-label="Next slide"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 group-hover:translate-x-0.5 transition-transform"
+              className="h-5 w-5 group-hover:translate-x-0.5 transition-transform"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2}
+              strokeWidth={1.5}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
@@ -97,7 +97,7 @@ export default function HeroSlider({ slides }) {
 
       {/* Slide Indicators */}
       {slides.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex space-x-2">
+        <div className="absolute bottom-32 md:bottom-36 left-1/2 -translate-x-1/2 z-10 flex space-x-2">
           {slides.map((_, index) => (
             <button
               key={index}
