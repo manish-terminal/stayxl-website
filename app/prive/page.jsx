@@ -158,6 +158,122 @@ function PriveCard({ villa, index }) {
   );
 }
 
+/* ───── Testimonials Data ───── */
+const testimonials = [
+  {
+    quote: 'The Ivory Manor was nothing short of magical. Waking up to those valley views with a cup of chai on the balcony — it felt like time stood still. The concierge arranged a private bonfire and chef dinner that our family still talks about.',
+    name: 'Priya & Arjun Sharma',
+    villa: 'The Ivory Manor, Kasauli',
+    date: 'January 2026',
+  },
+  {
+    quote: 'We\'ve stayed at luxury resorts across Southeast Asia, but Villa del Sol surpassed them all. The infinity pool, the private beach access, and the level of personal attention — it was an experience, not just a stay.',
+    name: 'Meera Kapoor',
+    villa: 'Villa del Sol, Alibaug',
+    date: 'December 2025',
+  },
+  {
+    quote: 'Booked The Grand Chateau for my 40th birthday. 16 of us, a private chef, fairy lights in the garden, and the most incredible sunset I\'ve ever seen. StayXL Privé made every single detail perfect.',
+    name: 'Vikram Singh',
+    villa: 'The Grand Chateau, Goa',
+    date: 'November 2025',
+  },
+  {
+    quote: 'As a remote worker, I needed peace and reliable Wi-Fi. Woodland Retreat delivered both — plus a heated pool and the most serene coffee mornings surrounded by Coorg\'s misty hills.',
+    name: 'Sneha Nair',
+    villa: 'Woodland Retreat, Coorg',
+    date: 'October 2025',
+  },
+  {
+    quote: 'From the moment we arrived, the caretaker greeted us with warm towels and fresh juice. Every room was spotless, the pool was pristine, and the floating breakfast was Instagram-perfect. Pure luxury.',
+    name: 'Rahul & Ananya Mehta',
+    villa: 'Serenity Heights, Lonavala',
+    date: 'September 2025',
+  },
+];
+
+/* ───── Testimonials Carousel ───── */
+function TestimonialsCarousel() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const t = testimonials[active];
+
+  return (
+    <section className="py-20 md:py-28 bg-[#0a0a0a] relative overflow-hidden">
+      {/* Decorative gold lines */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-px bg-[#C09A59]/40"></div>
+
+      <div className="max-w-3xl mx-auto px-6 md:px-8 text-center">
+        {/* Section label */}
+        <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-10">
+          Guest Stories
+        </p>
+
+        {/* Large gold quotation mark */}
+        <div className="text-[#C09A59]/20 text-7xl md:text-8xl font-serif leading-none mb-4 select-none">&ldquo;</div>
+
+        {/* Quote */}
+        <div className="min-h-[120px] md:min-h-[100px] flex items-center justify-center">
+          <p
+            key={active}
+            className="text-base md:text-lg lg:text-xl font-serif font-light text-white/80 leading-relaxed tracking-wide italic animate-fade-in"
+          >
+            {t.quote}
+          </p>
+        </div>
+
+        {/* Guest info */}
+        <div className="mt-8 flex flex-col items-center gap-3">
+          {/* Avatar initials */}
+          <div className="w-11 h-11 rounded-full bg-[#C09A59]/15 border border-[#C09A59]/30 flex items-center justify-center">
+            <span className="text-xs font-semibold text-[#C09A59] tracking-wider">
+              {t.name.split(' ').slice(0, 2).map(n => n[0]).join('')}
+            </span>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-white">{t.name}</p>
+            <p className="text-[11px] text-white/30 mt-0.5">{t.villa} · {t.date}</p>
+          </div>
+        </div>
+
+        {/* Navigation dots */}
+        <div className="flex items-center justify-center gap-2 mt-10">
+          {testimonials.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`transition-all duration-400 rounded-full ${
+                i === active
+                  ? 'w-6 h-1.5 bg-[#C09A59]'
+                  : 'w-1.5 h-1.5 bg-white/15 hover:bg-white/30'
+              }`}
+              aria-label={`Testimonial ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* CSS animation */}
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
+        }
+      `}</style>
+    </section>
+  );
+}
+
 /* ───── Main Page ───── */
 export default function PrivePage() {
   const [heroRef, heroVisible] = useScrollReveal(0.05);
@@ -322,8 +438,59 @@ export default function PrivePage() {
         </div>
       </section>
 
-      {/* Bottom padding for footer */}
-      <div className="pb-0 lg:pb-0"></div>
+      {/* ═══════════════════════════════════════════
+          4. GUEST STORIES / TESTIMONIALS
+         ═══════════════════════════════════════════ */}
+      <TestimonialsCarousel />
+      {/* ═══════════════════════════════════════════
+          4. BOOK NOW CTA
+         ═══════════════════════════════════════════ */}
+      <section className="py-16 md:py-24 bg-[#072720] relative overflow-hidden">
+        {/* Decorative gold line */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-px bg-[#C09A59]"></div>
+
+        <div className="max-w-2xl mx-auto px-6 md:px-8 text-center">
+          <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">
+            Ready to Experience Luxury?
+          </p>
+
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-white tracking-wide leading-snug mb-4">
+            Book Your
+            <br />
+            <span className="text-white/30">Private Escape</span>
+          </h2>
+
+          <p className="text-sm text-white/40 font-light mb-10 max-w-md mx-auto leading-relaxed">
+            Our concierge team is available 24/7 to help you find the perfect villa and craft a bespoke experience.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {/* Call CTA */}
+            <a
+              href="tel:+919876543210"
+              className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#C09A59] text-white text-xs tracking-[0.2em] uppercase font-medium rounded-full hover:bg-white hover:text-[#072720] transition-all duration-400 hover:shadow-[0_0_30px_rgba(192,154,89,0.25)]"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+              </svg>
+              Call to Book
+            </a>
+
+            {/* WhatsApp CTA */}
+            <a
+              href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20booking%20a%20Priv%C3%A9%20villa."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 px-8 py-3.5 border border-green-500/30 bg-green-500/10 text-green-400 text-xs tracking-[0.2em] uppercase font-medium rounded-full hover:bg-green-500/20 hover:shadow-[0_0_25px_rgba(34,197,94,0.15)] transition-all duration-400"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
+              WhatsApp 24/7
+            </a>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </main>
