@@ -11,7 +11,7 @@ export default function VillaShowcase() {
             {/* Brand Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#c9a96e]/20 bg-[#c9a96e]/5 mb-6">
               <div className="w-1.5 h-1.5 rounded-full bg-[#c9a96e] animate-pulse"></div>
-              <span className="text-[#c9a96e] text-[10px] tracking-[0.25em] uppercase font-medium">Elivaas Privé</span>
+              <span className="text-[#c9a96e] text-[10px] tracking-[0.25em] uppercase font-medium">StayXL Privé</span>
             </div>
 
             {/* Tagline */}
