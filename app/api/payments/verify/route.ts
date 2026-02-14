@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Update payment and booking in a transaction
-        const result = await prisma.$transaction(async (tx) => {
+        const result = await prisma.$transaction(async (tx: any) => {
             const payment = await tx.payment.update({
                 where: { razorpayOrderId },
                 data: {

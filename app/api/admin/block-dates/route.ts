@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
         // Upsert blocked dates
         const blockedDates = await Promise.all(
-            dates.map((dateStr) =>
+            dates.map((dateStr: string) =>
                 prisma.blockedDate.upsert({
                     where: {
                         villaId_date: {

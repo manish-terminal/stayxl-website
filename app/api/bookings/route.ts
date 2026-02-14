@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
         const balanceAmount = paymentMode === 'ADVANCE' ? finalTotal - advanceAmount! : null;
 
         // Create booking with addons in a transaction
-        const booking = await prisma.$transaction(async (tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0]) => {
+        const booking = await prisma.$transaction(async (tx: any) => {
             const newBooking = await tx.booking.create({
                 data: {
                     userId: user.id,
@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
                     specialRequests,
                     addons: addons
                         ? {
-                            create: addons.map((a) => ({
+                            create: addons.map((a: any) => ({
                                 name: a.name,
                                 price: a.price,
                                 quantity: a.quantity,
