@@ -41,7 +41,7 @@ export async function GET(
         // Flatten villas from the join table
         const responseData = {
             ...experience,
-            villas: experience.villas.map((ve) => ({
+            villas: experience.villas.map((ve: any) => ({
                 ...ve.villa,
                 image: ve.villa.images[0]?.url,
             })),
