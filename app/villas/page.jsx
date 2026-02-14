@@ -1,159 +1,177 @@
-import VillaCard from '../components/VillaCard';
+'use client';
 
-export default function VillaCardsDemo() {
-  // Dummy villa data
-  const villas = [
-    {
-      images: [
-        'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
-        'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80',
-        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-      ],
-      title: 'Lafu House Hearth | Serene Hills',
-      location: 'Lafugathi, Shimla',
-      guests: 6,
-      bedrooms: 3,
-      bathrooms: 2,
-      amenities: ['Garden', 'Parking', 'Wifi'],
-      price: 4468,
-    },
-    {
-      images: [
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
-        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
-      ],
-      title: 'Mountain View Villa | Luxury Retreat',
-      location: 'Manali, Himachal Pradesh',
-      guests: 8,
-      bedrooms: 4,
-      bathrooms: 3,
-      amenities: ['Garden', 'Parking', 'Wifi'],
-      price: 6850,
-    },
-    {
-      images: [
-        'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
-        'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80',
-        'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
-      ],
-      title: 'Riverside Paradise | Peaceful Escape',
-      location: 'Rishikesh, Uttarakhand',
-      guests: 4,
-      bedrooms: 2,
-      bathrooms: 2,
-      amenities: ['Garden', 'Parking', 'Wifi'],
-      price: 3200,
-    },
-    {
-      images: [
-        'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80',
-        'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800&q=80',
-        'https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=800&q=80',
-      ],
-      title: 'Heritage Villa | Colonial Charm',
-      location: 'Goa',
-      guests: 10,
-      bedrooms: 5,
-      bathrooms: 4,
-      amenities: ['Garden', 'Parking', 'Wifi'],
-      price: 8999,
-    },
-    {
-      images: [
-        'https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?w=800&q=80',
-        'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&q=80',
-        'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80',
-      ],
-      title: 'Beachfront Bliss | Ocean Views',
-      location: 'Alibaug, Maharashtra',
-      guests: 6,
-      bedrooms: 3,
-      bathrooms: 3,
-      amenities: ['Garden', 'Parking', 'Wifi'],
-      price: 5500,
-    },
-    {
-      images: [
-        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
-        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-      ],
-      title: 'Forest Hideaway | Nature Retreat',
-      location: 'Coorg, Karnataka',
-      guests: 5,
-      bedrooms: 2,
-      bathrooms: 2,
-      amenities: ['Garden', 'Parking', 'Wifi'],
-      price: 3800,
-    },
-  ];
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import VillaCard from '../components/VillaCard';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import Link from 'next/link';
+
+function VillasList() {
+  const searchParams = useSearchParams();
+  const [villas, setVillas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    location: searchParams.get('location') || '',
+    minGuests: searchParams.get('minGuests') || '',
+    minPrice: searchParams.get('minPrice') || '',
+    maxPrice: searchParams.get('maxPrice') || '',
+  });
+
+  const fetchVillas = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.location) params.set('location', filters.location);
+      if (filters.minGuests) params.set('minGuests', filters.minGuests);
+      if (filters.minPrice) params.set('minPrice', filters.minPrice);
+      if (filters.maxPrice) params.set('maxPrice', filters.maxPrice);
+      
+      const res = await fetch(`/api/villas?${params.toString()}`);
+      const data = await res.json();
+      if (data.success) {
+        setVillas(data.data.villas);
+      }
+    } catch (error) {
+      console.error('Failed to fetch villas:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVillas();
+  }, [searchParams]);
+
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const applyFilters = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+      else params.delete(key);
+    });
+    window.history.pushState({}, '', `/villas?${params.toString()}`);
+    fetchVillas();
+  };
 
   return (
-    <div className="min-h-screen bg-[#EFE7E7]/30">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <h1 className="text-4xl font-bold text-[#072720] font-serif mb-2">
-            Premium Villa Cards
-          </h1>
-          <p className="text-gray-600">
-            Luxury villa listing cards with image sliders and elegant design
-          </p>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Filters Sidebar/Header */}
+      <div className="flex flex-col md:flex-row gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="flex-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1">Location</label>
+          <input 
+            name="location"
+            value={filters.location}
+            onChange={handleFilterChange}
+            placeholder="Search location..."
+            className="w-full text-sm outline-none border-b border-gray-100 pb-2 focus:border-[#072720] transition-colors"
+          />
         </div>
-      </div>
-
-      {/* Villa Cards Grid */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {villas.map((villa, index) => (
-            <VillaCard key={index} {...villa} />
-          ))}
+        <div className="w-full md:w-32">
+          <label className="block text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1">Guests</label>
+          <select 
+            name="minGuests"
+            value={filters.minGuests}
+            onChange={handleFilterChange}
+            className="w-full text-sm outline-none border-b border-gray-100 pb-2 focus:border-[#072720] cursor-pointer"
+          >
+            <option value="">Any</option>
+            {[1,2,3,4,5,6,8,10,12].map(n => <option key={n} value={n}>{n}+ Guests</option>)}
+          </select>
         </div>
-      </div>
-
-      {/* Features List */}
-      <div className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="bg-white rounded-2xl p-8 shadow-md">
-          <h2 className="text-2xl font-semibold text-[#072720] font-serif mb-6">
-            Card Features
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4 text-gray-700">
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Image slider with smooth transitions</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Pagination dots for navigation</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Hover effects with image zoom</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Card lift animation on hover</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Meta info with icons (guests, bedrooms, bathrooms)</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Amenity chips with icons</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Premium typography and spacing</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span>Fully responsive grid layout</span>
-            </div>
+        <div className="w-full md:w-48">
+          <label className="block text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1">Price Range</label>
+          <div className="flex items-center gap-2">
+            <input 
+              name="minPrice"
+              value={filters.minPrice}
+              onChange={handleFilterChange}
+              placeholder="Min"
+              type="number"
+              className="w-full text-sm outline-none border-b border-gray-100 pb-2 focus:border-[#072720]"
+            />
+            <span className="text-gray-300">-</span>
+            <input 
+              name="maxPrice"
+              value={filters.maxPrice}
+              onChange={handleFilterChange}
+              placeholder="Max"
+              type="number"
+              className="w-full text-sm outline-none border-b border-gray-100 pb-2 focus:border-[#072720]"
+            />
           </div>
         </div>
+        <div className="flex items-end">
+          <button 
+            onClick={applyFilters}
+            className="w-full md:w-auto px-8 py-2.5 bg-[#072720] text-white text-xs font-semibold uppercase tracking-widest rounded-lg hover:bg-[#0a3a30] transition-colors"
+          >
+            Apply Filters
+          </button>
+        </div>
       </div>
+
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1,2,3,4,5,6].map(i => (
+            <div key={i} className="aspect-[4/5] bg-gray-100 rounded-xl animate-pulse" />
+          ))}
+        </div>
+      ) : villas.length === 0 ? (
+        <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+          <p className="text-gray-400 mb-4">No villas found matching your criteria.</p>
+          <button 
+            onClick={() => {
+              setFilters({location: '', minGuests: '', minPrice: '', maxPrice: ''});
+              window.history.pushState({}, '', '/villas');
+              fetchVillas();
+            }}
+            className="text-[#072720] font-semibold text-sm hover:underline"
+          >
+            Clear all filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {villas.map((villa) => (
+            <Link key={villa.id} href={`/villas/${villa.slug}`}>
+              <VillaCard 
+                images={villa.images?.map(img => img.url) || []}
+                title={villa.name}
+                location={villa.location}
+                guests={villa.guests}
+                bedrooms={villa.bedrooms?.length || 0}
+                bathrooms={villa.bathrooms?.length || 0}
+                amenities={villa.amenities?.map(a => a.name) || []}
+                price={villa.pricePerNight}
+              />
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function VillasPage() {
+  return (
+    <main className="min-h-screen bg-[#faf9f6]">
+      <Navbar />
+      <div className="bg-[#072720] text-white py-16 md:py-20 text-center">
+        <h1 className="text-4xl md:text-5xl font-serif font-light mb-4">Explore Our Collection</h1>
+        <p className="text-white/60 font-light tracking-widest uppercase text-sm">Handpicked Luxury Stays</p>
+      </div>
+      
+      <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
+        <VillasList />
+      </Suspense>
+
+      <Footer />
+    </main>
   );
 }

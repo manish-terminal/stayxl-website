@@ -79,8 +79,10 @@ const villaData = {
         { name: 'BBQ & Bonfire', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=2070&auto=format&fit=crop', price: 2500, description: 'Veg/Non-veg BBQ setup with bonfire under the stars.' },
         { name: 'Private Chef', image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop', price: 3500, description: 'Multi-cuisine chef for breakfast, lunch & dinner.' },
         { name: 'Floating Breakfast', image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=2070&auto=format&fit=crop', price: 1800, description: 'Instagram-worthy poolside floating breakfast tray.' },
-        { name: 'High Tea Setup', image: 'https://images.unsplash.com/photo-1563911302283-d2bc129e7570?q=80&w=2070&auto=format&fit=crop', price: 1200, description: 'Premium tea & snack setup in the garden or balcony.' },
-        { name: 'Celebration Decor', image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2070&auto=format&fit=crop', price: 4000, description: 'Balloon, flower, and fairy-light decoration for celebrations.' },
+        { name: 'Yoga & Meditation', image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=2070&auto=format&fit=crop', price: 2000, description: 'Guided morning yoga and meditation session by the pool.', slug: 'wellness' },
+        { name: 'Celebration Decor', image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2070&auto=format&fit=crop', price: 4000, description: 'Balloon, flower, and fairy-light decoration for celebrations.', slug: 'celebrations' },
+        { name: 'Intimate Wedding Setup', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop', price: 45000, description: 'Bespoke décor and planning for intimate garden weddings.', slug: 'weddings' },
+        { name: 'Corporate Retreat', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop', price: 50000, description: 'Professional setup and planning for executive retreats and team-building.', slug: 'corporate' },
     ],
 
     locationInfo: {

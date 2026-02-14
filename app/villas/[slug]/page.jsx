@@ -37,7 +37,7 @@ export default function VillaDetailPage() {
 
       {/* Content + Sidebar Layout */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-        <div className="flex gap-10">
+        <div className="flex flex-col lg:flex-row gap-10">
           {/* Main Content */}
           <div className="flex-1 min-w-0">
             <VillaOverviewBar
@@ -94,11 +94,14 @@ export default function VillaDetailPage() {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="hidden lg:block w-[380px] flex-shrink-0">
+          {/* Sidebar - Handles its own mobile vs desktop logic internally */}
+          <div className="w-full lg:w-[380px] flex-shrink-0">
             <BookingSidebar
+              villaId={villa.id}
+              villaSlug={villa.slug || 'the-ivory-manor'}
               pricePerNight={villa.pricePerNight}
               originalPrice={villa.originalPrice}
+              maxGuests={villa.guests}
             />
           </div>
         </div>
@@ -113,11 +116,6 @@ export default function VillaDetailPage() {
 
       {/* Support CTA */}
       <SupportCTA />
-
-      {/* Mobile Booking Bar */}
-      <div className="lg:hidden">
-        <BookingSidebar pricePerNight={villa.pricePerNight} originalPrice={villa.originalPrice} />
-      </div>
 
       <Footer />
     </main>

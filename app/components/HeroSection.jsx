@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import HeroSlider from './HeroSlider';
 import BookingSearchBar from './BookingSearchBar';
+import Link from 'next/link';
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -59,9 +60,12 @@ export default function HeroSection() {
           </p>
 
           {/* CTA */}
-          <button className="px-8 py-3 md:px-10 md:py-3.5 border border-white/40 bg-transparent text-white text-sm md:text-base font-light tracking-widest uppercase rounded-full hover:bg-white hover:text-[#072720] transition-all duration-500">
+          <Link 
+            href="/villas"
+            className="inline-block px-8 py-3 md:px-10 md:py-3.5 border border-white/40 bg-transparent text-white text-sm md:text-base font-light tracking-widest uppercase rounded-full hover:bg-white hover:text-[#072720] transition-all duration-500"
+          >
             Explore Villas
-          </button>
+          </Link>
         </div>
       </div>
 

@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ExperiencesSlider({ experiences = [] }) {
   const scrollRef = useRef(null);
@@ -32,19 +33,52 @@ export default function ExperiencesSlider({ experiences = [] }) {
 
       <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide pb-1" style={{ scrollSnapType: 'x mandatory' }}>
         {experiences.map((exp, i) => (
-          <div key={i} className="flex-shrink-0 w-[240px] group cursor-pointer" style={{ scrollSnapAlign: 'start' }}>
-            <div className="relative aspect-[3/2] rounded-xl overflow-hidden mb-3">
-              <Image
-                src={exp.image}
-                alt={exp.name}
-                fill
-                sizes="240px"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-              />
+          <div key={i} className="flex-shrink-0 w-[240px] group flex flex-col" style={{ scrollSnapAlign: 'start' }} >
+            {/* Clickable Card Header & Image */}
+            <div className="relative mb-3 flex-shrink-0 transition-all duration-300 group-hover:-translate-y-1">
+              {exp.slug ? (
+                <Link href={`/experiences/${exp.slug}`} className="block">
+                  <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-300">
+                  <Image
+                    src={exp.image}
+                    alt={exp.name}
+                    fill
+                    sizes="240px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-white text-[10px] uppercase tracking-widest font-semibold border border-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm">Explore Experience</span>
+                    </div>
+                  </div>
+                </Link>
+              ) : (
+                <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm">
+                <Image
+                  src={exp.image}
+                  alt={exp.name}
+                  fill
+                  sizes="240px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                </div>
+              )}
             </div>
-            <h3 className="text-sm font-medium text-[#072720] mb-0.5">{exp.name}</h3>
-            <p className="text-xs text-gray-400 leading-relaxed mb-2">{exp.description}</p>
+            
+            <div className="flex items-center justify-between mb-0.5">
+              <h3 className="text-sm font-medium text-[#072720]">{exp.name}</h3>
+              {exp.slug && (
+                <Link 
+                  href={`/experiences/${exp.slug}`} 
+                  className="text-[10px] text-[#C09A59] border-b border-[#C09A59]/0 hover:border-[#C09A59]/50 transition-all uppercase tracking-wider font-semibold"
+                >
+                  Explore
+                </Link>
+              )}
+            </div>
+
+            <p className="text-xs text-gray-400 leading-relaxed mb-2 line-clamp-2">{exp.description}</p>
             <div className="flex items-center justify-between">
               <span className="text-sm font-serif font-medium text-[#072720]">₹{exp.price.toLocaleString('en-IN')}</span>
               <button className="text-[11px] font-medium px-3 py-1.5 rounded-lg border border-[#072720]/15 text-[#072720] hover:bg-[#072720] hover:text-white transition-all duration-300">

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const defaultEvents = [
   {
@@ -9,30 +10,37 @@ const defaultEvents = [
     description: 'Celebrate your dream wedding at breathtaking hillside and beachfront villas.',
     image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop',
     badge: '100+ weddings hosted',
+    slug: 'weddings',
   },
   {
     title: 'Corporate Retreats',
     description: 'Inspire your team with productive off-sites in serene luxury settings.',
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop',
     badge: '50+ retreats planned',
+    slug: 'corporate',
   },
   {
     title: 'Birthdays & Anniversaries',
     description: 'Mark your milestones with private celebrations in handpicked villas.',
     image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2070&auto=format&fit=crop',
     badge: '200+ celebrations organized',
+    slug: 'celebrations',
   },
   {
     title: 'Wellness Retreats',
     description: 'Rejuvenate with yoga, spa, and nature in peaceful luxury getaways.',
     image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=2070&auto=format&fit=crop',
     badge: '30+ wellness getaways',
+    slug: 'wellness',
   },
 ];
 
-function EventCard({ title, description, image, badge }) {
+function EventCard({ title, description, image, badge, slug }) {
   return (
-    <div className="flex-shrink-0 w-[78vw] sm:w-[60vw] md:w-auto group cursor-pointer">
+    <Link 
+      href={`/experiences/${slug}`}
+      className="flex-shrink-0 w-[78vw] sm:w-[60vw] md:w-auto group cursor-pointer block text-left"
+    >
       {/* Image */}
       <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-4 shadow-sm group-hover:shadow-lg transition-shadow duration-500">
         <Image
@@ -48,15 +56,15 @@ function EventCard({ title, description, image, badge }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#072720]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         {/* Arrow CTA Button */}
-        <button className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-90 transition-all duration-300 hover:bg-white hover:shadow-md" aria-label={`Explore ${title}`}>
+        <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-90 transition-all duration-300 hover:bg-white hover:shadow-md">
           <svg className="w-4 h-4 text-[#072720]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
           </svg>
-        </button>
+        </div>
       </div>
 
       {/* Title */}
-      <h3 className="text-[15px] font-semibold text-[#072720] mb-1.5 tracking-wide">
+      <h3 className="text-[15px] font-semibold text-[#072720] mb-1.5 tracking-wide group-hover:text-[#C09A59] transition-colors">
         {title}
       </h3>
 
@@ -64,15 +72,11 @@ function EventCard({ title, description, image, badge }) {
       <p className="text-xs text-gray-400 leading-relaxed mb-3 max-w-[260px]">
         {description}
       </p>
-
-
-
-    </div>
+    </Link>
   );
 }
 
 export default function EventsSection({ events = defaultEvents }) {
-  const scrollRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
 
@@ -90,6 +94,7 @@ export default function EventsSection({ events = defaultEvents }) {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
+
 
   return (
     <section
@@ -129,7 +134,6 @@ export default function EventsSection({ events = defaultEvents }) {
 
         {/* Mobile Carousel (shown only on mobile) */}
         <div
-          ref={scrollRef}
           className={`md:hidden flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6 transition-all duration-1000 delay-200 ease-out ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}

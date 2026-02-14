@@ -1,0 +1,349 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  phone         String?   @unique
+  passwordHash  String?
+  avatar        String?
+  role          Role      @default(USER)
+  emailVerified Boolean   @default(false)
+  phoneVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+  otps          Otp[]
+  reviews       Review[]
+
+  @@map("users")
+}
+
+model Otp {
+  id        String   @id @default(cuid())
+  userId    String?
+  phone     String?
+  email     String?
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("otps")
+}
+
+model Villa {
+  id            String            @id @default(cuid())
+  slug          String            @unique
+  name          String
+  tagline       String?
+  location      String
+  rating        Float             @default(0)
+  reviewCount   Int               @default(0)
+  guests        Int
+  bedroomCount  Int
+  bathroomCount Int
+  area          String?
+  pricePerNight Int
+  originalPrice Int?
+  story         String?
+  highlights    String[]
+  isActive      Boolean           @default(true)
+  isFeatured    Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  amenities     Amenity[]
+  bathrooms     Bathroom[]
+  bedrooms      Bedroom[]
+  blockedDates  BlockedDate[]
+  bookings      Booking[]
+  locationInfo  LocationInfo?
+  reviews       Review[]
+  spaces        Space[]
+  experiences   VillaExperience[]
+  images        VillaImage[]
+  policies      VillaPolicy?
+
+  @@map("villas")
+}
+
+model VillaImage {
+  id        String  @id @default(cuid())
+  villaId   String
+  url       String
+  caption   String?
+  sortOrder Int     @default(0)
+  villa     Villa   @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@map("villa_images")
+}
+
+model Bedroom {
+  id         String   @id @default(cuid())
+  villaId    String
+  name       String
+  size       String?
+  bedType    String
+  floor      String?
+  features   String[]
+  hasBalcony Boolean  @default(false)
+  villa      Villa    @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@map("bedrooms")
+}
+
+model Bathroom {
+  id        String   @id @default(cuid())
+  villaId   String
+  name      String
+  shower    String?
+  amenities String[]
+  villa     Villa    @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@map("bathrooms")
+}
+
+model Space {
+  id          String   @id @default(cuid())
+  villaId     String
+  name        String
+  image       String?
+  description String?
+  features    String[]
+  villa       Villa    @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@map("spaces")
+}
+
+model Amenity {
+  id       String @id @default(cuid())
+  villaId  String
+  category String
+  name     String
+  villa    Villa  @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@map("amenities")
+}
+
+model LocationInfo {
+  id                String   @id @default(cuid())
+  villaId           String   @unique
+  address           String?
+  mapUrl            String?
+  lat               Float?
+  lng               Float?
+  nearbyAttractions Json?
+  distances         Json?
+  travelTips        String[]
+  villa             Villa    @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@map("location_info")
+}
+
+model VillaPolicy {
+  id           String   @id @default(cuid())
+  villaId      String   @unique
+  checkIn      Json?
+  checkOut     Json?
+  rules        String[]
+  deposit      Json?
+  meals        Json?
+  cancellation Json?
+  faqs         Json?
+  villa        Villa    @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@map("villa_policies")
+}
+
+model BlockedDate {
+  id      String   @id @default(cuid())
+  villaId String
+  date    DateTime @db.Date
+  reason  String?
+  villa   Villa    @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@unique([villaId, date])
+  @@map("blocked_dates")
+}
+
+model Booking {
+  id              String         @id @default(cuid())
+  userId          String
+  villaId         String
+  checkIn         DateTime       @db.Date
+  checkOut        DateTime       @db.Date
+  guests          Int
+  guestName       String?
+  nights          Int
+  subtotal        Int
+  discount        Int            @default(0)
+  taxes           Int
+  total           Int
+  status          BookingStatus  @default(PENDING)
+  couponCode      String?
+  specialRequests String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  advanceAmount   Int?
+  balanceAmount   Int?
+  paymentMode     PaymentMode    @default(FULL)
+  addons          BookingAddon[]
+  user            User           @relation(fields: [userId], references: [id])
+  villa           Villa          @relation(fields: [villaId], references: [id])
+  payment         Payment?
+
+  @@map("bookings")
+}
+
+model BookingAddon {
+  id        String  @id @default(cuid())
+  bookingId String
+  name      String
+  price     Int
+  quantity  Int     @default(1)
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("booking_addons")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  bookingId         String        @unique
+  razorpayOrderId   String?       @unique
+  razorpayPaymentId String?       @unique
+  razorpaySignature String?
+  amount            Int
+  currency          String        @default("INR")
+  status            PaymentStatus @default(CREATED)
+  method            String?
+  refundId          String?
+  refundAmount      Int?
+  refundStatus      String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  booking           Booking       @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  villaId   String
+  rating    Int
+  comment   String?
+  platform  String?
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  villa     Villa    @relation(fields: [villaId], references: [id])
+
+  @@map("reviews")
+}
+
+model Experience {
+  id           String              @id @default(cuid())
+  slug         String              @unique
+  caption      String?
+  heading      String
+  subtext      String?
+  heroImage    String?
+  heroVideo    String?
+  intro        Json?
+  features     Json?
+  timeline     Json?
+  gallery      String[]
+  testimonials Json?
+  faqs         Json?
+  ctaHeadline  String?
+  ctaSubtext   String?
+  isActive     Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  services     ExperienceService[]
+  villas       VillaExperience[]
+
+  @@map("experiences")
+}
+
+model ExperienceService {
+  id           String     @id @default(cuid())
+  experienceId String
+  name         String
+  description  String?
+  icon         String?
+  price        String?
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  @@map("experience_services")
+}
+
+model VillaExperience {
+  id           String     @id @default(cuid())
+  villaId      String
+  experienceId String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  villa        Villa      @relation(fields: [villaId], references: [id], onDelete: Cascade)
+
+  @@unique([villaId, experienceId])
+  @@map("villa_experiences")
+}
+
+model Offer {
+  id               String       @id @default(cuid())
+  code             String       @unique
+  title            String
+  description      String?
+  discountType     DiscountType @default(PERCENTAGE)
+  discountValue    Int
+  minBookingAmount Int?
+  maxDiscount      Int?
+  validFrom        DateTime     @default(now())
+  validTill        DateTime
+  usageLimit       Int?
+  usedCount        Int          @default(0)
+  isActive         Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+
+  @@map("offers")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  CREATED
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMode {
+  FULL
+  ADVANCE
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FLAT
+}

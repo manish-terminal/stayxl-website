@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import DateRangePicker from './DateRangePicker';
 
 export default function BookingSearchBar() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     location: '',
     checkIn: null,
@@ -13,8 +15,14 @@ export default function BookingSearchBar() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Search submitted:', formData);
-    // Handle search logic here
+    
+    const params = new URLSearchParams();
+    if (formData.location) params.set('location', formData.location);
+    if (formData.guests) params.set('minGuests', formData.guests === '6+' ? '6' : formData.guests);
+    if (formData.checkIn) params.set('checkIn', formData.checkIn.toISOString());
+    if (formData.checkOut) params.set('checkOut', formData.checkOut.toISOString());
+
+    router.push(`/villas?${params.toString()}`);
   };
 
   const handleChange = (e) => {
