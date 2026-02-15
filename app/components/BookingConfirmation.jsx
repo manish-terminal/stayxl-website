@@ -1,21 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 
 export default function BookingConfirmation({ booking, onClose }) {
   const [show, setShow] = useState(false);
   const [animateIcon, setAnimateIcon] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Small delay to trigger entry animation
     setTimeout(() => {
       setShow(true);
       setTimeout(() => setAnimateIcon(true), 300);
     }, 50);
+    return () => setMounted(false);
   }, []);
 
-  if (!booking) return null;
+  if (!booking || !mounted) return null;
 
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString('en-IN', {
@@ -25,8 +29,8 @@ export default function BookingConfirmation({ booking, onClose }) {
       year: 'numeric',
     });
 
-  return (
-    <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-0 sm:p-4">
+  const content = (
+    <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Backdrop */}
       <div 
         className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${show ? 'opacity-100' : 'opacity-0'}`} 
@@ -194,4 +198,6 @@ export default function BookingConfirmation({ booking, onClose }) {
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }

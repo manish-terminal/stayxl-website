@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import prisma from '@/app/lib/prisma';
-import { requireAuth } from '@/app/lib/auth';
+import { getAuthUser, requireAuth } from '@/app/lib/auth';
 import { createBookingSchema } from '@/app/lib/validators';
 import { successResponse, errorResponse, handleError } from '@/app/lib/api-helpers';
 
@@ -10,7 +10,7 @@ import { successResponse, errorResponse, handleError } from '@/app/lib/api-helpe
  */
 export async function POST(req: NextRequest) {
     try {
-        const user = await requireAuth(req);
+        let user = await getAuthUser(req);
         const body = await req.json();
         const parsed = createBookingSchema.safeParse(body);
 
@@ -18,7 +18,28 @@ export async function POST(req: NextRequest) {
             return errorResponse(parsed.error.issues[0].message);
         }
 
-        const { villaId, checkIn, checkOut, guests, guestName, paymentMode, couponCode, specialRequests, addons } = parsed.data;
+        const { villaId, checkIn, checkOut, guests, guestName, guestPhone, paymentMode, couponCode, specialRequests, addons } = parsed.data;
+
+        // If user is not logged in, find or create by phone
+        if (!user) {
+            user = await prisma.user.findUnique({
+                where: { phone: guestPhone },
+            });
+
+            if (!user) {
+                user = await prisma.user.create({
+                    data: {
+                        phone: guestPhone,
+                        name: guestName,
+                        role: 'USER',
+                    }
+                });
+            }
+        }
+
+        if (!user) {
+            return errorResponse('Failed to identify or create guest user');
+        }
 
         // Validate villa exists (support lookup by ID or slug)
         let villa = null;

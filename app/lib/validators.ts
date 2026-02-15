@@ -28,6 +28,7 @@ export const createBookingSchema = z
         checkOut: z.string().refine((d) => !isNaN(Date.parse(d)), 'Invalid check-out date'),
         guests: z.number().int().min(1).max(50),
         guestName: z.string().min(2, 'Guest name is required').max(100),
+        guestPhone: z.string().regex(/^[6-9]\d{9}$/, 'Enter a valid 10-digit phone number'),
         paymentMode: z.enum(['FULL', 'ADVANCE']).default('FULL'),
         couponCode: z.string().optional(),
         specialRequests: z.string().max(1000).optional(),

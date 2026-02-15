@@ -13,6 +13,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState(2);
   const [guestName, setGuestName] = useState('');
+  const [guestPhone, setGuestPhone] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [specialRequests, setSpecialRequests] = useState('');
@@ -43,6 +44,13 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const advanceAmount = Math.round(total * 0.30);
   const balanceAmount = total - advanceAmount;
   const payNow = paymentMode === 'ADVANCE' ? advanceAmount : total;
+
+  useEffect(() => {
+    if (user) {
+      setGuestName(user.name || '');
+      setGuestPhone(user.phone || '');
+    }
+  }, [user]);
 
   // Minimum check-in date is tomorrow
   const tomorrow = new Date();
@@ -185,10 +193,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
 
   // ─── Book Now ───
   const handleBookNow = async () => {
-    if (!user) {
-      setShowLogin(true);
-      return;
-    }
+    if (isLoading) return;
 
     if (!checkIn || !checkOut) {
       setError('Please select check-in and check-out dates');
@@ -197,6 +202,11 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
 
     if (!guestName.trim()) {
       setError('Please enter the guest name');
+      return;
+    }
+
+    if (!guestPhone.trim() || !/^[6-9]\d{9}$/.test(guestPhone)) {
+      setError('Please enter a valid 10-digit phone number');
       return;
     }
 
@@ -214,6 +224,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           checkOut,
           guests,
           guestName: guestName.trim(),
+          guestPhone: guestPhone.trim(),
           paymentMode,
           couponCode: appliedCoupon?.code,
           specialRequests: specialRequests || undefined,
@@ -316,14 +327,14 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
     }
   };
 
-  const isLoading = ['checking', 'creating', 'paying'].includes(bookingState);
+  const isLoading = ['checking', 'creating', 'paying', 'creating_order'].includes(bookingState);
 
   const getButtonText = () => {
     switch (bookingState) {
       case 'checking': return 'Checking...';
       case 'creating': return 'Creating booking...';
       case 'paying': return 'Completing payment...';
-      default: return user ? 'Book Now' : 'Sign in & Book';
+      default: return 'Confirm Booking';
     }
   };
 
@@ -379,7 +390,6 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
             )}
           </div>
 
-          {/* Guest Name */}
           <div className="border border-gray-200 rounded-xl overflow-hidden mb-3">
             <div className="p-3">
               <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Guest Name</label>
@@ -392,6 +402,24 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
               />
             </div>
           </div>
+
+          {!user && (
+            <div className="border border-gray-200 rounded-xl overflow-hidden mb-3">
+              <div className="p-3">
+                <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Phone Number</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-400 font-medium">+91</span>
+                  <input
+                    type="tel"
+                    value={guestPhone}
+                    onChange={(e) => setGuestPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    placeholder="10-digit number"
+                    className="w-full text-sm text-[#072720] outline-none bg-transparent placeholder:text-gray-300"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Guests */}
           <div className="border border-gray-200 rounded-xl p-3 mb-4">
@@ -814,6 +842,21 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                       className="w-full text-base font-medium text-[#072720] outline-none bg-transparent placeholder:text-gray-300"
                     />
                   </div>
+                  {!user && (
+                    <div className="border border-gray-200 rounded-2xl p-4">
+                      <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-2">Phone Number</label>
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-medium text-gray-400">+91</span>
+                        <input
+                          type="tel"
+                          value={guestPhone}
+                          onChange={(e) => setGuestPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                          placeholder="10-digit number"
+                          className="w-full text-base font-medium text-[#072720] outline-none bg-transparent placeholder:text-gray-300"
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
                     <div>
@@ -1082,7 +1125,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 disabled={isLoading || !checkIn || !checkOut}
                 className="w-full py-4 bg-[#072720] text-white font-semibold rounded-2xl shadow-lg active:scale-[0.98] transition-all disabled:opacity-50"
               >
-                {isLoading ? 'Processing...' : bookingState === 'available' ? (user ? 'Pay & Confirm' : 'Sign in to Book') : 'Check Availability'}
+                {isLoading ? 'Processing...' : bookingState === 'available' ? 'Pay & Confirm' : 'Check Availability'}
               </button>
             </div>
           </div>

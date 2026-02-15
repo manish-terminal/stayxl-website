@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginModal({ isOpen, onClose, onSuccess }) {
@@ -11,7 +12,13 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const otpRefs = useRef([]);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   // Countdown timer for resend
   useEffect(() => {
@@ -27,7 +34,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
     }
   }, [step]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -108,8 +115,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
@@ -249,4 +256,6 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
