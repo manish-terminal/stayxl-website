@@ -54,7 +54,7 @@ export async function GET(
 
         // Group amenities by category
         const groupedAmenities: Record<string, string[]> = {};
-        villa.amenities.forEach((a) => {
+        villa.amenities.forEach((a: { category: string; name: string }) => {
             if (!groupedAmenities[a.category]) groupedAmenities[a.category] = [];
             groupedAmenities[a.category].push(a.name);
         });
