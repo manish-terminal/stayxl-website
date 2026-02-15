@@ -4,38 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const defaultEvents = [
-  {
-    title: 'Destination Weddings',
-    description: 'Celebrate your dream wedding at breathtaking hillside and beachfront villas.',
-    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop',
-    badge: '100+ weddings hosted',
-    slug: 'weddings',
-  },
-  {
-    title: 'Corporate Retreats',
-    description: 'Inspire your team with productive off-sites in serene luxury settings.',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop',
-    badge: '50+ retreats planned',
-    slug: 'corporate',
-  },
-  {
-    title: 'Birthdays & Anniversaries',
-    description: 'Mark your milestones with private celebrations in handpicked villas.',
-    image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2070&auto=format&fit=crop',
-    badge: '200+ celebrations organized',
-    slug: 'celebrations',
-  },
-  {
-    title: 'Wellness Retreats',
-    description: 'Rejuvenate with yoga, spa, and nature in peaceful luxury getaways.',
-    image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=2070&auto=format&fit=crop',
-    badge: '30+ wellness getaways',
-    slug: 'wellness',
-  },
-];
-
-function EventCard({ title, description, image, badge, slug }) {
+function ExperienceCard({ title, description, image, badge, slug }) {
   return (
     <Link 
       href={`/experiences/${slug}`}
@@ -44,7 +13,7 @@ function EventCard({ title, description, image, badge, slug }) {
       {/* Image */}
       <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-4 shadow-sm group-hover:shadow-lg transition-shadow duration-500">
         <Image
-          src={image}
+          src={image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop'}
           alt={title}
           fill
           sizes="(max-width: 640px) 78vw, (max-width: 768px) 60vw, 25vw"
@@ -61,6 +30,15 @@ function EventCard({ title, description, image, badge, slug }) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
           </svg>
         </div>
+
+        {/* Badge */}
+        {badge && (
+          <div className="absolute bottom-4 left-4">
+            <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-[#072720] text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm">
+              {badge}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Title */}
@@ -76,9 +54,40 @@ function EventCard({ title, description, image, badge, slug }) {
   );
 }
 
-export default function EventsSection({ events = defaultEvents }) {
+function ExperienceSkeleton() {
+  return (
+    <div className="flex-shrink-0 w-[78vw] sm:w-[60vw] md:w-full animate-pulse">
+      <div className="aspect-[3/4] rounded-2xl bg-gray-100 mb-4" />
+      <div className="h-4 bg-gray-100 rounded w-2/3 mb-2" />
+      <div className="h-3 bg-gray-100 rounded w-full mb-1" />
+      <div className="h-3 bg-gray-100 rounded w-1/2" />
+    </div>
+  );
+}
+
+export default function EventsSection() {
+  const [experiences, setExperiences] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      try {
+        const res = await fetch('/api/experiences');
+        const data = await res.json();
+        if (data.success) {
+          setExperiences(data.data.experiences);
+        }
+      } catch (error) {
+        console.error('Failed to fetch experiences:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchExperiences();
+  }, []);
 
   // Scroll reveal
   useEffect(() => {
@@ -94,7 +103,6 @@ export default function EventsSection({ events = defaultEvents }) {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
-
 
   return (
     <section
@@ -113,37 +121,65 @@ export default function EventsSection({ events = defaultEvents }) {
           <div className="w-10 h-px bg-[#072720]/20 mx-auto mb-6"></div>
 
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-[#072720] tracking-wide leading-snug mb-4">
-            Unforgettable Events, Perfect Venues
+            Experiences & Add-Ons
           </h2>
 
           <p className="text-sm md:text-base text-gray-400 font-light leading-relaxed">
-            From dream weddings to luxury celebrations, our villas create unforgettable experiences.
+            Enhance your stay with curated services and unforgettable luxury experiences.
           </p>
         </div>
 
-        {/* Desktop Grid (hidden on mobile) */}
+        {/* Grid / Carousel Area */}
         <div
-          className={`hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-1000 delay-200 ease-out ${
+          className={`transition-all duration-1000 delay-200 ease-out ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          {events.map((event, index) => (
-            <EventCard key={index} {...event} />
-          ))}
-        </div>
-
-        {/* Mobile Carousel (shown only on mobile) */}
-        <div
-          className={`md:hidden flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6 transition-all duration-1000 delay-200 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-          style={{ scrollSnapType: 'x mandatory', scrollPaddingLeft: '24px' }}
-        >
-          {events.map((event, index) => (
-            <div key={index} style={{ scrollSnapAlign: 'start' }}>
-              <EventCard {...event} />
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <ExperienceSkeleton key={i} />
+              ))}
             </div>
-          ))}
+          ) : experiences.length > 0 ? (
+            <>
+              {/* Desktop Grid */}
+              <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {experiences.map((exp) => (
+                  <ExperienceCard 
+                    key={exp.id} 
+                    title={exp.heading}
+                    description={exp.subtext}
+                    image={exp.heroImage}
+                    badge={exp.caption}
+                    slug={exp.slug}
+                  />
+                ))}
+              </div>
+
+              {/* Mobile Carousel */}
+              <div
+                className="md:hidden flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6"
+                style={{ scrollSnapType: 'x mandatory', scrollPaddingLeft: '24px' }}
+              >
+                {experiences.map((exp) => (
+                  <div key={exp.id} style={{ scrollSnapAlign: 'start' }}>
+                    <ExperienceCard 
+                      title={exp.heading}
+                      description={exp.subtext}
+                      image={exp.heroImage}
+                      badge={exp.caption}
+                      slug={exp.slug}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+              <p className="text-sm text-gray-400">No experiences available at the moment.</p>
+            </div>
+          )}
         </div>
 
       </div>

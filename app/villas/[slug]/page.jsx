@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import villaData from '../../components/villa/villaData';
 import HeroGallery from '../../components/villa/HeroGallery';
 import VillaOverviewBar from '../../components/villa/VillaOverviewBar';
@@ -18,6 +21,20 @@ import Footer from '../../components/Footer';
 
 export default function VillaDetailPage() {
   const villa = villaData;
+
+  // ─── Add-on state: [{ name, price, quantity }] ───
+  const [selectedAddons, setSelectedAddons] = useState([]);
+  const [couponToApply, setCouponToApply] = useState('');
+
+  const toggleAddon = (addon) => {
+    setSelectedAddons((prev) => {
+      const exists = prev.find((a) => a.name === addon.name);
+      if (exists) {
+        return prev.filter((a) => a.name !== addon.name);
+      }
+      return [...prev, { name: addon.name, price: addon.price, quantity: 1 }];
+    });
+  };
 
   return (
     <main className="min-h-screen bg-white">
@@ -50,7 +67,7 @@ export default function VillaDetailPage() {
 
             {/* Offers */}
             <div className="py-8 border-b border-gray-100">
-              <OffersCarousel offers={villa.offers} />
+              <OffersCarousel offers={villa.offers} onApply={(code) => setCouponToApply(code)} />
             </div>
 
             {/* Story */}
@@ -73,9 +90,13 @@ export default function VillaDetailPage() {
               <SpacesSlider spaces={villa.spaces} />
             </div>
 
-            {/* Experiences */}
+            {/* Experiences & Add-Ons */}
             <div className="py-8 border-b border-gray-100">
-              <ExperiencesSlider experiences={villa.experiences} />
+              <ExperiencesSlider
+                experiences={villa.experiences}
+                selectedAddons={selectedAddons}
+                onToggle={toggleAddon}
+              />
             </div>
 
             {/* Location */}
@@ -102,6 +123,10 @@ export default function VillaDetailPage() {
               pricePerNight={villa.pricePerNight}
               originalPrice={villa.originalPrice}
               maxGuests={villa.guests}
+              selectedAddons={selectedAddons}
+              experiences={villa.experiences}
+              onToggleAddon={toggleAddon}
+              applyCouponCode={couponToApply}
             />
           </div>
         </div>

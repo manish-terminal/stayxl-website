@@ -21,10 +21,10 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: 'Our Brands', href: '/brands' },
-    { name: 'Categories', href: '/categories' },
-    { name: 'List Your Property', href: '/list-property' },
-    { name: 'Explore', href: '/explore' },
+    { name: 'Home', href: '/' },
+    { name: 'Privé', href: '/prive' },
+    { name: 'Experiences', href: '/experiences' },
+    // { name: 'Profile', href: '/profile' },
   ];
 
   return (

@@ -1,13 +1,20 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
-export default function OffersCarousel({ offers = [] }) {
+export default function OffersCarousel({ offers = [], onApply }) {
   const scrollRef = useRef(null);
+  const [appliedCode, setAppliedCode] = useState(null);
 
   const scroll = (dir) => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollBy({ left: dir === 'left' ? -300 : 300, behavior: 'smooth' });
+  };
+
+  const handleApply = (code) => {
+    if (onApply) onApply(code);
+    setAppliedCode(code);
+    setTimeout(() => setAppliedCode(null), 2000);
   };
 
   if (offers.length === 0) return null;
@@ -47,8 +54,15 @@ export default function OffersCarousel({ offers = [] }) {
 
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-gray-400 tracking-wider">Valid till {offer.validTill}</span>
-              <button className="text-[11px] font-medium text-[#072720] hover:text-[#C6A87D] transition-colors">
-                Apply →
+              <button
+                onClick={() => handleApply(offer.code)}
+                className={`text-[11px] font-medium transition-colors ${
+                  appliedCode === offer.code
+                    ? 'text-green-600'
+                    : 'text-[#072720] hover:text-[#C6A87D]'
+                }`}
+              >
+                {appliedCode === offer.code ? 'Applied ✓' : 'Apply →'}
               </button>
             </div>
           </div>

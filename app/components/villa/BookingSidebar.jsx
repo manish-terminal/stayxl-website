@@ -4,8 +4,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoginModal from '../LoginModal';
 import BookingConfirmation from '../BookingConfirmation';
+import DatePicker from './DatePicker';
 
-export default function BookingSidebar({ villaId, villaSlug, pricePerNight, originalPrice, maxGuests }) {
+export default function BookingSidebar({ villaId, villaSlug, pricePerNight, originalPrice, maxGuests, selectedAddons = [], experiences = [], onToggleAddon, applyCouponCode }) {
+  const [showAddons, setShowAddons] = useState(false);
   const { user } = useAuth();
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
@@ -25,6 +27,8 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showCoupons, setShowCoupons] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [unavailableDates, setUnavailableDates] = useState(new Set());
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const discount = originalPrice ? Math.round(((originalPrice - pricePerNight) / originalPrice) * 100) : 0;
 
@@ -32,9 +36,10 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
     ? Math.max(1, Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)))
     : 1;
   const subtotal = pricePerNight * nights;
+  const addonTotal = selectedAddons.reduce((sum, a) => sum + a.price * a.quantity, 0);
   const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
-  const taxes = Math.round((subtotal - couponDiscount) * 0.18);
-  const total = subtotal - couponDiscount + taxes;
+  const taxes = Math.round((subtotal + addonTotal - couponDiscount) * 0.18);
+  const total = subtotal + addonTotal - couponDiscount + taxes;
   const advanceAmount = Math.round(total * 0.30);
   const balanceAmount = total - advanceAmount;
   const payNow = paymentMode === 'ADVANCE' ? advanceAmount : total;
@@ -82,6 +87,62 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
       setBookingState('idle');
     }
   }, [checkIn, checkOut, guests, villaSlug]);
+
+  // ─── Fetch Unavailable Dates ───
+  useEffect(() => {
+    if (!villaSlug) return;
+    const fetchUnavailable = async () => {
+      try {
+        const from = new Date();
+        const to = new Date();
+        to.setMonth(to.getMonth() + 6);
+        const res = await fetch(
+          `/api/villas/${villaSlug}/unavailable-dates?from=${from.toISOString().split('T')[0]}&to=${to.toISOString().split('T')[0]}`
+        );
+        const data = await res.json();
+        if (data.success && data.data.unavailableDates) {
+          setUnavailableDates(new Set(data.data.unavailableDates));
+        }
+      } catch {
+        // Silently fail — calendar still works without blackout data
+      }
+    };
+    fetchUnavailable();
+  }, [villaSlug]);
+
+  // ─── Auto-Check Availability When Both Dates Selected ───
+  useEffect(() => {
+    if (checkIn && checkOut && bookingState === 'idle') {
+      checkAvailability();
+    }
+  }, [checkIn, checkOut]);
+
+  // ─── Auto-Apply Coupon From Offers Section ───
+  useEffect(() => {
+    if (applyCouponCode && applyCouponCode !== couponCode) {
+      setCouponCode(applyCouponCode);
+      // Auto-validate after a brief tick so state is updated
+      setTimeout(async () => {
+        try {
+          const res = await fetch('/api/offers/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: applyCouponCode.toUpperCase(), bookingAmount: subtotal }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            setAppliedCoupon(data.data);
+            setError('');
+          } else {
+            setError(data.error);
+            setAppliedCoupon(null);
+          }
+        } catch {
+          setError('Failed to validate coupon');
+        }
+      }, 100);
+    }
+  }, [applyCouponCode]);
 
   // ─── Validate Coupon ───
   const validateCoupon = async () => {
@@ -156,6 +217,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           paymentMode,
           couponCode: appliedCoupon?.code,
           specialRequests: specialRequests || undefined,
+          addons: selectedAddons.length > 0 ? selectedAddons : undefined,
         }),
       });
       const bookingData = await bookingRes.json();
@@ -285,35 +347,36 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           </div>
 
           {/* Date Inputs */}
-          <div className="grid grid-cols-2 gap-0 border border-gray-200 rounded-xl overflow-hidden mb-3">
-            <div className="p-3 border-r border-gray-200">
-              <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Check-in</label>
-              <input
-                type="date"
-                value={checkIn}
-                min={minDate}
-                onChange={(e) => {
-                  setCheckIn(e.target.value);
-                  setBookingState('idle');
-                  setAvailabilityData(null);
-                }}
-                className="w-full text-sm text-[#072720] outline-none bg-transparent"
-              />
-            </div>
-            <div className="p-3">
-              <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Check-out</label>
-              <input
-                type="date"
-                value={checkOut}
-                min={minCheckout}
-                onChange={(e) => {
-                  setCheckOut(e.target.value);
-                  setBookingState('idle');
-                  setAvailabilityData(null);
-                }}
-                className="w-full text-sm text-[#072720] outline-none bg-transparent"
-              />
-            </div>
+          <div className="mb-3">
+            <button
+              onClick={() => setShowCalendar(!showCalendar)}
+              className="w-full grid grid-cols-2 gap-0 border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 transition-colors"
+            >
+              <div className="p-3 border-r border-gray-200 text-left">
+                <span className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Check-in</span>
+                <span className={`text-sm font-medium ${checkIn ? 'text-[#072720]' : 'text-gray-300'}`}>
+                  {checkIn ? new Date(checkIn + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Select date'}
+                </span>
+              </div>
+              <div className="p-3 text-left">
+                <span className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Check-out</span>
+                <span className={`text-sm font-medium ${checkOut ? 'text-[#072720]' : 'text-gray-300'}`}>
+                  {checkOut ? new Date(checkOut + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Select date'}
+                </span>
+              </div>
+            </button>
+            {showCalendar && (
+              <div className="mt-2 p-4 border border-gray-200 rounded-xl bg-white shadow-lg">
+                <DatePicker
+                  checkIn={checkIn}
+                  checkOut={checkOut}
+                  onCheckInChange={(v) => { setCheckIn(v); setBookingState('idle'); setAvailabilityData(null); }}
+                  onCheckOutChange={(v) => { setCheckOut(v); if (v) setShowCalendar(false); setBookingState('idle'); setAvailabilityData(null); }}
+                  unavailableDates={unavailableDates}
+                  minDate={minDate}
+                />
+              </div>
+            )}
           </div>
 
           {/* Guest Name */}
@@ -490,6 +553,59 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
             )}
           </div>
 
+          {/* Experiences & Add-Ons Picker */}
+          {experiences.length > 0 && onToggleAddon && (
+            <div className="mb-4">
+              <button
+                onClick={() => setShowAddons(!showAddons)}
+                className="w-full text-left text-xs text-[#072720] hover:text-[#0a3a30] flex items-center gap-1.5 transition-colors font-medium"
+              >
+                <svg className="w-3.5 h-3.5 text-[#C09A59]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+                {showAddons ? 'Hide experiences' : 'Add experiences & extras'}
+                {selectedAddons.length > 0 && (
+                  <span className="ml-1 w-4 h-4 rounded-full bg-[#C09A59] text-white text-[9px] flex items-center justify-center font-bold">{selectedAddons.length}</span>
+                )}
+                <svg className={`w-3 h-3 ml-auto transition-transform ${showAddons ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              {showAddons && (
+                <div className="mt-2 space-y-1.5 max-h-52 overflow-y-auto">
+                  {experiences.map((exp) => {
+                    const isAdded = selectedAddons.some((a) => a.name === exp.name);
+                    return (
+                      <button
+                        key={exp.name}
+                        onClick={() => onToggleAddon(exp)}
+                        className={`w-full text-left flex items-center justify-between p-2.5 rounded-xl border transition-all ${
+                          isAdded
+                            ? 'border-[#072720] bg-[#072720]/5'
+                            : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-all ${
+                            isAdded ? 'bg-[#072720] text-white' : 'border border-gray-200'
+                          }`}>
+                            {isAdded && (
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                              </svg>
+                            )}
+                          </div>
+                          <span className="text-xs font-medium text-[#072720] truncate">{exp.name}</span>
+                        </div>
+                        <span className="text-xs font-serif text-[#072720] flex-shrink-0 ml-2">₹{exp.price.toLocaleString('en-IN')}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Special Requests Toggle */}
           <button
             onClick={() => setShowRequests(!showRequests)}
@@ -517,6 +633,15 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
               <span>₹{pricePerNight.toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''}</span>
               <span>₹{subtotal.toLocaleString('en-IN')}</span>
             </div>
+            {selectedAddons.length > 0 && selectedAddons.map((addon) => (
+              <div key={addon.name} className="flex justify-between text-gray-500">
+                <span className="flex items-center gap-1">
+                  <svg className="w-3 h-3 text-[#C09A59]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                  {addon.name}
+                </span>
+                <span>₹{(addon.price * addon.quantity).toLocaleString('en-IN')}</span>
+              </div>
+            ))}
             {couponDiscount > 0 && (
               <div className="flex justify-between text-green-600">
                 <span>Coupon discount</span>
@@ -666,35 +791,15 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 </div>
 
                 {/* Dates */}
-                <div className="grid grid-cols-2 gap-0 border border-gray-200 rounded-2xl overflow-hidden">
-                  <div className="p-4 border-r border-gray-200">
-                    <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1.5">Check-in</label>
-                    <input
-                      type="date"
-                      value={checkIn}
-                      min={minDate}
-                      onChange={(e) => {
-                        setCheckIn(e.target.value);
-                        setBookingState('idle');
-                        setAvailabilityData(null);
-                      }}
-                      className="w-full text-base font-medium text-[#072720] outline-none bg-transparent"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1.5">Check-out</label>
-                    <input
-                      type="date"
-                      value={checkOut}
-                      min={minCheckout}
-                      onChange={(e) => {
-                        setCheckOut(e.target.value);
-                        setBookingState('idle');
-                        setAvailabilityData(null);
-                      }}
-                      className="w-full text-base font-medium text-[#072720] outline-none bg-transparent"
-                    />
-                  </div>
+                <div>
+                  <DatePicker
+                    checkIn={checkIn}
+                    checkOut={checkOut}
+                    onCheckInChange={(v) => { setCheckIn(v); setBookingState('idle'); setAvailabilityData(null); }}
+                    onCheckOutChange={(v) => { setCheckOut(v); setBookingState('idle'); setAvailabilityData(null); }}
+                    unavailableDates={unavailableDates}
+                    minDate={minDate}
+                  />
                 </div>
 
                 {/* Guest Details */}
@@ -853,6 +958,62 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   )}
                 </div>
 
+                {/* Experiences & Add-Ons Picker (Mobile) */}
+                {experiences.length > 0 && onToggleAddon && (
+                  <div>
+                    <button
+                      onClick={() => setShowAddons(!showAddons)}
+                      className="w-full text-left text-sm text-[#072720] flex items-center gap-2 font-medium"
+                    >
+                      <svg className="w-4 h-4 text-[#C09A59]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                      </svg>
+                      Add Experiences & Extras
+                      {selectedAddons.length > 0 && (
+                        <span className="w-5 h-5 rounded-full bg-[#C09A59] text-white text-[10px] flex items-center justify-center font-bold">{selectedAddons.length}</span>
+                      )}
+                      <svg className={`w-4 h-4 ml-auto transition-transform ${showAddons ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    </button>
+                    {showAddons && (
+                      <div className="mt-3 space-y-2">
+                        {experiences.map((exp) => {
+                          const isAdded = selectedAddons.some((a) => a.name === exp.name);
+                          return (
+                            <button
+                              key={exp.name}
+                              onClick={() => onToggleAddon(exp)}
+                              className={`w-full text-left flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all ${
+                                isAdded
+                                  ? 'border-[#072720] bg-[#072720]/5'
+                                  : 'border-gray-100 active:bg-gray-50'
+                              }`}
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
+                                  isAdded ? 'bg-[#072720] text-white' : 'border-2 border-gray-200'
+                                }`}>
+                                  {isAdded && (
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium text-[#072720] truncate">{exp.name}</p>
+                                  <p className="text-[11px] text-gray-400 truncate">{exp.description}</p>
+                                </div>
+                              </div>
+                              <span className="text-sm font-serif font-medium text-[#072720] flex-shrink-0 ml-3">₹{exp.price.toLocaleString('en-IN')}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Special Requests */}
                 <div className="space-y-3">
                   <button
@@ -881,6 +1042,15 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                     <span>Rate x {nights} night{nights > 1 ? 's' : ''}</span>
                     <span>₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
+                  {selectedAddons.length > 0 && selectedAddons.map((addon) => (
+                    <div key={addon.name} className="flex justify-between text-sm text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <svg className="w-3 h-3 text-[#C09A59]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        {addon.name}
+                      </span>
+                      <span>₹{(addon.price * addon.quantity).toLocaleString('en-IN')}</span>
+                    </div>
+                  ))}
                   {appliedCoupon && (
                     <div className="flex justify-between text-sm text-green-600">
                       <span>Discount ({appliedCoupon.code})</span>

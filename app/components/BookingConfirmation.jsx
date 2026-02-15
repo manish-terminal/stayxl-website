@@ -106,6 +106,28 @@ export default function BookingConfirmation({ booking, onClose }) {
             </div>
           </div>
 
+          {/* Selected Add-Ons */}
+          {booking.addons && booking.addons.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-gray-400 mb-3">Experiences & Add-Ons</p>
+              <div className="border border-gray-100 rounded-2xl overflow-hidden divide-y divide-gray-50">
+                {booking.addons.map((addon, i) => (
+                  <div key={i} className="flex items-center justify-between px-4 py-3 bg-white">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-[#C09A59]/10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3.5 h-3.5 text-[#C09A59]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                        </svg>
+                      </div>
+                      <span className="text-sm font-medium text-[#072720]">{addon.name}</span>
+                    </div>
+                    <span className="text-sm font-serif font-medium text-[#072720]">₹{(addon.price * (addon.quantity || 1)).toLocaleString('en-IN')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Payment Status Card */}
           <div className={`p-5 rounded-2xl border transition-all duration-300 ${booking.paymentMode === 'ADVANCE' ? 'bg-amber-50/50 border-amber-100' : 'bg-green-50/50 border-green-100'}`}>
             <div className="flex items-center justify-between mb-4">
