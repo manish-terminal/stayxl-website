@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: StayXL Serverless Backend (Go) - Multi-Table Design
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 256
+    Environment:
+      Variables:
+        USERS_TABLE: !Ref StayXLUsersTable
+        VILLAS_TABLE: !Ref StayXLVillasTable
+        BOOKINGS_TABLE: !Ref StayXLBookingsTable
+
+Resources:
+  StayXLApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: bootstrap
+      Runtime: provided.al2023
+      Architectures:
+        - arm64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StayXLUsersTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StayXLVillasTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StayXLBookingsTable
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+    Metadata:
+      BuildMethod: makefile
+
+  StayXLUsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StayXLUsers
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EmailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  StayXLVillasTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StayXLVillas
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: slug
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: SlugIndex
+          KeySchema:
+            - AttributeName: slug
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  StayXLBookingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StayXLBookings
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: villaId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserBookingsIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: VillaBookingsIndex
+          KeySchema:
+            - AttributeName: villaId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
