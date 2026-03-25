@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { apiFetch } from '../../lib/api';
 import LoginModal from '../LoginModal';
 import BookingConfirmation from '../BookingConfirmation';
 import DatePicker from './DatePicker';
@@ -72,10 +73,9 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
     setBookingState('checking');
 
     try {
-      const res = await fetch(
+      const data = await apiFetch(
         `/api/villas/${villaSlug}/availability?checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`
       );
-      const data = await res.json();
 
       if (!data.success) {
         setError(data.error || 'Failed to check availability');
@@ -104,10 +104,9 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         const from = new Date();
         const to = new Date();
         to.setMonth(to.getMonth() + 6);
-        const res = await fetch(
+        const data = await apiFetch(
           `/api/villas/${villaSlug}/unavailable-dates?from=${from.toISOString().split('T')[0]}&to=${to.toISOString().split('T')[0]}`
         );
-        const data = await res.json();
         if (data.success && data.data.unavailableDates) {
           setUnavailableDates(new Set(data.data.unavailableDates));
         }
@@ -132,12 +131,10 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
       // Auto-validate after a brief tick so state is updated
       setTimeout(async () => {
         try {
-          const res = await fetch('/api/offers/validate', {
+          const data = await apiFetch('/api/offers/validate', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code: applyCouponCode.toUpperCase(), bookingAmount: subtotal }),
           });
-          const data = await res.json();
           if (data.success) {
             setAppliedCoupon(data.data);
             setError('');
@@ -158,12 +155,10 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
     setError('');
 
     try {
-      const res = await fetch('/api/offers/validate', {
+      const data = await apiFetch('/api/offers/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: couponCode.toUpperCase(), bookingAmount: subtotal }),
       });
-      const data = await res.json();
 
       if (data.success) {
         setAppliedCoupon(data.data);
@@ -215,9 +210,8 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
 
     try {
       // 1. Create booking
-      const bookingRes = await fetch('/api/bookings', {
+      const bookingData = await apiFetch('/api/bookings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           villaId: villaId || villaSlug,
           checkIn,
@@ -231,7 +225,6 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           addons: selectedAddons.length > 0 ? selectedAddons : undefined,
         }),
       });
-      const bookingData = await bookingRes.json();
 
       if (!bookingData.success) {
         setError(bookingData.error || 'Failed to create booking');
@@ -242,12 +235,10 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
       const booking = bookingData.data;
 
       // 2. Create Razorpay order
-      const orderRes = await fetch('/api/payments/create-order', {
+      const orderData = await apiFetch('/api/payments/create-order', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bookingId: booking.id }),
       });
-      const orderData = await orderRes.json();
 
       if (!orderData.success) {
         setError(orderData.error || 'Failed to initiate payment');
@@ -290,16 +281,14 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         handler: async (response) => {
           // 5. Verify payment
           try {
-            const verifyRes = await fetch('/api/payments/verify', {
+            const verifyData = await apiFetch('/api/payments/verify', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 razorpayOrderId: response.razorpay_order_id,
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
               }),
             });
-            const verifyData = await verifyRes.json();
 
             if (verifyData.success) {
               setConfirmedBooking(verifyData.data.booking);
@@ -479,8 +468,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 onClick={() => {
                   setShowCoupons(!showCoupons);
                   if (availableCoupons.length === 0) {
-                    fetch('/api/offers')
-                      .then(res => res.json())
+                    apiFetch('/api/offers')
                       .then(data => {
                         if (data.success) setAvailableCoupons(data.data.offers);
                       })
@@ -916,8 +904,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                         onClick={() => {
                           setShowCoupons(!showCoupons);
                           if (availableCoupons.length === 0) {
-                            fetch('/api/offers')
-                              .then(res => res.json())
+                            apiFetch('/api/offers')
                               .then(data => {
                                 if (data.success) setAvailableCoupons(data.data.offers);
                               })

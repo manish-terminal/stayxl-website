@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { villas as staticVillas } from '../data/villas';
 import VillaCard from './VillaCard';
 import Link from 'next/link';
 
@@ -9,15 +10,12 @@ export default function BestRatedVillas() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/villas?limit=4')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setVillas(data.data.villas);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    // Sort by rating and take top 4
+    const topVillas = [...staticVillas]
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 4);
+    setVillas(topVillas);
+    setLoading(false);
   }, []);
 
   const mapVilla = (villa) => ({

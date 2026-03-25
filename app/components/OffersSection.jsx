@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { offers as staticOffers } from '../data/offers';
 import OfferTabs from './OfferTabs';
 import OfferCard from './OfferCard';
 
@@ -10,27 +11,19 @@ export default function OffersSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/offers')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          // Map API response to the format OfferCard expects
-          const mapped = data.data.offers.map(offer => ({
-            type: offer.discountType === 'PERCENTAGE' ? 'StayXL Offer' : 'Bank Offer',
-            description: offer.description || offer.title,
-            code: offer.code,
-            validity: new Date(offer.validTill).toLocaleDateString('en-IN', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-            }),
-            category: offer.discountType === 'PERCENTAGE' ? 'StayVista Offers' : 'Bank Offers',
-          }));
-          setOffers(mapped);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    const mapped = staticOffers.map(offer => ({
+      type: offer.category === 'StayXL Offers' ? 'StayXL Offer' : 'Bank Offer',
+      description: offer.description || offer.title,
+      code: offer.code,
+      validity: new Date(offer.validTill).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
+      category: offer.category,
+    }));
+    setOffers(mapped);
+    setLoading(false);
   }, []);
 
   // Filter offers based on active tab

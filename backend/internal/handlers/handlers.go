@@ -193,8 +193,10 @@ func response(statusCode int, body interface{}) (events.APIGatewayProxyResponse,
 		StatusCode: statusCode,
 		Body:       string(jsonBody),
 		Headers: map[string]string{
-			"Content-Type":                "application/json",
-			"Access-Control-Allow-Origin": "*",
+			"Content-Type":                 "application/json",
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-Requested-With",
 		},
 	}, nil
 }

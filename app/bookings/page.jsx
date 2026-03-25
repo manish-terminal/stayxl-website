@@ -173,8 +173,7 @@ export default function MyBookingsPage() {
 
     const fetchBookings = async () => {
       try {
-        const res = await fetch('/api/bookings');
-        const data = await res.json();
+        const data = await apiFetch('/api/bookings');
         if (data.success) {
           setBookings(data.data.bookings);
         } else {

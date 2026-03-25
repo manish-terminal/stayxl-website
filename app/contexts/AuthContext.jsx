@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { apiFetch } from '../lib/api';
 
 const AuthContext = createContext(null);
 
@@ -12,11 +13,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/auth/me');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success) setUser(data.data.user);
-        }
+        const data = await apiFetch('/api/auth/me');
+        if (data.success) setUser(data.data.user);
       } catch {
         // Not logged in
       } finally {
@@ -26,26 +24,23 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginWithOtp = useCallback(async (phone, otp) => {
-    const res = await fetch('/api/auth/verify-otp', {
+    const data = await apiFetch('/api/auth/verify-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, otp }),
     });
-    const data = await res.json();
     if (!data.success) throw new Error(data.error);
     setUser(data.data.user);
+    if (data.data.token) {
+       document.cookie = `token=${data.data.token}; path=/; max-age=86400`;
+    }
     return data.data;
   }, []);
 
-
-
   const sendOtp = useCallback(async (phone) => {
-    const res = await fetch('/api/auth/send-otp', {
+    const data = await apiFetch('/api/auth/send-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone }),
     });
-    const data = await res.json();
     if (!data.success) throw new Error(data.error);
     return data.data;
   }, []);

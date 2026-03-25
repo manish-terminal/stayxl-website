@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { villas as staticVillas } from '../data/villas';
 import VillaCard from './VillaCard';
 import Link from 'next/link';
 
@@ -9,16 +10,9 @@ export default function RecentlyVisited() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch featured/recent villas (page 1, ordered by rating desc then featured)
-    fetch('/api/villas?limit=4&page=1')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setVillas(data.data.villas);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    // Just show first 4 for now
+    setVillas(staticVillas.slice(0, 4));
+    setLoading(false);
   }, []);
 
   const mapVilla = (villa) => ({
