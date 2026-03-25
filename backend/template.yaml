@@ -11,6 +11,9 @@ Globals:
         USERS_TABLE: !Ref StayXLUsersTable
         VILLAS_TABLE: !Ref StayXLVillasTable
         BOOKINGS_TABLE: !Ref StayXLBookingsTable
+        OFFERS_TABLE: !Ref StayXLOffersTable
+        BLOCKED_DATES_TABLE: !Ref StayXLBlockedDatesTable
+        PAYMENTS_TABLE: !Ref StayXLPaymentsTable
 
 Resources:
   StayXLApiFunction:
@@ -28,6 +31,12 @@ Resources:
             TableName: !Ref StayXLVillasTable
         - DynamoDBCrudPolicy:
             TableName: !Ref StayXLBookingsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StayXLOffersTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StayXLBlockedDatesTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StayXLPaymentsTable
       Events:
         CatchAll:
           Type: Api
@@ -104,6 +113,68 @@ Resources:
         - IndexName: VillaBookingsIndex
           KeySchema:
             - AttributeName: villaId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  StayXLOffersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StayXLOffers
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: code
+          AttributeType: S
+      KeySchema:
+        - AttributeName: code
+          KeyType: HASH
+
+  StayXLBlockedDatesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StayXLBlockedDates
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: villaId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: VillaBlockedIndex
+          KeySchema:
+            - AttributeName: villaId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  StayXLPaymentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StayXLPayments
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: bookingId
+          AttributeType: S
+        - AttributeName: razorpayOrderId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: BookingPaymentIndex
+          KeySchema:
+            - AttributeName: bookingId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: RazorpayOrderIndex
+          KeySchema:
+            - AttributeName: razorpayOrderId
               KeyType: HASH
           Projection:
             ProjectionType: ALL

@@ -31,14 +31,52 @@ type Villa struct {
 
 // Booking represents the Booking entity in the system
 type Booking struct {
+	ID            string    `dynamodbav:"id"`
+	UserID        string    `dynamodbav:"userId"`
+	VillaID       string    `dynamodbav:"villaId"`
+	VillaSlug     string    `dynamodbav:"villaSlug"`
+	CheckIn       time.Time `dynamodbav:"checkIn"`
+	CheckOut      time.Time `dynamodbav:"checkOut"`
+	Guests        int       `dynamodbav:"guests"`
+	BaseAmount    int       `dynamodbav:"baseAmount"`
+	DiscountAmount int      `dynamodbav:"discountAmount"`
+	TotalAmount   int       `dynamodbav:"totalAmount"`
+	Status        string    `dynamodbav:"status"` // PENDING, CONFIRMED, CANCELLED
+	PaymentID     string    `dynamodbav:"paymentId,omitempty"`
+	CouponCode    string    `dynamodbav:"couponCode,omitempty"`
+	CreatedAt     time.Time `dynamodbav:"createdAt"`
+	UpdatedAt     time.Time `dynamodbav:"updatedAt"`
+}
+
+// BlockedDate represents dates blocked by admin
+type BlockedDate struct {
 	ID        string    `dynamodbav:"id"`
-	UserID    string    `dynamodbav:"userId"`
 	VillaID   string    `dynamodbav:"villaId"`
-	CheckIn   time.Time `dynamodbav:"checkIn"`
-	CheckOut  time.Time `dynamodbav:"checkOut"`
-	Guests    int       `dynamodbav:"guests"`
-	Total     int       `dynamodbav:"total"`
-	Status    string    `dynamodbav:"status"` // PENDING, CONFIRMED, CANCELLED
+	StartDate time.Time `dynamodbav:"startDate"`
+	EndDate   time.Time `dynamodbav:"endDate"`
+	Reason    string    `dynamodbav:"reason"`
 	CreatedAt time.Time `dynamodbav:"createdAt"`
-	UpdatedAt time.Time `dynamodbav:"updatedAt"`
+}
+
+// Offer represents coupon codes
+type Offer struct {
+	Code        string    `dynamodbav:"code"`
+	Discount    int       `dynamodbav:"discount"` // Percentage or fixed amount
+	Type        string    `dynamodbav:"type"`     // PERCENTAGE, FIXED
+	MinAmount   int       `dynamodbav:"minAmount"`
+	ValidTill   time.Time `dynamodbav:"validTill"`
+	IsActive    bool      `dynamodbav:"isActive"`
+}
+
+// Payment represents Razorpay payment tracking
+type Payment struct {
+	ID            string    `dynamodbav:"id"`
+	BookingID     string    `dynamodbav:"bookingId"`
+	RazorpayOrderID string  `dynamodbav:"razorpayOrderId"`
+	RazorpayPaymentID string `dynamodbav:"razorpayPaymentID"`
+	Amount        int       `dynamodbav:"amount"`
+	Currency      string    `dynamodbav:"currency"`
+	Status        string    `dynamodbav:"status"` // CREATED, CAPTURED, FAILED
+	CreatedAt     time.Time `dynamodbav:"createdAt"`
+	UpdatedAt     time.Time `dynamodbav:"updatedAt"`
 }

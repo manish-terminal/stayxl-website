@@ -1,5 +1,4 @@
 import { NextRequest } from 'next/server';
-import prisma from '@/app/lib/prisma';
 import { successResponse, errorResponse, handleError } from '@/app/lib/api-helpers';
 
 /**
@@ -12,42 +11,8 @@ export async function GET(
 ) {
     try {
         const { slug } = await params;
-
-        const experience = await prisma.experience.findUnique({
-            where: { slug },
-            include: {
-                services: true,
-                villas: {
-                    include: {
-                        villa: {
-                            select: {
-                                slug: true,
-                                name: true,
-                                location: true,
-                                guests: true,
-                                bedroomCount: true,
-                                images: { take: 1, orderBy: { sortOrder: 'asc' } },
-                            },
-                        },
-                    },
-                },
-            },
-        });
-
-        if (!experience) {
-            return errorResponse('Experience not found', 404);
-        }
-
-        // Flatten villas from the join table
-        const responseData = {
-            ...experience,
-            villas: experience.villas.map((ve: any) => ({
-                ...ve.villa,
-                image: ve.villa.images[0]?.url,
-            })),
-        };
-
-        return successResponse(responseData);
+        // TODO: Call AWS Go Backend /api/experiences/{slug}
+        return errorResponse('Experience not found (Backend Migration in Progress)', 404);
     } catch (error) {
         return handleError(error);
     }

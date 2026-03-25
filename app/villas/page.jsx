@@ -7,10 +7,12 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Link from 'next/link';
 
+import { villas as staticVillas } from '../data/villas';
+
 function VillasList() {
   const searchParams = useSearchParams();
-  const [villas, setVillas] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [villas, setVillas] = useState(staticVillas);
+  const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     location: searchParams.get('location') || '',
     minGuests: searchParams.get('minGuests') || '',
@@ -18,30 +20,26 @@ function VillasList() {
     maxPrice: searchParams.get('maxPrice') || '',
   });
 
-  const fetchVillas = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (filters.location) params.set('location', filters.location);
-      if (filters.minGuests) params.set('minGuests', filters.minGuests);
-      if (filters.minPrice) params.set('minPrice', filters.minPrice);
-      if (filters.maxPrice) params.set('maxPrice', filters.maxPrice);
-      
-      const res = await fetch(`/api/villas?${params.toString()}`);
-      const data = await res.json();
-      if (data.success) {
-        setVillas(data.data.villas);
-      }
-    } catch (error) {
-      console.error('Failed to fetch villas:', error);
-    } finally {
-      setLoading(false);
+  const applyLocalFilters = () => {
+    let filtered = staticVillas;
+    if (filters.location) {
+      filtered = filtered.filter(v => v.location.toLowerCase().includes(filters.location.toLowerCase()));
     }
+    if (filters.minGuests) {
+      filtered = filtered.filter(v => v.guests >= parseInt(filters.minGuests));
+    }
+    if (filters.minPrice) {
+      filtered = filtered.filter(v => v.pricePerNight >= parseInt(filters.minPrice));
+    }
+    if (filters.maxPrice) {
+      filtered = filtered.filter(v => v.pricePerNight <= parseInt(filters.maxPrice));
+    }
+    setVillas(filtered);
   };
 
   useEffect(() => {
-    fetchVillas();
-  }, [searchParams]);
+    applyLocalFilters();
+  }, [filters, searchParams]);
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -54,7 +52,7 @@ function VillasList() {
       else params.delete(key);
     });
     window.history.pushState({}, '', `/villas?${params.toString()}`);
-    fetchVillas();
+    applyLocalFilters();
   };
 
   return (
@@ -129,7 +127,6 @@ function VillasList() {
             onClick={() => {
               setFilters({location: '', minGuests: '', minPrice: '', maxPrice: ''});
               window.history.pushState({}, '', '/villas');
-              fetchVillas();
             }}
             className="text-[#072720] font-semibold text-sm hover:underline"
           >

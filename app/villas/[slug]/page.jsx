@@ -1,8 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import villaData from '../../components/villa/villaData';
+import { useParams, notFound } from 'next/navigation';
+import { villas as staticVillas } from '../../data/villas';
 import HeroGallery from '../../components/villa/HeroGallery';
+
+export function generateStaticParams() {
+  return staticVillas.map((villa) => ({
+    slug: villa.slug,
+  }));
+}
 import VillaOverviewBar from '../../components/villa/VillaOverviewBar';
 import BookingSidebar from '../../components/villa/BookingSidebar';
 import OffersCarousel from '../../components/villa/OffersCarousel';
@@ -20,7 +27,12 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 
 export default function VillaDetailPage() {
-  const villa = villaData;
+  const params = useParams();
+  const villa = staticVillas.find(v => v.slug === params.slug);
+
+  if (!villa) {
+    notFound();
+  }
 
   // ─── Add-on state: [{ name, price, quantity }] ───
   const [selectedAddons, setSelectedAddons] = useState([]);

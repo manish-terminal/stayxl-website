@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
-import prisma from './prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRES_IN = '7d';
@@ -48,19 +47,15 @@ export async function getAuthUser(req: NextRequest) {
     const payload = verifyToken(token);
     if (!payload) return null;
 
-    const user = await prisma.user.findUnique({
-        where: { id: payload.userId },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true,
-            role: true,
-            avatar: true,
-        },
-    });
-
-    return user;
+    // TODO: Replace with call to AWS Go Backend /api/users/me
+    // For now, return a mock user so the app doesn't crash on auth checks
+    return {
+        id: payload.userId,
+        email: payload.email,
+        phone: payload.phone,
+        role: payload.role,
+        name: 'User',
+    };
 }
 
 /**
