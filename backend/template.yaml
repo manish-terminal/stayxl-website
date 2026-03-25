@@ -179,7 +179,38 @@ Resources:
           Projection:
             ProjectionType: ALL
 
+  StayXLVillaImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "stayxl-villa-images-${AWS::AccountId}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: ['GET']
+            AllowedOrigins: ['*']
+
+  StayXLVillaImagesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StayXLVillaImagesBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub "arn:aws:s3:::${StayXLVillaImagesBucket}/*"
+
 Outputs:
   ApiEndpoint:
     Description: "API Gateway endpoint URL"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  
+  VillaImagesBucket:
+    Description: "S3 Bucket for Villa Images"
+    Value: !Ref StayXLVillaImagesBucket
