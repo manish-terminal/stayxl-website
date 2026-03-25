@@ -26,16 +26,18 @@ Before the first deployment:
 - **Backend**: Pushing changes to the `backend/` directory triggers `deploy-backend.yml`. It uses AWS SAM to build and update your serverless stack.
 - **Frontend**: Pushing changes to the root/app directory triggers `deploy-frontend.yml`. It runs a static export (`next export`), syncs to S3, and invalidates CloudFront cache.
 
-## 4. Manual First Run
+## 4. How to Deploy (GitHub Actions)
 
-We recommend running a manual build locally one last time to ensure all environment variables are correctly set:
-```bash
-# Backend
-cd backend && sam build && sam deploy --guided
+Since you don't have AWS installed locally, we will use **GitHub Actions** for everything. 
 
-# Frontend
-npm run build
-```
+1. **Commit and Push**: Just push your code to the `main` branch.
+   ```bash
+   git add .
+   git commit -m "deploying to aws"
+   git push origin main
+   ```
+2. **Monitor**: Go to your GitHub repository, click on the **Actions** tab, and you will see the **"Deploy Backend (AWS SAM)"** workflow running. 
+3. **Finish**: Once it turns green, your Lambda function and DynamoDB tables are live!
 
 ## 5. How to Create an IAM User (Step-by-Step)
 
@@ -48,7 +50,7 @@ If you don't have an IAM user for GitHub Actions yet, follow these steps in the 
    - Select **"Attach policies directly"**.
    - Search for and select **`AdministratorAccess`**. 
    > [!TIP]
-   > For better security in production, you can later replace this with specific policies for SAM, S3, and CloudFront.
+   > For betteraren security in production, you can later replace this with specific policies for SAM, S3, and CloudFront.
 5. **Review and create**: Click "Next", then "Create user".
 6. **Generate Access Keys**:
    - Click on your new user (`github-actions-stayxl`).

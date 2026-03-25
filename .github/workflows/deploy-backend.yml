@@ -38,4 +38,5 @@ jobs:
             --region ${{ secrets.AWS_REGION }} \
             --stack-name stayxl-backend \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
+            --resolve-s3 \
             --on-failure ROLLBACK
