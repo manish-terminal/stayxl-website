@@ -43,10 +43,14 @@ type Booking struct {
 	BaseAmount     int       `dynamodbav:"baseAmount" json:"baseAmount"`
 	DiscountAmount int       `dynamodbav:"discountAmount" json:"discountAmount"`
 	TotalAmount    int       `dynamodbav:"totalAmount" json:"totalAmount"`
+	AdvanceAmount  int       `dynamodbav:"advanceAmount" json:"advanceAmount"`
+	BalanceAmount  int       `dynamodbav:"balanceAmount" json:"balanceAmount"`
 	Status         string    `dynamodbav:"status" json:"status"` // PENDING, CONFIRMED, CANCELLED
 	PaymentID      string    `dynamodbav:"paymentId,omitempty" json:"paymentId,omitempty"`
 	PaymentMode    string    `dynamodbav:"paymentMode" json:"paymentMode"`
 	CouponCode     string    `dynamodbav:"couponCode,omitempty" json:"couponCode,omitempty"`
+	VillaName      string    `dynamodbav:"villaName,omitempty" json:"villaName,omitempty"`
+	VillaLocation  string    `dynamodbav:"villaLocation,omitempty" json:"villaLocation,omitempty"`
 	Addons         []Addon   `dynamodbav:"addons" json:"addons"`
 	CreatedAt      time.Time `dynamodbav:"createdAt" json:"createdAt"`
 	UpdatedAt      time.Time `dynamodbav:"updatedAt" json:"updatedAt"`

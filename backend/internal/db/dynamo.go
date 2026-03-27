@@ -40,6 +40,29 @@ func (d *DynamoClient) GetVillaBySlug(ctx context.Context, slug string) (*models
 	return &villa, err
 }
 
+// GetVilla retrieves a villa by its ID
+func (d *DynamoClient) GetVilla(ctx context.Context, id string) (*models.Villa, error) {
+	input := &dynamodb.GetItemInput{
+		TableName: aws.String(d.VillasTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+	}
+
+	result, err := d.Client.GetItem(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Item == nil {
+		return nil, nil
+	}
+
+	var villa models.Villa
+	err = attributevalue.UnmarshalMap(result.Item, &villa)
+	return &villa, err
+}
+
 // GetOfferByCode retrieves an offer by its coupon code
 func (d *DynamoClient) GetOfferByCode(ctx context.Context, code string) (*models.Offer, error) {
 	input := &dynamodb.GetItemInput{

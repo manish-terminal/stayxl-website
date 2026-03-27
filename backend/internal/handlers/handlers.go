@@ -296,31 +296,62 @@ func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGate
 		return errorResponse(http.StatusBadRequest, "Invalid date format in booking")
 	}
 
-	// Calculate total amount (simplified for MVP)
-	// In production: Fetch villa from DB to get real pricePerNight
-	totalAmount := 0
+	// 1. Fetch villa to get real price and info
+	var villa *models.Villa
+	var err error
+	if strings.HasPrefix(body.VillaID, "villa_") {
+		villa, err = h.DB.GetVilla(ctx, body.VillaID)
+	} else {
+		villa, err = h.DB.GetVillaBySlug(ctx, body.VillaID)
+	}
+	if err != nil || villa == nil {
+		return errorResponse(http.StatusNotFound, "Villa not found for booking")
+	}
+
+	// 2. Calculate nights and amounts
+	nights := int(checkOut.Sub(checkIn).Hours() / 24)
+	if nights < 1 {
+		nights = 1
+	}
+
+	baseAmount := villa.PricePerNight * nights
+	addonAmount := 0
 	for _, addon := range body.Addons {
-		totalAmount += addon.Price * addon.Quantity
+		addonAmount += addon.Price * addon.Quantity
 	}
 	
-	// Use phone number as userId
+	// For MVP: assume no discount or handle simplistic coupon if needed
+	totalAmount := baseAmount + addonAmount
+	advanceAmount := totalAmount
+	balanceAmount := 0
+	if body.PaymentMode == "ADVANCE" {
+		advanceAmount = int(float64(totalAmount) * 0.3)
+		balanceAmount = totalAmount - advanceAmount
+	}
+
+	// 3. Prepare booking record
 	userID := body.GuestPhone
-	
 	booking := models.Booking{
-		ID:            "book_" + time.Now().Format("20060102150405"),
-		UserID:        userID,
-		VillaID:       body.VillaID,
-		CheckIn:       checkIn,
-		CheckOut:      checkOut,
-		Guests:        body.Guests,
+		ID:             "book_" + time.Now().Format("20060102150405"),
+		UserID:         userID,
+		VillaID:        villa.ID,
+		VillaSlug:      villa.Slug,
+		VillaName:      villa.Name,
+		VillaLocation:  villa.Location,
+		CheckIn:        checkIn,
+		CheckOut:       checkOut,
+		Guests:         body.Guests,
 		GuestName:     body.GuestName,
 		GuestPhone:    body.GuestPhone,
-		Addons:        body.Addons,
+		BaseAmount:     baseAmount,
+		TotalAmount:    totalAmount,
+		AdvanceAmount:  advanceAmount,
+		BalanceAmount:  balanceAmount,
+		Addons:         body.Addons,
 		PaymentMode:   body.PaymentMode,
-		Status:        "PENDING",
-		CreatedAt:     time.Now(),
-		UpdatedAt:     time.Now(),
-		TotalAmount:   totalAmount,
+		Status:         "PENDING",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	}
 
 	if err := h.DB.SaveBooking(ctx, &booking); err != nil {
