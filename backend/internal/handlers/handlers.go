@@ -75,7 +75,7 @@ func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayPro
 	case strings.HasPrefix(finalPath, "/api/payments/verify"):
 		return h.handleVerifyPayment(ctx, req)
 	default:
-		return errorResponse(http.StatusNotFound, "Endpoint not found: "+finalPath)
+		return errorResponse(http.StatusNotFound, fmt.Sprintf("Endpoint not found: %s (Method: %s, RawPath: %s)", finalPath, method, rawPath))
 	}
 }
 
