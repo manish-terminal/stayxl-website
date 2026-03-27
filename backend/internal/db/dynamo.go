@@ -70,7 +70,7 @@ func (d *DynamoClient) CheckAvailability(ctx context.Context, villaID string, st
 		TableName:              aws.String(d.BookingsTable),
 		IndexName:              aws.String("VillaBookingsIndex"),
 		KeyConditionExpression: aws.String("villaId = :vid"),
-		FilterExpression:       aws.String("#status = :conf AND ((checkIn <= :end AND checkOut >= :start))"),
+		FilterExpression:       aws.String("#status = :conf AND checkIn <= :end AND checkOut >= :start"),
 		ExpressionAttributeNames: map[string]string{
 			"#status": "status",
 		},
