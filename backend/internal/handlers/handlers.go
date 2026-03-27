@@ -119,14 +119,32 @@ func (h *AppHandler) handleVillaAvailability(ctx context.Context, req events.API
 	slug := parts[3]
 
 	startDateStr := req.QueryStringParameters["startDate"]
+	if startDateStr == "" {
+		startDateStr = req.QueryStringParameters["checkIn"]
+	}
 	endDateStr := req.QueryStringParameters["endDate"]
-
-	if startDateStr == "" || endDateStr == "" {
-		return errorResponse(http.StatusBadRequest, "Dates are required")
+	if endDateStr == "" {
+		endDateStr = req.QueryStringParameters["checkOut"]
 	}
 
-	start, _ := time.Parse(time.RFC3339, startDateStr)
-	end, _ := time.Parse(time.RFC3339, endDateStr)
+	if startDateStr == "" || endDateStr == "" {
+		return errorResponse(http.StatusBadRequest, "Dates are required (startDate/checkIn and endDate/checkOut)")
+	}
+
+	// Helper to handle both ISO and simple date formats
+	parseDate := func(s string) (time.Time, error) {
+		if strings.Contains(s, "T") {
+			return time.Parse(time.RFC3339, s)
+		}
+		return time.Parse("2006-01-02", s)
+	}
+
+	start, errStart := parseDate(startDateStr)
+	end, errEnd := parseDate(endDateStr)
+
+	if errStart != nil || errEnd != nil {
+		return errorResponse(http.StatusBadRequest, "Invalid date format. Use YYYY-MM-DD or ISO8601")
+	}
 
 	villa, _ := h.DB.GetVillaBySlug(ctx, slug)
 	if villa == nil {
