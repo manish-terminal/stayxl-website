@@ -36,21 +36,34 @@ export default function SimilarVillasCarousel({ villas = [] }) {
             className="flex-shrink-0 w-[260px] group"
             style={{ scrollSnapAlign: 'start' }}
           >
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3">
-              <Image
-                src={villa.image}
-                alt={villa.name}
-                fill
-                sizes="260px"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-              />
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-gray-100">
+              {villa.image ? (
+                <Image
+                  src={villa.image}
+                  alt={villa.name}
+                  fill
+                  sizes="260px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : villa.images?.[0] ? (
+                <Image
+                  src={villa.images[0]}
+                  alt={villa.name}
+                  fill
+                  sizes="260px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : null}
             </div>
             <h3 className="text-sm font-medium text-[#072720] mb-0.5 group-hover:text-[#C6A87D] transition-colors">{villa.name}</h3>
             <p className="text-xs text-gray-400 mb-1.5">{villa.location}</p>
             <div className="flex items-center justify-between">
               <div className="flex items-baseline gap-1">
-                <span className="text-sm font-serif font-medium text-[#072720]">₹{villa.price.toLocaleString('en-IN')}</span>
+                <span className="text-sm font-serif font-medium text-[#072720]">
+                  ₹{(villa.pricePerNight || villa.price || 0).toLocaleString('en-IN')}
+                </span>
                 <span className="text-[10px] text-gray-400">/ night</span>
               </div>
               <span className="text-[10px] text-gray-400">Up to {villa.guests} guests</span>

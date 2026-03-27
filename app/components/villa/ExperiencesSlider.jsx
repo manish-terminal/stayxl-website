@@ -43,7 +43,25 @@ export default function ExperiencesSlider({ experiences = [], selectedAddons = [
               <div className="relative mb-3 flex-shrink-0 transition-all duration-300 group-hover:-translate-y-1">
                 {exp.slug ? (
                   <Link href={`/experiences/${exp.slug}`} className="block">
-                    <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-300">
+                    <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-300 bg-gray-100">
+                    {exp.image && (
+                      <Image
+                        src={exp.image}
+                        alt={exp.name}
+                        fill
+                        sizes="240px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    )}
+                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span className="text-white text-[10px] uppercase tracking-widest font-semibold border border-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm">Explore Experience</span>
+                      </div>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm bg-gray-100">
+                  {exp.image && (
                     <Image
                       src={exp.image}
                       alt={exp.name}
@@ -52,21 +70,7 @@ export default function ExperiencesSlider({ experiences = [], selectedAddons = [
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
-                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="text-white text-[10px] uppercase tracking-widest font-semibold border border-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm">Explore Experience</span>
-                      </div>
-                    </div>
-                  </Link>
-                ) : (
-                  <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm">
-                  <Image
-                    src={exp.image}
-                    alt={exp.name}
-                    fill
-                    sizes="240px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                  />
+                  )}
                   </div>
                 )}
               </div>
@@ -83,10 +87,12 @@ export default function ExperiencesSlider({ experiences = [], selectedAddons = [
                 )}
               </div>
 
-              <p className="text-xs text-gray-400 leading-relaxed mb-2 line-clamp-2">{exp.description}</p>
+              {exp.description && <p className="text-xs text-gray-400 leading-relaxed mb-2 line-clamp-2">{exp.description}</p>}
               <div className="flex items-center justify-between">
-                <span className="text-sm font-serif font-medium text-[#072720]">₹{exp.price.toLocaleString('en-IN')}</span>
-                {onToggle ? (
+                <span className="text-sm font-serif font-medium text-[#072720]">
+                  {exp.price !== null ? `₹${exp.price.toLocaleString('en-IN')}` : 'Request Price'}
+                </span>
+                {onToggle && exp.price !== null ? (
                   <button
                     onClick={() => onToggle(exp)}
                     className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all duration-300 flex items-center gap-1 ${
@@ -106,10 +112,12 @@ export default function ExperiencesSlider({ experiences = [], selectedAddons = [
                       'Add to Stay'
                     )}
                   </button>
-                ) : (
+                ) : exp.price !== null ? (
                   <button className="text-[11px] font-medium px-3 py-1.5 rounded-lg border border-[#072720]/15 text-[#072720] hover:bg-[#072720] hover:text-white transition-all duration-300">
                     Add to Stay
                   </button>
+                ) : (
+                   <div className="text-[10px] text-gray-300 font-medium">Contact for details</div>
                 )}
               </div>
             </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import HeroGallery from '../../components/villa/HeroGallery';
 import VillaOverviewBar from '../../components/villa/VillaOverviewBar';
@@ -38,6 +38,21 @@ export default function VillaClientPage({ villa }) {
     });
   };
 
+  // ─── Auto-select insurance for Samaya by default ───
+  useEffect(() => {
+    if (villa?.id === 'samaya' || villa?.slug?.includes('samaya')) {
+      const insurance = villa.experiences?.find(e => e.name === 'Cancellation Insurance');
+      if (insurance) {
+        setSelectedAddons(prev => {
+          if (!prev.find(a => a.name === insurance.name)) {
+            return [...prev, { name: insurance.name, price: insurance.price, quantity: 1 }];
+          }
+          return prev;
+        });
+      }
+    }
+  }, [villa]);
+
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
@@ -47,6 +62,7 @@ export default function VillaClientPage({ villa }) {
         <HeroGallery
           images={villa.images}
           name={villa.name}
+          tagline={villa.tagline}
           rating={villa.rating}
           reviewCount={villa.reviewCount}
           location={villa.location}
@@ -61,6 +77,7 @@ export default function VillaClientPage({ villa }) {
           <div className="flex-1 min-w-0">
             <VillaOverviewBar
               guests={villa.guests}
+              eventCapacity={villa.eventCapacity}
               bedrooms={villa.bedrooms}
               bathrooms={villa.bathrooms}
               area={villa.area}
@@ -108,7 +125,7 @@ export default function VillaClientPage({ villa }) {
 
             {/* Policies */}
             <div className="py-8 border-b border-gray-100">
-              <PolicyTabs policies={villa.policies} />
+              <PolicyTabs policies={villa.policies} rules={villa.rules} pricing={villa.pricing} />
             </div>
 
             {/* Reviews */}
@@ -129,6 +146,7 @@ export default function VillaClientPage({ villa }) {
               experiences={villa.experiences}
               onToggleAddon={toggleAddon}
               applyCouponCode={couponToApply}
+              pricing={villa.pricing}
             />
           </div>
         </div>

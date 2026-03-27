@@ -18,20 +18,26 @@ export default function BestRatedVillas() {
     setLoading(false);
   }, []);
 
-  const mapVilla = (villa) => ({
-    images: villa.images?.map(img => img.url) || [],
-    title: villa.name,
-    location: villa.location,
-    guests: villa.guests,
-    bedrooms: villa.bedrooms?.length || 0,
-    bathrooms: villa.bathrooms?.length || 0,
-    amenities: villa.amenities?.slice(0, 3).map(a => a.name) || [],
-    price: villa.pricePerNight,
-    slug: villa.slug,
-    rating: villa.rating,
-    reviews: villa.reviewCount,
-    mostInDemand: villa.isFeatured,
-  });
+  const mapVilla = (villa) => {
+    const allAmenities = Array.isArray(villa.amenities)
+      ? villa.amenities
+      : Object.values(villa.amenities || {}).flat();
+
+    return {
+      images: villa.images?.map(img => typeof img === 'string' ? img : img.url) || [],
+      title: villa.name,
+      location: villa.location,
+      guests: villa.guests,
+      bedrooms: typeof villa.bedrooms === 'number' ? villa.bedrooms : (villa.bedrooms?.length || 0),
+      bathrooms: typeof villa.bathrooms === 'number' ? villa.bathrooms : (villa.bathrooms?.length || 0),
+      amenities: allAmenities.slice(0, 3),
+      price: villa.pricePerNight,
+      slug: villa.slug,
+      rating: villa.rating,
+      reviews: villa.reviewCount,
+      mostInDemand: villa.isFeatured,
+    };
+  };
 
   if (loading) {
     return (

@@ -44,7 +44,7 @@ export default function ReviewsSection({ reviews = [], rating = 0, reviewCount =
         </div>
 
         {/* Breakdown */}
-        <div className="flex-1 grid grid-cols-2 gap-x-6 gap-y-2">
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
           {breakdown.map((item, i) => (
             <div key={i} className="flex items-center gap-2">
               <span className="text-xs text-gray-400 w-24">{item.label}</span>
@@ -57,18 +57,7 @@ export default function ReviewsSection({ reviews = [], rating = 0, reviewCount =
         </div>
       </div>
 
-      {/* AI Summary */}
-      <div className="bg-[#EFE7E7]/50 rounded-xl p-4 mb-6">
-        <div className="flex items-center gap-2 mb-2">
-          <svg className="w-4 h-4 text-[#C6A87D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-          </svg>
-          <span className="text-[11px] tracking-widest uppercase text-[#072720]/50 font-semibold">AI Summary</span>
-        </div>
-        <p className="text-sm text-[#072720]/70 leading-relaxed">
-          Guests highlight the stunning valley views, well-maintained pool, and responsive caretaker. The property is praised for being true to photos. Minor mentions of steep access road.
-        </p>
-      </div>
+
 
       {/* Review Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">

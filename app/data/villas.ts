@@ -175,5 +175,143 @@ export const villas = [
       address: 'Kumbalangy Waterfront, Kochi, Kerala 682007',
       mapUrl: 'https://maps.google.com/?q=9.9300,76.2600',
     }
-  }
+  },
+  {
+    id: 'samaya',
+    slug: 'samaya-villa-hyderabad',
+    name: 'Samaya',
+    tagline: 'Luxury Modern Private Pool Villa in Hyderabad for Weddings & Premium Stays',
+    location: 'Hyderabad',
+    locationInfo: {
+      address: 'Shamirpet Keesara ORR, Narsampalle, Hyderabad, Telangana 501303',
+      mapUrl: 'https://maps.app.goo.gl/CRbmpZbxoAZWpCSy8',
+      nearbyAttractions: [
+        { name: '🔴 Shamirpet Lake', distance: '15 mins' },
+        { name: 'Leonia Holistic Destination', distance: '10 mins' },
+        { name: 'Ratna Nature Resorts', distance: '5 mins' },
+        { name: 'Bits Pilani Hyderabad', distance: '12 mins' },
+      ],
+      distances: {
+        airport: '🔴 70 mins from RGIA Airport (ORR)',
+        station: '45 mins from Secunderabad Railway Station',
+      },
+      travelTips: [
+        '🔴 Ideally located on the ORR for quick access from the city.',
+        'Carry swimsuits for the pool.',
+        'Plan for an early check-in to enjoy the 3-acre property fully.',
+      ]
+    },
+    rating: 4.5,
+    reviewCount: 2,
+    guests: 14,
+    eventCapacity: 250,
+    bedrooms: 4,
+    bathrooms: 3,
+    area: '3 Acre Property (1.5 Acre usable)',
+    highlights: [
+      'Private entry road & driveway parking',
+      'Premium modern architecture',
+      'Wedding-friendly estate',
+      'Shoot-friendly layout',
+      'Luxury private villa experience',
+    ],
+    pricePerNight: 45000, // Estimated pricing
+    originalPrice: 55000,
+    offers: [
+      { title: 'Book 2 Nights & Get 3rd Night at 50% Off', type: 'stay' },
+      { title: 'Flat 40% Off (Up to ₹3,000) Every Wednesday', type: 'limited-day' },
+      { title: 'Complimentary BBQ or Bonfire or Late Checkout (Pick One)', type: 'freebie' },
+    ],
+    story: '🔴 Samaya Villa is a luxury 3-acre private estate designed for premium stays, intimate weddings, and high-end private events. With modern architecture, a private entry road, and expansive open spaces, it offers a perfect blend of privacy, elegance, and functionality for both leisure and celebrations.',
+    bedroomDetails: [
+      { type: '3 Bedrooms + 1 Optional Bedroom', note: 'Extra room available on request' },
+    ],
+    bathroomDetails: [
+      { count: 3 },
+    ],
+    amenities: {
+      popular: ['Private Pool', 'Lawn', 'Parking', 'Bonfire Area', 'Amphitheater'],
+      kitchen: ['Refrigerator', 'Water Purifier', 'Stove', 'Microwave', 'Utensils'],
+      outdoor: ['Gazebo', 'Bar Deck', 'Balcony/Terrace', 'Lawn'],
+      entertainment: ['Music System', 'TV', 'Indoor/Outdoor Games'],
+    },
+    spaces: [
+      { name: 'Private Pool Area', description: 'Expansive pool with deck and lounge space', features: ['Deck', 'Loungers', 'Ambient Lighting'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/pool.webp' },
+      { name: 'Large Lawn', description: 'Acres of manicured greenery for events', features: ['250 Capacity', 'Wedding Ready', 'Power Backup'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/areal.webp' },
+      { name: 'Amphitheater', description: 'Built-in seating for private performances', features: ['Tiered Seating', 'Acoustics', 'Open Air'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/party.webp' },
+      { name: 'Gazebo', description: 'Elegant shaded spot for quiet conversations', features: ['Seating', 'Lighting', 'Nature View'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero-2.webp' },
+    ],
+    experiences: [
+      { name: 'Cancellation Insurance', price: 2500, description: 'Get a full refund if you cancel anytime before check-in. No questions asked.', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Private Chef', price: null, description: 'Gourmet meals prepared by professional chefs on-site', image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Catering Services', price: null, description: 'Buffet or plated dining for large groups and events', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Décor & Event Setup', price: null, description: 'Custom decorations for weddings, shoots, or celebrations', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Live Musicians', price: null, description: 'Traditional or contemporary artists to elevate your event', image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Late Night Mini Bar', price: null, description: 'Stocked mini bar and snacks for late-night gatherings', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Spa & Group Yoga', price: null, description: 'Wellness sessions by the pool or in the amphitheater', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format&fit=crop' },
+    ],
+    policies: {
+      checkIn: '2:00 PM',
+      checkOut: '11:00 AM',
+      earlyCheckIn: 'Subject to availability',
+      refund: 'Refundable (Subject to insurance/timeframe)',
+      security: 'CCTV available in outdoor parking area',
+      roomSecurity: 'Each bedroom has separate lock and key',
+      cookingPolicy: 'Cooking not allowed by default. Kitchen access available at ₹1500 cleaning/upkeep charge',
+      cancellation: [
+        { period: '12+ days before check-in', refund: '100% refund' },
+        { period: '6-12 days before check-in', refund: '60% Voucher or 50% refund' },
+        { period: 'Within 6 days of check-in', refund: 'No refund' },
+      ]
+    },
+    pricing: {
+      perHourExtra: 1000,
+      kitchenAccessFee: 1500,
+      securityDeposit: 5000,
+    },
+    rules: [
+      'Guests cannot cook unless kitchen access is paid',
+      'Early check-in and late checkout are subject to availability',
+      'Event pricing differs from stay pricing',
+    ],
+    // cancellationPolicy: 'Full refund within 12 hours',
+    tags: [
+      'Luxury Stay', 'Wedding Friendly', 'Event Friendly', 'Shoot Friendly',
+    ],
+    media: {
+      brochure: 'https://www.canva.com/design/DAHBgKS4Kh8/3k1oRgLVyvv6RtTb9M3Bvg/edit',
+    },
+    images: [
+      'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/pool.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/living.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/bedroom.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/areal.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/party.webp',
+    ],
+    reviews: [
+      {
+        id: 'rev1',
+        name: '🔴 Anish Kumar',
+        userImage: 'https://i.pravatar.cc/150?u=rev1',
+        rating: 5,
+        date: '2026-02-15',
+        platform: 'Google',
+        comment: 'Absolutely stunning property. We hosted a small pre-wedding event here and the staff was exceptional. The pool area is the highlight! (Mock Review)',
+      },
+      {
+        id: 'rev2',
+        name: '🔴 Snehith Reddy',
+        userImage: 'https://i.pravatar.cc/150?u=rev2',
+        rating: 4,
+        date: '2026-01-20',
+        platform: 'Airbnb',
+        comment: 'Great location and very spacious. Perfect for large groups. The amphitheater added a unique touch to our stay. (Mock Review)',
+      },
+    ],
+    similarVillas: [
+      { slug: 'the-ivory-manor', name: 'The Ivory Manor', location: 'Kasauli', pricePerNight: 18500, guests: 8, image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2070&auto=format&fit=crop' },
+      { slug: 'villa-del-sol', name: 'Villa del Sol', location: 'Alibaug', pricePerNight: 24000, guests: 12, image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=2070&auto=format&fit=crop' },
+    ]
+  },
 ];

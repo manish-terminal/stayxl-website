@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-export default function HeroGallery({ images = [], name, rating, reviewCount, location, highlights = [] }) {
+export default function HeroGallery({ images = [], name, tagline, rating, reviewCount, location, highlights = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -20,7 +20,7 @@ export default function HeroGallery({ images = [], name, rating, reviewCount, lo
             onClick={() => setActiveIndex(0)}
           >
             <Image
-              src={images[0] || ''}
+              src={mainImage || ''}
               alt={name}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -106,7 +106,8 @@ export default function HeroGallery({ images = [], name, rating, reviewCount, lo
       <div className="hidden md:block max-w-7xl mx-auto px-6 lg:px-8 pt-6 pb-2">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-serif font-light text-[#072720] mb-2">{name}</h1>
+            <h1 className="text-2xl lg:text-3xl font-serif font-light text-[#072720] mb-1">{name}</h1>
+            {tagline && <p className="text-xs lg:text-sm text-[#072720]/50 font-medium mb-3 tracking-wide">{tagline}</p>}
             <div className="flex items-center gap-3 text-sm text-gray-500">
               <div className="flex items-center gap-1">
                 <svg className="w-4 h-4 text-[#C6A87D]" fill="currentColor" viewBox="0 0 20 20">

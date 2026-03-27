@@ -12,8 +12,15 @@ const tabLabels = {
   cancellation: 'Cancellation',
 };
 
-export default function PolicyTabs({ policies = {} }) {
+export default function PolicyTabs({ policies = {}, rules = [], pricing = {} }) {
   const [activeTab, setActiveTab] = useState('checkin');
+
+  // Helper to get rule list
+  const getRules = () => {
+    if (rules && rules.length > 0) return rules;
+    if (policies.rules && Array.isArray(policies.rules)) return policies.rules;
+    return [];
+  };
 
   return (
     <div>
@@ -21,46 +28,64 @@ export default function PolicyTabs({ policies = {} }) {
 
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto scrollbar-hide mb-5 pb-0.5">
-        {tabKeys.map((key) => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key)}
-            className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
-              activeTab === key
-                ? 'bg-[#072720] text-white'
-                : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
-            }`}
-          >
-            {tabLabels[key]}
-          </button>
-        ))}
+        {tabKeys.map((key) => {
+          // Hide tabs if data is missing
+          if (key === 'rules' && getRules().length === 0) return null;
+          if (key === 'deposit' && !policies.deposit && !pricing.securityDeposit) return null;
+          if (key === 'meals' && !policies.meals) return null;
+          if (key === 'faqs' && (!policies.faqs || policies.faqs.length === 0)) return null;
+          return (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                activeTab === key
+                  ? 'bg-[#072720] text-white'
+                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+              }`}
+            >
+              {tabLabels[key]}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab Content */}
       <div className="min-h-[120px]">
         {/* Check-in / Check-out */}
-        {activeTab === 'checkin' && policies.checkIn && (
+        {activeTab === 'checkin' && (
           <div className="space-y-3">
             <div className="flex items-center gap-8">
               <div>
                 <p className="text-[10px] tracking-widest uppercase text-gray-400 font-semibold">Check-in</p>
-                <p className="text-sm font-medium text-[#072720] mt-1">{policies.checkIn.time}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{policies.checkIn.earlyCheckIn}</p>
+                <p className="text-sm font-medium text-[#072720] mt-1">
+                  {typeof policies.checkIn === 'string' ? policies.checkIn : policies.checkIn?.time}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {policies.earlyCheckIn || policies.checkIn?.earlyCheckIn}
+                </p>
               </div>
               <div>
                 <p className="text-[10px] tracking-widest uppercase text-gray-400 font-semibold">Check-out</p>
-                <p className="text-sm font-medium text-[#072720] mt-1">{policies.checkOut.time}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{policies.checkOut.lateCheckOut}</p>
+                <p className="text-sm font-medium text-[#072720] mt-1">
+                  {typeof policies.checkOut === 'string' ? policies.checkOut : policies.checkOut?.time}
+                </p>
               </div>
             </div>
-            <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-100 pt-3">{policies.checkIn.instructions}</p>
+            {(policies.refund || policies.cookingPolicy) && (
+              <div className="pt-3 border-t border-gray-100 space-y-2">
+                {policies.refund && <p className="text-xs text-[#072720]/70"><span className="font-semibold">Refund:</span> {policies.refund}</p>}
+                {policies.cookingPolicy && <p className="text-xs text-[#072720]/70"><span className="font-semibold">Cooking:</span> {policies.cookingPolicy}</p>}
+                {policies.security && <p className="text-xs text-[#072720]/70"><span className="font-semibold">Security:</span> {policies.security}</p>}
+              </div>
+            )}
           </div>
         )}
 
         {/* Rules */}
-        {activeTab === 'rules' && policies.rules && (
+        {activeTab === 'rules' && (
           <ul className="space-y-2">
-            {policies.rules.map((rule, i) => (
+            {getRules().map((rule, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-[#072720]/70">
                 <svg className="w-4 h-4 text-gray-300 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -72,15 +97,17 @@ export default function PolicyTabs({ policies = {} }) {
         )}
 
         {/* Deposit */}
-        {activeTab === 'deposit' && policies.deposit && (
+        {activeTab === 'deposit' && (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-[#072720]">₹{policies.deposit.amount.toLocaleString('en-IN')}</span>
-              {policies.deposit.refundable && (
-                <span className="text-[10px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Refundable</span>
-              )}
+              <span className="text-sm font-medium text-[#072720]">
+                ₹{(pricing.securityDeposit || policies.deposit?.amount || 0).toLocaleString('en-IN')}
+              </span>
+              <span className="text-[10px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Refundable</span>
             </div>
-            <p className="text-xs text-gray-400 leading-relaxed">{policies.deposit.note}</p>
+            <p className="text-xs text-gray-400 leading-relaxed">
+              A security deposit is required and will be refunded after checkout.
+            </p>
           </div>
         )}
 

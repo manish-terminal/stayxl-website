@@ -7,7 +7,7 @@ import LoginModal from '../LoginModal';
 import BookingConfirmation from '../BookingConfirmation';
 import DatePicker from './DatePicker';
 
-export default function BookingSidebar({ villaId, villaSlug, pricePerNight, originalPrice, maxGuests, selectedAddons = [], experiences = [], onToggleAddon, applyCouponCode }) {
+export default function BookingSidebar({ villaId, villaSlug, pricePerNight, originalPrice, maxGuests, selectedAddons = [], experiences = [], onToggleAddon, applyCouponCode, pricing = {} }) {
   const [showAddons, setShowAddons] = useState(false);
   const { user } = useAuth();
   const [checkIn, setCheckIn] = useState('');
@@ -41,8 +41,12 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const addonTotal = selectedAddons.reduce((sum, a) => sum + a.price * a.quantity, 0);
   const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
   const taxes = Math.round((subtotal + addonTotal - couponDiscount) * 0.18);
-  const total = subtotal + addonTotal - couponDiscount + taxes;
-  const advanceAmount = Math.round(total * 0.30);
+  
+  // Security deposit is usually paid but refundable, so we list it separately or add to total
+  const securityDeposit = pricing.securityDeposit || 0;
+  const total = subtotal + addonTotal - couponDiscount + taxes + securityDeposit;
+  
+  const advanceAmount = Math.round((total - securityDeposit) * 0.30) + securityDeposit;
   const balanceAmount = total - advanceAmount;
   const payNow = paymentMode === 'ADVANCE' ? advanceAmount : total;
 
@@ -53,15 +57,23 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
     }
   }, [user]);
 
-  // Minimum check-in date is tomorrow
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDate = tomorrow.toISOString().split('T')[0];
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
+  // Minimum check-in date is tomorrow (calculate on mount to avoid hydration mismatch)
+  const [minDate, setMinDate] = useState('');
+  useEffect(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setMinDate(tomorrow.toISOString().split('T')[0]);
+  }, []);
 
   // Min check-out is day after check-in
   const minCheckout = checkIn
     ? (() => { const d = new Date(checkIn); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; })()
     : minDate;
+
+
 
   // ─── Check Availability ───
   const checkAvailability = useCallback(async () => {
@@ -668,6 +680,20 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
               <span>Taxes & fees (18%)</span>
               <span>₹{taxes.toLocaleString('en-IN')}</span>
             </div>
+            {securityDeposit > 0 && (
+              <div className="flex justify-between text-gray-500">
+                <span className="flex items-center gap-1">
+                  Security deposit (Refundable)
+                  <div className="group relative">
+                    <svg className="w-3 h-3 text-gray-300 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-gray-900 text-white text-[10px] rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                      This deposit is fully refundable after checkout, subject to villa inspection.
+                    </div>
+                  </div>
+                </span>
+                <span>₹{securityDeposit.toLocaleString('en-IN')}</span>
+              </div>
+            )}
             <div className="border-t border-gray-100 pt-2 flex justify-between font-medium text-[#072720]">
               <span>Total</span>
               <span>₹{total.toLocaleString('en-IN')}</span>
@@ -684,6 +710,44 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 </div>
               </>
             )}
+
+            {/* Dynamic Cancellation Policy Notice */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="flex items-start gap-2 p-3 rounded-xl bg-gray-50/50 border border-gray-100">
+                <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                  {selectedAddons.some(a => a.name === 'Cancellation Insurance') ? (
+                    <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.74c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3 h-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-[#072720] uppercase tracking-wider">Cancellation Policy</p>
+                  {selectedAddons.some(a => a.name === 'Cancellation Insurance') ? (
+                    <p className="text-xs text-green-700 mt-0.5">Zero cancellation fee with Insurance</p>
+                  ) : (
+                    <div className="mt-1 space-y-1">
+                      <p className="text-[10px] text-gray-500 flex items-center gap-1.5 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                        12+ days: 100% Refund
+                      </p>
+                      <p className="text-[10px] text-gray-500 flex items-center gap-1.5 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                        6-12 days: 60% Voucher / 50% Refund
+                      </p>
+                      <p className="text-[10px] text-gray-500 flex items-center gap-1.5 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        Under 6 days: No Refund
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Error */}
@@ -1091,6 +1155,12 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                     <span>Taxes & Fees</span>
                     <span>₹{taxes.toLocaleString('en-IN')}</span>
                   </div>
+                  {securityDeposit > 0 && (
+                    <div className="flex justify-between text-sm text-gray-500">
+                      <span>Security deposit (Refundable)</span>
+                      <span>₹{securityDeposit.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
                   <div className="pt-3 border-t border-gray-100 flex justify-between font-serif text-lg font-medium text-[#072720]">
                     <span>Total Amount</span>
                     <span>₹{total.toLocaleString('en-IN')}</span>

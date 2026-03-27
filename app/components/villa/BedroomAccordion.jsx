@@ -25,8 +25,8 @@ export default function BedroomAccordion({ bedroomDetails = [], bathroomDetails 
   const [openIndex, setOpenIndex] = useState(0);
 
   const allItems = [
-    ...bedroomDetails.map((b) => ({ ...b, type: 'bedroom' })),
-    ...bathroomDetails.map((b) => ({ ...b, type: 'bathroom' })),
+    ...bedroomDetails.map((b) => ({ ...b, itemType: 'bedroom' })),
+    ...bathroomDetails.map((b) => ({ ...b, itemType: 'bathroom' })),
   ];
 
   return (
@@ -38,6 +38,9 @@ export default function BedroomAccordion({ bedroomDetails = [], bathroomDetails 
       <div className="space-y-2">
         {allItems.map((item, i) => {
           const isOpen = openIndex === i;
+          const label = item.type || item.name || (item.itemType === 'bedroom' ? 'Bedroom' : 'Bathroom');
+          const subLabel = item.note || (item.count ? `${item.count} Bathrooms` : '');
+          
           return (
             <div
               key={i}
@@ -50,36 +53,38 @@ export default function BedroomAccordion({ bedroomDetails = [], bathroomDetails 
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-[#EFE7E7] flex items-center justify-center text-sm">
-                    {item.type === 'bedroom' ? '🛏️' : '🚿'}
+                    {item.itemType === 'bedroom' ? '🛏️' : '🚿'}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#072720]">{item.name}</p>
-                    {item.type === 'bedroom' && (
-                      <p className="text-[11px] text-gray-400">{item.bedType} · {item.floor}</p>
-                    )}
-                    {item.type === 'bathroom' && (
-                      <p className="text-[11px] text-gray-400">{item.shower}</p>
+                    <p className="text-sm font-medium text-[#072720]">{label}</p>
+                    {(subLabel || item.bedType) && (
+                      <p className="text-[11px] text-gray-400">
+                        {subLabel} {item.bedType && `· ${item.bedType}`}
+                      </p>
                     )}
                   </div>
                 </div>
-                <svg
-                  className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
+                { (item.features || item.note) && (
+                  <svg
+                    className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                ) }
               </button>
 
               {/* Content */}
-              <div
-                className={`overflow-hidden transition-all duration-300 ease-out ${
-                  isOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
-                }`}
-              >
-                <div className="px-4 pb-4 pt-0">
-                  {item.type === 'bedroom' && (
-                    <>
-                      <p className="text-xs text-gray-400 mb-3">Size: {item.size}</p>
+              {(item.features || item.note || item.size) && (
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-out ${
+                    isOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="px-4 pb-4 pt-0">
+                    {item.note && <p className="text-xs text-[#072720]/70 mb-2">{item.note}</p>}
+                    {item.size && <p className="text-xs text-gray-400 mb-3">Size: {item.size}</p>}
+                    {item.features && (
                       <div className="flex flex-wrap gap-2">
                         {item.features.map((f, fi) => (
                           <span key={fi} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-50 text-[11px] text-gray-500 font-medium">
@@ -87,25 +92,11 @@ export default function BedroomAccordion({ bedroomDetails = [], bathroomDetails 
                             {f}
                           </span>
                         ))}
-                        {item.hasBalcony && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#EFE7E7] text-[11px] text-[#072720]/70 font-medium">
-                            🌿 Balcony
-                          </span>
-                        )}
                       </div>
-                    </>
-                  )}
-                  {item.type === 'bathroom' && (
-                    <div className="flex flex-wrap gap-2">
-                      {item.amenities.map((a, ai) => (
-                        <span key={ai} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-50 text-[11px] text-gray-500 font-medium">
-                          ✓ {a}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           );
         })}

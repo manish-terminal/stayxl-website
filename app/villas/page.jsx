@@ -135,20 +135,26 @@ function VillasList() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {villas.map((villa) => (
-            <Link key={villa.id} href={`/villas/${villa.slug}`}>
-              <VillaCard 
-                images={villa.images?.map(img => img.url) || []}
-                title={villa.name}
-                location={villa.location}
-                guests={villa.guests}
-                bedrooms={villa.bedrooms?.length || 0}
-                bathrooms={villa.bathrooms?.length || 0}
-                amenities={villa.amenities?.map(a => a.name) || []}
-                price={villa.pricePerNight}
-              />
-            </Link>
-          ))}
+          {villas.map((villa) => {
+            const allAmenities = Array.isArray(villa.amenities)
+              ? villa.amenities
+              : Object.values(villa.amenities || {}).flat();
+
+            return (
+              <Link key={villa.id} href={`/villas/${villa.slug}`}>
+                <VillaCard 
+                  images={villa.images?.map(img => typeof img === 'string' ? img : img.url) || []}
+                  title={villa.name}
+                  location={villa.location}
+                  guests={villa.guests}
+                  bedrooms={typeof villa.bedrooms === 'number' ? villa.bedrooms : (villa.bedrooms?.length || 0)}
+                  bathrooms={typeof villa.bathrooms === 'number' ? villa.bathrooms : (villa.bathrooms?.length || 0)}
+                  amenities={allAmenities.slice(0, 3)}
+                  price={villa.pricePerNight}
+                />
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

@@ -45,7 +45,13 @@ const amenityIcons = {
 
 export default function AmenitiesGrid({ amenities = {} }) {
   const [showAll, setShowAll] = useState(false);
-  const categories = Object.entries(amenities);
+  
+  // Normalize amenities to the grouped object format
+  const normalizedAmenities = Array.isArray(amenities) 
+    ? { popular: amenities } 
+    : (amenities || {});
+
+  const categories = Object.entries(normalizedAmenities);
   const initialShow = showAll ? categories : categories.slice(0, 2);
 
   return (

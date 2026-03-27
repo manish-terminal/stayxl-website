@@ -34,6 +34,8 @@ func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayPro
 		return h.handleSendOTP(ctx, req)
 	case strings.HasPrefix(path, "/api/auth/verify-otp"):
 		return h.handleVerifyOTP(ctx, req)
+	case path == "/health" || path == "/api/health":
+		return h.handleHealth(ctx, req)
 	case strings.HasPrefix(path, "/api/villas") && strings.HasSuffix(path, "/availability"):
 		return h.handleVillaAvailability(ctx, req)
 	case strings.HasPrefix(path, "/api/villas"):
@@ -49,6 +51,16 @@ func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayPro
 	default:
 		return errorResponse(http.StatusNotFound, "Endpoint not found")
 	}
+}
+
+// ─── SYSTEM HANDLERS ───
+
+func (h *AppHandler) handleHealth(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return successResponse(map[string]interface{}{
+		"status":    "healthy",
+		"timestamp": time.Now().Format(time.RFC3339),
+		"version":   "1.0.0",
+	})
 }
 
 // ─── AUTH HANDLERS ───

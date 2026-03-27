@@ -30,20 +30,22 @@ export default function SpacesSlider({ spaces = [] }) {
       <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide pb-1" style={{ scrollSnapType: 'x mandatory' }}>
         {spaces.map((space, i) => (
           <div key={i} className="flex-shrink-0 w-[260px] group cursor-pointer" style={{ scrollSnapAlign: 'start' }}>
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3">
-              <Image
-                src={space.image}
-                alt={space.name}
-                fill
-                sizes="260px"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-              />
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-gray-100">
+              {space.image && (
+                <Image
+                  src={space.image}
+                  alt={space.name || 'Space'}
+                  fill
+                  sizes="260px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              )}
             </div>
             <h3 className="text-sm font-medium text-[#072720] mb-1">{space.name}</h3>
-            <p className="text-xs text-gray-400 leading-relaxed mb-2">{space.description}</p>
+            {space.description && <p className="text-xs text-gray-400 leading-relaxed mb-2">{space.description}</p>}
             <div className="flex flex-wrap gap-1.5">
-              {space.features.map((f, fi) => (
+              {space.features?.map((f, fi) => (
                 <span key={fi} className="px-2 py-0.5 rounded-md bg-gray-50 text-[10px] text-gray-500 font-medium">{f}</span>
               ))}
             </div>
