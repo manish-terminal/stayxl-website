@@ -28,17 +28,12 @@ export async function POST(req: NextRequest) {
         const totalAmount = booking.totalAmount || booking.TotalAmount || 0;
         const paymentMode = booking.paymentMode || booking.PaymentMode;
 
-        // 2. Create Razorpay order
-        // BookingSidebar.jsx handles ADVANCE vs FULL. 
-        // For simplicity, we create order for the amount requested or booking total.
-        // The Go backend already has PaymentMode.
+        // 2. Determine payment amount
+        // Use the actual amounts calculated by the Go backend for consistency
+        let amount = (booking.totalAmount || booking.TotalAmount || 0);
         
-        // Calculate amount in paise
-        let amount = totalAmount;
         if (paymentMode === 'ADVANCE') {
-            // Calculate 30% + security deposit (if applicable)
-            // For now, use the totalAmount as a fallback
-            amount = Math.round(totalAmount * 0.3);
+            amount = (booking.advanceAmount || booking.AdvanceAmount || Math.round(amount * 0.3));
         }
         
         const rzp = getRazorpay();

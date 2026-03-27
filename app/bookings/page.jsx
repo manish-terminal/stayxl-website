@@ -99,18 +99,18 @@ function BookingCard({ booking }) {
                 <div className="flex items-center gap-3">
                   <div>
                     <p className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Paid</p>
-                    <p className="text-sm font-semibold text-[#072720]">₹{(booking.advanceAmount || 0).toLocaleString('en-IN')}</p>
+                    <p className="text-sm font-semibold text-[#072720]">₹{(booking.advanceAmount || booking.AdvanceAmount || 0).toLocaleString('en-IN')}</p>
                   </div>
                   <div className="w-px h-8 bg-gray-200" />
                   <div>
                     <p className="text-[10px] uppercase tracking-wider text-amber-500 font-medium">Balance Due</p>
-                    <p className="text-sm font-medium text-amber-600">₹{(booking.balanceAmount || 0).toLocaleString('en-IN')}</p>
+                    <p className="text-sm font-medium text-amber-600">₹{(booking.balanceAmount || booking.BalanceAmount || 0).toLocaleString('en-IN')}</p>
                   </div>
                 </div>
               ) : (
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Total Paid</p>
-                  <p className="text-sm font-semibold text-[#072720]">₹{(booking.total || 0).toLocaleString('en-IN')}</p>
+                  <p className="text-sm font-semibold text-[#072720]">₹{(booking.totalAmount || booking.TotalAmount || booking.total || 0).toLocaleString('en-IN')}</p>
                 </div>
               )}
             </div>
@@ -148,7 +148,7 @@ function BookingCard({ booking }) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-[11px] text-amber-700">
-            Balance of <strong>₹{(booking.balanceAmount || 0).toLocaleString('en-IN')}</strong> to be paid at check-in on <strong>{formatDate(booking.checkIn)}</strong>
+            Balance of <strong>₹{(booking.balanceAmount || booking.BalanceAmount || 0).toLocaleString('en-IN')}</strong> to be paid at check-in on <strong>{formatDate(booking.checkIn)}</strong>
           </p>
         </div>
       )}
