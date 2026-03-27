@@ -36,8 +36,23 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
     try {
-        // TODO: Call AWS Go Backend /api/bookings (user specific)
-        return successResponse({ bookings: [] });
+        const user = await getAuthUser(req);
+        if (!user || !user.phone) {
+            return errorResponse('Authentication required', 401);
+        }
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        // Go backend expects userId=phone
+        const backendUrl = `${apiUrl}/api/bookings?userId=${user.phone}`;
+        
+        const response = await fetch(backendUrl);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return errorResponse(data.error || 'Failed to fetch bookings', response.status);
+        }
+
+        return successResponse(data.data);
     } catch (error) {
         return handleError(error);
     }

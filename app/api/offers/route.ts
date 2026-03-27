@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { successResponse, handleError } from '@/app/lib/api-helpers';
+import { successResponse, errorResponse, handleError } from '@/app/lib/api-helpers';
 
 /**
  * GET /api/offers
@@ -7,8 +7,17 @@ import { successResponse, handleError } from '@/app/lib/api-helpers';
  */
 export async function GET() {
     try {
-        // TODO: Call AWS Go Backend /api/offers
-        return successResponse({ offers: [] });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const backendUrl = `${apiUrl}/api/offers`;
+        
+        const response = await fetch(backendUrl);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return errorResponse(data.error || 'Failed to fetch offers', response.status);
+        }
+
+        return successResponse(data.data);
     } catch (error) {
         return handleError(error);
     }

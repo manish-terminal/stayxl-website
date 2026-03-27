@@ -11,8 +11,17 @@ export async function GET(
 ) {
     try {
         const { slug } = await params;
-        // TODO: Call AWS Go Backend /api/villas/{slug}/unavailable-dates
-        return successResponse({ unavailableDates: [], message: 'Backend Migration in Progress' });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const backendUrl = `${apiUrl}/api/villas/${slug}/unavailable-dates`;
+        
+        const response = await fetch(backendUrl);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return errorResponse(data.error || 'Failed to fetch unavailable dates', response.status);
+        }
+
+        return successResponse(data.data);
     } catch (error) {
         return handleError(error);
     }

@@ -35,16 +35,24 @@ func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayPro
 		return h.handleSendOTP(ctx, req)
 	case strings.HasPrefix(path, "/api/auth/verify-otp"):
 		return h.handleVerifyOTP(ctx, req)
+	case path == "/api/auth/me":
+		return h.handleAuthMe(ctx, req)
 	case path == "/health" || path == "/api/health":
 		return h.handleHealth(ctx, req)
+	case strings.HasPrefix(path, "/api/villas") && strings.HasSuffix(path, "/unavailable-dates"):
+		return h.handleUnavailableDates(ctx, req)
 	case strings.HasPrefix(path, "/api/villas") && strings.HasSuffix(path, "/availability"):
 		return h.handleVillaAvailability(ctx, req)
 	case strings.HasPrefix(path, "/api/villas"):
 		return h.handleVillas(ctx, req)
 	case path == "/api/bookings" && method == http.MethodPost:
 		return h.handleCreateBooking(ctx, req)
+	case path == "/api/bookings" && method == http.MethodGet:
+		return h.handleListBookings(ctx, req)
 	case strings.HasPrefix(path, "/api/offers/validate"):
 		return h.handleValidateOffer(ctx, req)
+	case path == "/api/offers" && method == http.MethodGet:
+		return h.handleListOffers(ctx, req)
 	case strings.HasPrefix(path, "/api/payments/create-order"):
 		return h.handleCreatePaymentOrder(ctx, req)
 	case strings.HasPrefix(path, "/api/payments/verify"):
@@ -104,11 +112,69 @@ func (h *AppHandler) handleVerifyOTP(ctx context.Context, req events.APIGatewayP
 	})
 }
 
+func (h *AppHandler) handleAuthMe(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	// In production: decode JWT from Authorization header and return user
+	// For now, return a stub response
+	token := req.Headers["authorization"]
+	if token == "" {
+		return errorResponse(http.StatusUnauthorized, "No authorization token provided")
+	}
+
+	return successResponse(map[string]interface{}{
+		"id":    "mock-user-123",
+		"phone": "9876543210",
+		"role":  "USER",
+	})
+}
+
 // ─── VILLA HANDLERS ───
 
 func (h *AppHandler) handleVillas(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// For listing, we could return minimal data from Dynamo or just a success
 	return successResponse(map[string]interface{}{"message": "Villa listing handled by frontend static data"})
+}
+
+func (h *AppHandler) handleUnavailableDates(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	parts := strings.Split(path.Clean(req.Path), "/")
+	if len(parts) < 4 {
+		return errorResponse(http.StatusBadRequest, "Invalid villa slug")
+	}
+	slug := parts[3]
+
+	villa, _ := h.DB.GetVillaBySlug(ctx, slug)
+	if villa == nil {
+		return errorResponse(http.StatusNotFound, "Villa not found")
+	}
+
+	dates, err := h.DB.GetUnavailableDates(ctx, villa.ID, time.Now(), time.Now().AddDate(1, 0, 0))
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, err.Error())
+	}
+
+	return successResponse(dates)
+}
+
+func (h *AppHandler) handleListBookings(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	userID := req.QueryStringParameters["userId"]
+	if userID == "" {
+		return errorResponse(http.StatusBadRequest, "userId (phone) is required")
+	}
+
+	bookings, err := h.DB.GetBookingsByUser(ctx, userID)
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, err.Error())
+	}
+
+	return successResponse(bookings)
+}
+
+func (h *AppHandler) handleListOffers(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	offers, err := h.DB.GetAllOffers(ctx)
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, err.Error())
+	}
+
+	return successResponse(offers)
 }
 
 func (h *AppHandler) handleVillaAvailability(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -190,8 +256,12 @@ func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGate
 		totalAmount += addon.Price * addon.Quantity
 	}
 	
+	// Use phone number as userId
+	userID := body.GuestPhone
+	
 	booking := models.Booking{
 		ID:            "book_" + time.Now().Format("20060102150405"),
+		UserID:        userID,
 		VillaID:       body.VillaID,
 		CheckIn:       checkIn,
 		CheckOut:      checkOut,
@@ -203,7 +273,7 @@ func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGate
 		Status:        "PENDING",
 		CreatedAt:     time.Now(),
 		UpdatedAt:     time.Now(),
-		TotalAmount:   totalAmount, // This is just the addons + base logic would go here
+		TotalAmount:   totalAmount,
 	}
 
 	if err := h.DB.SaveBooking(ctx, &booking); err != nil {
