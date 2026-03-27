@@ -298,15 +298,14 @@ func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGate
 	}
 
 	// 1. Fetch villa to get real price and info
-	var villa *models.Villa
-	var err error
-	if strings.HasPrefix(body.VillaID, "villa_") {
-		villa, err = h.DB.GetVilla(ctx, body.VillaID)
-	} else {
-		villa, err = h.DB.GetVillaBySlug(ctx, body.VillaID)
+	// Robust lookup: try ID first, then Slug
+	villa, _ := h.DB.GetVilla(ctx, body.VillaID)
+	if villa == nil {
+		villa, _ = h.DB.GetVillaBySlug(ctx, body.VillaID)
 	}
-	if err != nil || villa == nil {
-		return errorResponse(http.StatusNotFound, "Villa not found for booking")
+	
+	if villa == nil {
+		return errorResponse(http.StatusNotFound, "Villa not found for booking: "+body.VillaID)
 	}
 
 	// 2. Calculate nights and amounts

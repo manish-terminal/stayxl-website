@@ -1,5 +1,6 @@
 export const villas = [
   {
+    id: 'v-ivory',
     slug: 'the-ivory-manor',
     name: 'The Ivory Manor',
     tagline: 'A Serene Hilltop Retreat With Panoramic Valley Views',
@@ -32,6 +33,7 @@ export const villas = [
     }
   },
   {
+    id: 'v-delsol',
     slug: 'villa-del-sol',
     name: 'Villa del Sol',
     tagline: 'Mediterranean Luxury On The Konkan Coast',
@@ -61,6 +63,7 @@ export const villas = [
     }
   },
   {
+    id: 'v-chateau',
     slug: 'the-grand-chateau',
     name: 'The Grand Chateau',
     tagline: 'Indo-Portuguese Opulence In The Heart Of Goa',
@@ -90,6 +93,7 @@ export const villas = [
     }
   },
   {
+    id: 'v-serenity',
     slug: 'serenity-heights',
     name: 'Serenity Heights',
     tagline: 'Modernist Sanctuary Above The Clouds',
@@ -119,6 +123,7 @@ export const villas = [
     }
   },
   {
+    id: 'v-woodland',
     slug: 'woodland-retreat',
     name: 'Woodland Retreat',
     tagline: 'Cozy Cabin Vibes Amidst Coffee Plantations',
@@ -148,6 +153,7 @@ export const villas = [
     }
   },
   {
+    id: 'v-azure',
     slug: 'azure-bay-estate',
     name: 'Azure Bay Estate',
     tagline: 'Waterfront Tranquility In The Backwaters',
@@ -177,7 +183,7 @@ export const villas = [
     }
   },
   {
-    id: 'samaya',
+    id: 'v-samaya',
     slug: 'samaya-villa-hyderabad',
     name: 'Samaya',
     tagline: 'Luxury Modern Private Pool Villa in Hyderabad for Weddings & Premium Stays',
