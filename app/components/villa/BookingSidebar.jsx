@@ -39,7 +39,12 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
     : 1;
   const subtotal = pricePerNight * nights;
   const addonTotal = selectedAddons.reduce((sum, a) => sum + a.price * a.quantity, 0);
-  const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
+  const couponDiscount = (() => {
+    if (!appliedCoupon) return 0;
+    const discount = appliedCoupon.discount || appliedCoupon.Discount || 0;
+    const type = appliedCoupon.type || appliedCoupon.Type;
+    return type === 'PERCENTAGE' ? Math.round((subtotal * discount) / 100) : discount;
+  })();
   const taxes = Math.round((subtotal + addonTotal - couponDiscount) * 0.18);
   
   // Security deposit is usually paid but refundable, so we list it separately or add to total
@@ -119,15 +124,28 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         const data = await apiFetch(
           `/api/villas/${villaSlug}/unavailable-dates?from=${from.toISOString().split('T')[0]}&to=${to.toISOString().split('T')[0]}`
         );
-        if (data.success && data.data.unavailableDates) {
-          setUnavailableDates(new Set(data.data.unavailableDates));
+        if (data.success && Array.isArray(data.data)) {
+          const dates = new Set();
+          data.data.forEach(range => {
+            const start = new Date(range.startDate + 'T00:00:00');
+            const end = new Date(range.endDate + 'T00:00:00');
+            // Add all dates between start and end (exclusive of end date/check-out day)
+            for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+              dates.add(toDateStr(d));
+            }
+          });
+          setUnavailableDates(dates);
         }
-      } catch {
-        // Silently fail — calendar still works without blackout data
+      } catch (error) {
+        console.error('Failed to fetch unavailable dates:', error);
       }
     };
     fetchUnavailable();
   }, [villaSlug]);
+
+  function toDateStr(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
 
   // ─── Auto-Check Availability When Both Dates Selected ───
   useEffect(() => {
@@ -249,7 +267,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
       // 2. Create Razorpay order
       const orderData = await apiFetch('/api/payments/create-order', {
         method: 'POST',
-        body: JSON.stringify({ bookingId: booking.id }),
+        body: JSON.stringify({ bookingId: booking.id || booking.ID }),
       });
 
       if (!orderData.success) {
@@ -277,9 +295,9 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         description: 'Villa Booking Payment',
         order_id: orderData.data.orderId,
         prefill: {
-          name: user.name || '',
-          contact: user.phone || '',
-          email: user.email || '',
+          name: guestName || (user?.name || ''),
+          contact: guestPhone || (user?.phone || ''),
+          email: user?.email || '',
         },
         theme: {
           color: '#072720',
@@ -299,6 +317,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 razorpayOrderId: response.razorpay_order_id,
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
+                bookingId: booking.id || booking.ID,
               }),
             });
 
@@ -322,8 +341,9 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         setBookingState('available');
       });
       rzp.open();
-    } catch {
-      setError('Something went wrong. Please try again.');
+    } catch (err) {
+      console.error('Razorpay Error:', err);
+      setError(`Something went wrong: ${err.message || 'Please try again'}`);
       setBookingState('available');
     }
   };
@@ -467,8 +487,8 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
             </div>
             {appliedCoupon && (
               <div className="px-3 py-2 bg-green-50 border-t border-green-100 flex items-center justify-between">
-                <span className="text-xs text-green-700">{appliedCoupon.title}</span>
-                <span className="text-xs font-medium text-green-700">−₹{appliedCoupon.discount.toLocaleString('en-IN')}</span>
+                <span className="text-xs text-green-700">Coupon: {(appliedCoupon.code || appliedCoupon.Code)}</span>
+                <span className="text-xs font-medium text-green-700">−₹{couponDiscount.toLocaleString('en-IN')}</span>
               </div>
             )}
           </div>
@@ -482,7 +502,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   if (availableCoupons.length === 0) {
                     apiFetch('/api/offers')
                       .then(data => {
-                        if (data.success) setAvailableCoupons(data.data.offers);
+                        if (data.success) setAvailableCoupons(data.data);
                       })
                       .catch(() => {});
                   }
@@ -505,22 +525,21 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   ) : (
                     availableCoupons.map((offer) => (
                       <button
-                        key={offer.code}
+                        key={offer.code || offer.Code}
                         onClick={() => {
-                          setCouponCode(offer.code);
+                          setCouponCode(offer.code || offer.Code);
                           setShowCoupons(false);
                         }}
                         className="w-full text-left border border-dashed border-gray-200 rounded-lg p-2.5 hover:border-[#072720] hover:bg-[#072720]/[0.02] transition-all group"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold tracking-wider text-[#072720] font-mono">{offer.code}</span>
+                          <span className="text-xs font-bold tracking-wider text-[#072720] font-mono">{offer.code || offer.Code}</span>
                           <span className="text-[10px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                            {offer.discountType === 'PERCENTAGE' ? `${offer.discountValue}% off` : `₹${offer.discountValue} off`}
+                            {(offer.type || offer.Type) === 'PERCENTAGE' ? `${offer.discount || offer.Discount}% off` : `₹${offer.discount || offer.Discount} off`}
                           </span>
                         </div>
-                        <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">{offer.title}</p>
-                        {offer.minBookingAmount && (
-                          <p className="text-[10px] text-gray-300 mt-0.5">Min. booking ₹{offer.minBookingAmount.toLocaleString('en-IN')}</p>
+                        {(offer.minAmount || offer.MinAmount) && (
+                          <p className="text-[10px] text-gray-300 mt-0.5">Min. booking ₹{(offer.minAmount || offer.MinAmount).toLocaleString('en-IN')}</p>
                         )}
                       </button>
                     ))
@@ -956,8 +975,8 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                     </div>
                     {appliedCoupon && (
                       <div className="px-4 py-2 bg-green-50 border-t border-green-100 flex items-center justify-between">
-                        <span className="text-xs text-green-700">{appliedCoupon.title}</span>
-                        <span className="text-xs font-medium text-green-700">−₹{appliedCoupon.discount.toLocaleString('en-IN')}</span>
+                        <span className="text-xs text-green-700">Coupon: {(appliedCoupon.code || appliedCoupon.Code)}</span>
+                        <span className="text-xs font-medium text-green-700">−₹{couponDiscount.toLocaleString('en-IN')}</span>
                       </div>
                     )}
                   </div>
@@ -970,7 +989,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                           if (availableCoupons.length === 0) {
                             apiFetch('/api/offers')
                               .then(data => {
-                                if (data.success) setAvailableCoupons(data.data.offers);
+                                if (data.success) setAvailableCoupons(data.data);
                               })
                               .catch(() => {});
                           }
@@ -982,7 +1001,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                         </svg>
                         {showCoupons ? 'Hide available coupons' : 'View available coupons'}
                         <svg className={`w-4 h-4 ml-auto transition-transform ${showCoupons ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                         </svg>
                       </button>
                       {showCoupons && (
@@ -992,20 +1011,22 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                           ) : (
                             availableCoupons.map((offer) => (
                               <button
-                                key={offer.code}
+                                key={offer.code || offer.Code}
                                 onClick={() => {
-                                  setCouponCode(offer.code);
+                                  setCouponCode(offer.code || offer.Code);
                                   setShowCoupons(false);
                                 }}
                                 className="w-full text-left border border-dashed border-gray-200 rounded-2xl p-4 hover:border-[#072720] active:bg-[#072720]/[0.02] transition-all"
                               >
                                 <div className="flex items-center justify-between mb-1">
-                                  <span className="text-sm font-bold tracking-wider text-[#072720] font-mono">{offer.code}</span>
+                                  <span className="text-sm font-bold tracking-wider text-[#072720] font-mono">{offer.code || offer.Code}</span>
                                   <span className="text-[11px] font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
-                                    {offer.discountType === 'PERCENTAGE' ? `${offer.discountValue}% off` : `₹${offer.discountValue} off`}
+                                    {(offer.type || offer.Type) === 'PERCENTAGE' ? `${offer.discount || offer.Discount}% off` : `₹${offer.discount || offer.Discount} off`}
                                   </span>
                                 </div>
-                                <p className="text-xs text-gray-500 leading-relaxed">{offer.title}</p>
+                                {(offer.minAmount || offer.MinAmount) && (
+                                  <p className="text-[10px] text-gray-400 mt-1">Min. booking ₹{(offer.minAmount || offer.MinAmount).toLocaleString('en-IN')}</p>
+                                )}
                               </button>
                             ))
                           )}
@@ -1147,8 +1168,8 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   ))}
                   {appliedCoupon && (
                     <div className="flex justify-between text-sm text-green-600">
-                      <span>Discount ({appliedCoupon.code})</span>
-                      <span>−₹{appliedCoupon.discount.toLocaleString('en-IN')}</span>
+                      <span>Discount ({(appliedCoupon.code || appliedCoupon.Code)})</span>
+                      <span>−₹{couponDiscount.toLocaleString('en-IN')}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm text-gray-500">

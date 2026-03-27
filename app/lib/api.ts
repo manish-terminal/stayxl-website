@@ -5,7 +5,11 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export async function apiFetch(endpoint: string, options: any = {}) {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  // Always use local origin for client-side /api calls to hit Next.js proxies
+  const isClient = typeof window !== 'undefined';
+  const url = (isClient && endpoint.startsWith('/api/'))
+    ? endpoint 
+    : (endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`);
   
   const defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',

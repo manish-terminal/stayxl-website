@@ -31,11 +31,12 @@ func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayPro
 	if !strings.HasPrefix(p, "/") {
 		p = "/" + p
 	}
-	parts := strings.Split(p, "/")
-	// If first part is "Prod" or other stage name, strip it
-	// In SAM, the stage is typically "Prod"
-	if len(parts) > 1 && (parts[1] == "Prod" || parts[1] == "dev" || parts[1] == "stage") {
-		p = "/" + strings.Join(parts[2:], "/")
+
+	// Robust normalization: If path starts with /something/api/... or /something/health
+	// strip the "something" (the stage name)
+	parts := strings.Split(strings.TrimPrefix(p, "/"), "/")
+	if len(parts) > 1 && (parts[0] != "api" && parts[0] != "health") && (parts[1] == "api" || parts[1] == "health") {
+		p = "/" + strings.Join(parts[1:], "/")
 	}
 	finalPath := p
 

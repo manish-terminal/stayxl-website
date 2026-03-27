@@ -67,7 +67,7 @@ export default function ReviewsSection({ reviews = [], rating = 0, reviewCount =
               <div className="flex items-center gap-2.5">
                 {/* Avatar */}
                 <div className="w-9 h-9 rounded-full bg-[#EFE7E7] flex items-center justify-center text-xs font-semibold text-[#072720]">
-                  {review.name.split(' ').map(n => n[0]).join('')}
+                  {review.name.replace(/[^a-zA-Z\s]/g, '').trim().split(/\s+/).map(n => n[0]).join('').toUpperCase()}
                 </div>
                 <div>
                   <p className="text-sm font-medium text-[#072720]">{review.name}</p>

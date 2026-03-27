@@ -186,17 +186,17 @@ export const villas = [
       address: 'Shamirpet Keesara ORR, Narsampalle, Hyderabad, Telangana 501303',
       mapUrl: 'https://maps.app.goo.gl/CRbmpZbxoAZWpCSy8',
       nearbyAttractions: [
-        { name: '🔴 Shamirpet Lake', distance: '15 mins' },
+        { name: 'Shamirpet Lake', distance: '15 mins' },
         { name: 'Leonia Holistic Destination', distance: '10 mins' },
         { name: 'Ratna Nature Resorts', distance: '5 mins' },
         { name: 'Bits Pilani Hyderabad', distance: '12 mins' },
       ],
       distances: {
-        airport: '🔴 70 mins from RGIA Airport (ORR)',
+        airport: '70 mins from RGIA Airport (ORR)',
         station: '45 mins from Secunderabad Railway Station',
       },
       travelTips: [
-        '🔴 Ideally located on the ORR for quick access from the city.',
+        'Ideally located on the ORR for quick access from the city.',
         'Carry swimsuits for the pool.',
         'Plan for an early check-in to enjoy the 3-acre property fully.',
       ]
@@ -222,7 +222,7 @@ export const villas = [
       { title: 'Flat 40% Off (Up to ₹3,000) Every Wednesday', type: 'limited-day' },
       { title: 'Complimentary BBQ or Bonfire or Late Checkout (Pick One)', type: 'freebie' },
     ],
-    story: '🔴 Samaya Villa is a luxury 3-acre private estate designed for premium stays, intimate weddings, and high-end private events. With modern architecture, a private entry road, and expansive open spaces, it offers a perfect blend of privacy, elegance, and functionality for both leisure and celebrations.',
+    story: 'Samaya Villa is a luxury 3-acre private estate designed for premium stays, intimate weddings, and high-end private events. With modern architecture, a private entry road, and expansive open spaces, it offers a perfect blend of privacy, elegance, and functionality for both leisure and celebrations.',
     bedroomDetails: [
       { type: '3 Bedrooms + 1 Optional Bedroom', note: 'Extra room available on request' },
     ],
@@ -292,7 +292,7 @@ export const villas = [
     reviews: [
       {
         id: 'rev1',
-        name: '🔴 Anish Kumar',
+        name: 'Anish Kumar',
         userImage: 'https://i.pravatar.cc/150?u=rev1',
         rating: 5,
         date: '2026-02-15',
@@ -301,7 +301,7 @@ export const villas = [
       },
       {
         id: 'rev2',
-        name: '🔴 Snehith Reddy',
+        name: 'Snehith Reddy',
         userImage: 'https://i.pravatar.cc/150?u=rev2',
         rating: 4,
         date: '2026-01-20',
