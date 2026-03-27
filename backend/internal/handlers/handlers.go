@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"path"
 	"strings"
@@ -162,17 +163,51 @@ func (h *AppHandler) handleVillaAvailability(ctx context.Context, req events.API
 // ─── BOOKING & PAYMENT HANDLERS ───
 
 func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	var booking models.Booking
-	if err := json.Unmarshal([]byte(req.Body), &booking); err != nil {
-		return errorResponse(http.StatusBadRequest, "Invalid booking data")
+	var body models.BookingRequest
+	if err := json.Unmarshal([]byte(req.Body), &body); err != nil {
+		fmt.Printf("Unmarshal error: %v\n", err)
+		return errorResponse(http.StatusBadRequest, "Invalid booking data format")
+	}
+
+	// Helper to parse dates
+	parseDate := func(s string) (time.Time, error) {
+		if strings.Contains(s, "T") {
+			return time.Parse(time.RFC3339, s)
+		}
+		return time.Parse("2006-01-02", s)
+	}
+
+	checkIn, errIn := parseDate(body.CheckIn)
+	checkOut, errOut := parseDate(body.CheckOut)
+	if errIn != nil || errOut != nil {
+		return errorResponse(http.StatusBadRequest, "Invalid date format in booking")
+	}
+
+	// Calculate total amount (simplified for MVP)
+	// In production: Fetch villa from DB to get real pricePerNight
+	totalAmount := 0
+	for _, addon := range body.Addons {
+		totalAmount += addon.Price * addon.Quantity
 	}
 	
-	booking.ID = "book_" + time.Now().Format("20060102150405")
-	booking.Status = "PENDING"
-	booking.CreatedAt = time.Now()
+	booking := models.Booking{
+		ID:            "book_" + time.Now().Format("20060102150405"),
+		VillaID:       body.VillaID,
+		CheckIn:       checkIn,
+		CheckOut:      checkOut,
+		Guests:        body.Guests,
+		GuestName:     body.GuestName,
+		GuestPhone:    body.GuestPhone,
+		Addons:        body.Addons,
+		PaymentMode:   body.PaymentMode,
+		Status:        "PENDING",
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+		TotalAmount:   totalAmount, // This is just the addons + base logic would go here
+	}
 
 	if err := h.DB.SaveBooking(ctx, &booking); err != nil {
-		return errorResponse(http.StatusInternalServerError, "Failed to save booking")
+		return errorResponse(http.StatusInternalServerError, "Failed to save booking: "+err.Error())
 	}
 
 	return successResponse(booking)

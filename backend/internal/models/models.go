@@ -38,14 +38,36 @@ type Booking struct {
 	CheckIn       time.Time `dynamodbav:"checkIn"`
 	CheckOut      time.Time `dynamodbav:"checkOut"`
 	Guests        int       `dynamodbav:"guests"`
+	GuestName     string    `dynamodbav:"guestName"`
+	GuestPhone    string    `dynamodbav:"guestPhone"`
 	BaseAmount    int       `dynamodbav:"baseAmount"`
 	DiscountAmount int      `dynamodbav:"discountAmount"`
 	TotalAmount   int       `dynamodbav:"totalAmount"`
 	Status        string    `dynamodbav:"status"` // PENDING, CONFIRMED, CANCELLED
 	PaymentID     string    `dynamodbav:"paymentId,omitempty"`
+	PaymentMode   string    `dynamodbav:"paymentMode"`
 	CouponCode    string    `dynamodbav:"couponCode,omitempty"`
+	Addons        []Addon   `dynamodbav:"addons"`
 	CreatedAt     time.Time `dynamodbav:"createdAt"`
 	UpdatedAt     time.Time `dynamodbav:"updatedAt"`
+}
+
+type Addon struct {
+	Name     string `json:"name" dynamodbav:"name"`
+	Price    int    `json:"price" dynamodbav:"price"`
+	Quantity int    `json:"quantity" dynamodbav:"quantity"`
+}
+
+// BookingRequest represents the incoming JSON from frontend
+type BookingRequest struct {
+	VillaID     string  `json:"villaId"`
+	CheckIn     string  `json:"checkIn"`
+	CheckOut    string  `json:"checkOut"`
+	Guests      int     `json:"guests"`
+	GuestName   string  `json:"guestName"`
+	GuestPhone  string  `json:"guestPhone"`
+	Addons      []Addon `json:"addons"`
+	PaymentMode string  `json:"paymentMode"`
 }
 
 // BlockedDate represents dates blocked by admin
