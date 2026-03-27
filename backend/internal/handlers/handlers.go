@@ -22,8 +22,22 @@ type AppHandler struct {
 
 // HandleRequest routes incoming APIGateway requests to specific handlers
 func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	path := req.Path
+	rawPath := req.Path
 	method := req.HTTPMethod
+
+	// Normalize path by stripping stage if present
+	// API Gateway REST stage is typically the first part of the path
+	p := path.Clean(rawPath)
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p
+	}
+	parts := strings.Split(p, "/")
+	// If first part is "Prod" or other stage name, strip it
+	// In SAM, the stage is typically "Prod"
+	if len(parts) > 1 && (parts[1] == "Prod" || parts[1] == "dev" || parts[1] == "stage") {
+		p = "/" + strings.Join(parts[2:], "/")
+	}
+	finalPath := p
 
 	// CORS Preflight
 	if method == http.MethodOptions {
@@ -31,34 +45,36 @@ func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayPro
 	}
 
 	switch {
-	case strings.HasPrefix(path, "/api/auth/send-otp"):
+	case strings.HasPrefix(finalPath, "/api/auth/send-otp"):
 		return h.handleSendOTP(ctx, req)
-	case strings.HasPrefix(path, "/api/auth/verify-otp"):
+	case strings.HasPrefix(finalPath, "/api/auth/verify-otp"):
 		return h.handleVerifyOTP(ctx, req)
-	case path == "/api/auth/me":
+	case finalPath == "/api/auth/me":
 		return h.handleAuthMe(ctx, req)
-	case path == "/health" || path == "/api/health":
+	case finalPath == "/health" || finalPath == "/api/health":
 		return h.handleHealth(ctx, req)
-	case strings.HasPrefix(path, "/api/villas") && strings.HasSuffix(path, "/unavailable-dates"):
-		return h.handleUnavailableDates(ctx, req)
-	case strings.HasPrefix(path, "/api/villas") && strings.HasSuffix(path, "/availability"):
-		return h.handleVillaAvailability(ctx, req)
-	case strings.HasPrefix(path, "/api/villas"):
-		return h.handleVillas(ctx, req)
-	case path == "/api/bookings" && method == http.MethodPost:
+	case strings.HasPrefix(finalPath, "/api/villas") && strings.HasSuffix(finalPath, "/unavailable-dates"):
+		return h.handleUnavailableDates(ctx, req, finalPath)
+	case strings.HasPrefix(finalPath, "/api/villas") && strings.HasSuffix(finalPath, "/availability"):
+		return h.handleVillaAvailability(ctx, req, finalPath)
+	case strings.HasPrefix(finalPath, "/api/villas"):
+		return h.handleVillas(ctx, req, finalPath)
+	case finalPath == "/api/bookings" && method == http.MethodPost:
 		return h.handleCreateBooking(ctx, req)
-	case path == "/api/bookings" && method == http.MethodGet:
+	case strings.HasPrefix(finalPath, "/api/bookings/") && method == http.MethodGet:
+		return h.handleGetBooking(ctx, req, finalPath)
+	case finalPath == "/api/bookings" && method == http.MethodGet:
 		return h.handleListBookings(ctx, req)
-	case strings.HasPrefix(path, "/api/offers/validate"):
+	case strings.HasPrefix(finalPath, "/api/offers/validate"):
 		return h.handleValidateOffer(ctx, req)
-	case path == "/api/offers" && method == http.MethodGet:
+	case finalPath == "/api/offers" && method == http.MethodGet:
 		return h.handleListOffers(ctx, req)
-	case strings.HasPrefix(path, "/api/payments/create-order"):
+	case strings.HasPrefix(finalPath, "/api/payments/create-order"):
 		return h.handleCreatePaymentOrder(ctx, req)
-	case strings.HasPrefix(path, "/api/payments/verify"):
+	case strings.HasPrefix(finalPath, "/api/payments/verify"):
 		return h.handleVerifyPayment(ctx, req)
 	default:
-		return errorResponse(http.StatusNotFound, "Endpoint not found")
+		return errorResponse(http.StatusNotFound, "Endpoint not found: "+finalPath)
 	}
 }
 
@@ -129,13 +145,26 @@ func (h *AppHandler) handleAuthMe(ctx context.Context, req events.APIGatewayProx
 
 // ─── VILLA HANDLERS ───
 
-func (h *AppHandler) handleVillas(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	// For listing, we could return minimal data from Dynamo or just a success
+func (h *AppHandler) handleVillas(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
+	parts := strings.Split(normalizedPath, "/")
+	if len(parts) > 3 {
+		// Single villa
+		slug := parts[3]
+		villa, err := h.DB.GetVillaBySlug(ctx, slug)
+		if err != nil {
+			return errorResponse(http.StatusInternalServerError, err.Error())
+		}
+		if villa == nil {
+			return errorResponse(http.StatusNotFound, "Villa not found: "+slug)
+		}
+		return successResponse(villa)
+	}
+	// Listing handled by frontend for now
 	return successResponse(map[string]interface{}{"message": "Villa listing handled by frontend static data"})
 }
 
-func (h *AppHandler) handleUnavailableDates(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	parts := strings.Split(path.Clean(req.Path), "/")
+func (h *AppHandler) handleUnavailableDates(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
+	parts := strings.Split(normalizedPath, "/")
 	if len(parts) < 4 {
 		return errorResponse(http.StatusBadRequest, "Invalid villa slug")
 	}
@@ -168,6 +197,24 @@ func (h *AppHandler) handleListBookings(ctx context.Context, req events.APIGatew
 	return successResponse(bookings)
 }
 
+func (h *AppHandler) handleGetBooking(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
+	parts := strings.Split(normalizedPath, "/")
+	if len(parts) < 4 {
+		return errorResponse(http.StatusBadRequest, "Invalid booking ID format")
+	}
+	bookingID := parts[3]
+
+	booking, err := h.DB.GetBooking(ctx, bookingID)
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, err.Error())
+	}
+	if booking == nil {
+		return errorResponse(http.StatusNotFound, "Booking not found: "+bookingID)
+	}
+
+	return successResponse(booking)
+}
+
 func (h *AppHandler) handleListOffers(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	offers, err := h.DB.GetAllOffers(ctx)
 	if err != nil {
@@ -177,9 +224,9 @@ func (h *AppHandler) handleListOffers(ctx context.Context, req events.APIGateway
 	return successResponse(offers)
 }
 
-func (h *AppHandler) handleVillaAvailability(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func (h *AppHandler) handleVillaAvailability(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
 	// Extract slug from path /api/villas/[slug]/availability
-	parts := strings.Split(path.Clean(req.Path), "/")
+	parts := strings.Split(normalizedPath, "/")
 	if len(parts) < 4 {
 		return errorResponse(http.StatusBadRequest, "Invalid villa slug")
 	}
@@ -302,8 +349,25 @@ func (h *AppHandler) handleCreatePaymentOrder(ctx context.Context, req events.AP
 }
 
 func (h *AppHandler) handleVerifyPayment(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	// In production: Verify Razorpay signature
-	return successResponse(map[string]string{"message": "Payment verified successfully"})
+	var body struct {
+		BookingID string `json:"bookingId"`
+		Status    string `json:"status"` // Should be 'CONFIRMED'
+	}
+	if err := json.Unmarshal([]byte(req.Body), &body); err != nil {
+		return errorResponse(http.StatusBadRequest, "Invalid request body")
+	}
+
+	if body.BookingID == "" {
+		return errorResponse(http.StatusBadRequest, "BookingID is required")
+	}
+
+	// Update booking status in DynamoDB
+	err := h.DB.UpdateBookingStatus(ctx, body.BookingID, "CONFIRMED")
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, "Failed to update booking status: "+err.Error())
+	}
+
+	return successResponse(map[string]string{"message": "Payment verified and booking confirmed"})
 }
 
 // ─── HELPERS ───

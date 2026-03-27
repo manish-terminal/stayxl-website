@@ -233,6 +233,48 @@ func (d *DynamoClient) SaveBooking(ctx context.Context, booking *models.Booking)
 	return err
 }
 
+// GetBooking retrieves a booking by its id
+func (d *DynamoClient) GetBooking(ctx context.Context, id string) (*models.Booking, error) {
+	input := &dynamodb.GetItemInput{
+		TableName: aws.String(d.BookingsTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+	}
+
+	result, err := d.Client.GetItem(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Item == nil {
+		return nil, nil
+	}
+
+	var booking models.Booking
+	err = attributevalue.UnmarshalMap(result.Item, &booking)
+	return &booking, err
+}
+
+// UpdateBookingStatus updates the status of a booking
+func (d *DynamoClient) UpdateBookingStatus(ctx context.Context, id string, status string) error {
+	input := &dynamodb.UpdateItemInput{
+		TableName: aws.String(d.BookingsTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+		UpdateExpression:          aws.String("SET #status = :status, updatedAt = :updatedAt"),
+		ExpressionAttributeNames:  map[string]string{"#status": "status"},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":status":    &types.AttributeValueMemberS{Value: status},
+			":updatedAt": &types.AttributeValueMemberS{Value: time.Now().Format(time.RFC3339)},
+		},
+	}
+
+	_, err := d.Client.UpdateItem(ctx, input)
+	return err
+}
+
 // SavePayment stores a payment record
 func (d *DynamoClient) SavePayment(ctx context.Context, payment *models.Payment) error {
 	av, err := attributevalue.MarshalMap(payment)
