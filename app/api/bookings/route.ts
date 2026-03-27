@@ -9,8 +9,22 @@ import { successResponse, errorResponse, handleError } from '@/app/lib/api-helpe
  */
 export async function POST(req: NextRequest) {
     try {
-        // TODO: Call AWS Go Backend /api/bookings
-        return errorResponse('Booking creation currently unavailable (Backend Migration in Progress)', 503);
+        const body = await req.json();
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        
+        const response = await fetch(`${apiUrl}/api/bookings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            return errorResponse(error.error || 'Failed to create booking on backend', response.status);
+        }
+
+        const data = await response.json();
+        return successResponse(data.data);
     } catch (error) {
         return handleError(error);
     }
