@@ -23,8 +23,13 @@ type Villa struct {
 	BedroomCount  int       `dynamodbav:"bedroomCount"`
 	BathroomCount int       `dynamodbav:"bathroomCount"`
 	IsActive      bool      `dynamodbav:"isActive"`
+	Pricing       Pricing   `dynamodbav:"pricing"`
 	CreatedAt     time.Time `dynamodbav:"createdAt"`
 	UpdatedAt     time.Time `dynamodbav:"updatedAt"`
+}
+
+type Pricing struct {
+	SecurityDeposit int `dynamodbav:"securityDeposit"`
 }
 
 func main() {
@@ -50,6 +55,7 @@ func main() {
 			BedroomCount:  4,
 			BathroomCount: 3,
 			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},
@@ -63,6 +69,7 @@ func main() {
 			BedroomCount:  6,
 			BathroomCount: 5,
 			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},
@@ -76,6 +83,7 @@ func main() {
 			BedroomCount:  8,
 			BathroomCount: 6,
 			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},
@@ -89,6 +97,7 @@ func main() {
 			BedroomCount:  3,
 			BathroomCount: 2,
 			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},
@@ -102,6 +111,7 @@ func main() {
 			BedroomCount:  2,
 			BathroomCount: 2,
 			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},
@@ -115,6 +125,7 @@ func main() {
 			BedroomCount:  5,
 			BathroomCount: 4,
 			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},
@@ -128,6 +139,7 @@ func main() {
 			BedroomCount:  4,
 			BathroomCount: 3,
 			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},

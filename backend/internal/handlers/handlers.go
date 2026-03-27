@@ -320,16 +320,42 @@ func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGate
 		addonAmount += addon.Price * addon.Quantity
 	}
 	
-	// For MVP: assume no discount or handle simplistic coupon if needed
-	totalAmount := baseAmount + addonAmount
-	advanceAmount := totalAmount
-	balanceAmount := 0
-	if body.PaymentMode == "ADVANCE" {
-		advanceAmount = int(float64(totalAmount) * 0.3)
-		balanceAmount = totalAmount - advanceAmount
+	// 3. Handle Coupon Discount
+	discountAmount := 0
+	if body.CouponCode != "" {
+		offer, err := h.DB.GetOfferByCode(ctx, body.CouponCode)
+		if err == nil && offer != nil && offer.IsActive {
+			// Basic validation: min amount
+			if baseAmount+addonAmount >= offer.MinAmount {
+				if offer.Type == "PERCENTAGE" {
+					discountAmount = int(float64(baseAmount) * float64(offer.Discount) / 100.0)
+				} else {
+					discountAmount = offer.Discount
+				}
+			}
+		}
 	}
 
-	// 3. Prepare booking record
+	// 4. Calculate Taxes and Total
+	taxableAmount := baseAmount + addonAmount - discountAmount
+	if taxableAmount < 0 {
+		taxableAmount = 0
+	}
+	taxAmount := int(float64(taxableAmount) * 0.18)
+	securityDeposit := villa.Pricing.SecurityDeposit
+	totalAmount := taxableAmount + taxAmount + securityDeposit
+
+	// 5. Handle Advance Payment Mode
+	advanceAmount := totalAmount
+	if body.PaymentMode == "ADVANCE" {
+		// 30% of stay (taxable + tax) + 100% of security deposit
+		stayAmount := totalAmount - securityDeposit
+		advanceStayAmount := int(float64(stayAmount) * 0.30)
+		advanceAmount = advanceStayAmount + securityDeposit
+	}
+	balanceAmount := totalAmount - advanceAmount
+
+	// 6. Prepare booking record
 	userID := body.GuestPhone
 	booking := models.Booking{
 		ID:             "book_" + time.Now().Format("20060102150405"),
@@ -344,11 +370,15 @@ func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGate
 		GuestName:     body.GuestName,
 		GuestPhone:    body.GuestPhone,
 		BaseAmount:     baseAmount,
+		DiscountAmount: discountAmount,
+		TaxAmount:      taxAmount,
+		SecurityDeposit: securityDeposit,
 		TotalAmount:    totalAmount,
 		AdvanceAmount:  advanceAmount,
 		BalanceAmount:  balanceAmount,
 		Addons:         body.Addons,
 		PaymentMode:   body.PaymentMode,
+		CouponCode:     body.CouponCode,
 		Status:         "PENDING",
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),

@@ -132,6 +132,30 @@ export default function BookingConfirmation({ booking, onClose }) {
             </div>
           )}
 
+          {/* Financial Breakdown */}
+          <div className="space-y-3 mb-6 px-1 border-t border-gray-100 pt-5">
+            <div className="flex justify-between text-xs text-gray-500">
+              <span className="font-medium">Stay Base Amount</span>
+              <span className="font-serif">₹{(booking.baseAmount || booking.BaseAmount || 0).toLocaleString('en-IN')}</span>
+            </div>
+            {((booking.discountAmount || booking.DiscountAmount) > 0) && (
+              <div className="flex justify-between text-xs text-green-600">
+                <span className="font-medium">Coupon Discount</span>
+                <span className="font-serif">−₹{(booking.discountAmount || booking.DiscountAmount).toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-xs text-gray-500">
+              <span className="font-medium">Taxes & Fees (18%)</span>
+              <span className="font-serif">₹{(booking.taxAmount || booking.TaxAmount || 0).toLocaleString('en-IN')}</span>
+            </div>
+            {((booking.securityDeposit || booking.SecurityDeposit) > 0) && (
+              <div className="flex justify-between text-xs text-orange-600/70">
+                <span className="font-medium">Security Deposit (Refundable)</span>
+                <span className="font-serif">₹{(booking.securityDeposit || booking.SecurityDeposit).toLocaleString('en-IN')}</span>
+              </div>
+            )}
+          </div>
+
           {/* Payment Status Card */}
           <div className={`p-5 rounded-2xl border transition-all duration-300 ${booking.paymentMode === 'ADVANCE' ? 'bg-amber-50/50 border-amber-100' : 'bg-green-50/50 border-green-100'}`}>
             <div className="flex items-center justify-between mb-4">

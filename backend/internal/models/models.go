@@ -25,8 +25,14 @@ type Villa struct {
 	BedroomCount  int       `dynamodbav:"bedroomCount" json:"bedroomCount"`
 	BathroomCount int       `dynamodbav:"bathroomCount" json:"bathroomCount"`
 	IsActive      bool      `dynamodbav:"isActive" json:"isActive"`
+	Pricing       Pricing   `dynamodbav:"pricing" json:"pricing"`
 	CreatedAt     time.Time `dynamodbav:"createdAt" json:"createdAt"`
 	UpdatedAt     time.Time `dynamodbav:"updatedAt" json:"updatedAt"`
+}
+
+type Pricing struct {
+	SecurityDeposit  int `dynamodbav:"securityDeposit" json:"securityDeposit"`
+	KitchenAccessFee int `dynamodbav:"kitchenAccessFee" json:"kitchenAccessFee"`
 }
 
 // Booking represents the Booking entity in the system
@@ -43,6 +49,8 @@ type Booking struct {
 	BaseAmount     int       `dynamodbav:"baseAmount" json:"baseAmount"`
 	DiscountAmount int       `dynamodbav:"discountAmount" json:"discountAmount"`
 	TotalAmount    int       `dynamodbav:"totalAmount" json:"totalAmount"`
+	TaxAmount      int       `dynamodbav:"taxAmount" json:"taxAmount"`
+	SecurityDeposit int      `dynamodbav:"securityDeposit" json:"securityDeposit"`
 	AdvanceAmount  int       `dynamodbav:"advanceAmount" json:"advanceAmount"`
 	BalanceAmount  int       `dynamodbav:"balanceAmount" json:"balanceAmount"`
 	Status         string    `dynamodbav:"status" json:"status"` // PENDING, CONFIRMED, CANCELLED
@@ -70,8 +78,10 @@ type BookingRequest struct {
 	Guests      int     `json:"guests"`
 	GuestName   string  `json:"guestName"`
 	GuestPhone  string  `json:"guestPhone"`
-	Addons      []Addon `json:"addons"`
-	PaymentMode string  `json:"paymentMode"`
+	Addons          []Addon `json:"addons"`
+	PaymentMode     string  `json:"paymentMode"`
+	CouponCode      string  `json:"couponCode,omitempty"`
+	SpecialRequests string  `json:"specialRequests,omitempty"`
 }
 
 // BlockedDate represents dates blocked by admin
