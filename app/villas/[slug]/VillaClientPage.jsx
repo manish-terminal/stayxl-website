@@ -14,7 +14,6 @@ import ExperiencesSlider from '../../components/villa/ExperiencesSlider';
 import LocationSection from '../../components/villa/LocationSection';
 import PolicyTabs from '../../components/villa/PolicyTabs';
 import ReviewsSection from '../../components/villa/ReviewsSection';
-import VillaFAQ from '../../components/villa/VillaFAQ';
 import SimilarVillasCarousel from '../../components/villa/SimilarVillasCarousel';
 import SupportCTA from '../../components/villa/SupportCTA';
 import Navbar from '../../components/Navbar';
@@ -130,16 +129,9 @@ export default function VillaClientPage({ villa }) {
             </div>
 
             {/* Reviews */}
-            <div className="py-8 border-b border-gray-100">
+            <div className="py-8">
               <ReviewsSection reviews={villa.reviews} rating={villa.rating} reviewCount={villa.reviewCount} />
             </div>
-
-            {/* FAQs */}
-            {villa.faqData && (
-              <div className="py-8">
-                <VillaFAQ faqData={villa.faqData} />
-              </div>
-            )}
           </div>
 
           {/* Sidebar - Handles its own mobile vs desktop logic internally */}
