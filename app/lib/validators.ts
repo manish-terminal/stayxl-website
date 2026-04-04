@@ -29,6 +29,7 @@ export const createBookingSchema = z
         guests: z.number().int().min(1).max(50),
         guestName: z.string().min(2, 'Guest name is required').max(100),
         guestPhone: z.string().regex(/^[6-9]\d{9}$/, 'Enter a valid 10-digit phone number'),
+        guestEmail: z.string().email('Enter a valid email address'),
         paymentMode: z.enum(['FULL', 'ADVANCE']).default('FULL'),
         couponCode: z.string().optional(),
         specialRequests: z.string().max(1000).optional(),

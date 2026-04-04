@@ -27,6 +27,12 @@ export function handleError(error: unknown) {
         if (error.message === 'Forbidden') {
             return errorResponse('Forbidden', 403);
         }
+        if (error.message.includes('Failed to parse URL')) {
+            return errorResponse('Invalid backend URL. Check NEXT_PUBLIC_API_URL.', 500);
+        }
+        if (error.message.includes('fetch failed')) {
+            return errorResponse('Could not connect to backend API.', 503);
+        }
         return errorResponse(error.message, 500);
     }
 

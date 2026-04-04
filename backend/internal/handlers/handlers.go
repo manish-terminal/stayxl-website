@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"stayxl-backend/internal/db"
+	"stayxl-backend/internal/email"
 	"stayxl-backend/internal/models"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -17,7 +18,8 @@ import (
 
 // AppHandler holds dependencies for HTTP handlers
 type AppHandler struct {
-	DB *db.DynamoClient
+	DB    *db.DynamoClient
+	Email *email.EmailService
 }
 
 // HandleRequest routes incoming APIGateway requests to specific handlers
@@ -369,6 +371,7 @@ func (h *AppHandler) handleCreateBooking(ctx context.Context, req events.APIGate
 		Guests:         body.Guests,
 		GuestName:     body.GuestName,
 		GuestPhone:    body.GuestPhone,
+		GuestEmail:    body.GuestEmail,
 		BaseAmount:     baseAmount,
 		DiscountAmount: discountAmount,
 		TaxAmount:      taxAmount,
@@ -426,6 +429,18 @@ func (h *AppHandler) handleVerifyPayment(ctx context.Context, req events.APIGate
 	err := h.DB.UpdateBookingStatus(ctx, body.BookingID, "CONFIRMED")
 	if err != nil {
 		return errorResponse(http.StatusInternalServerError, "Failed to update booking status: "+err.Error())
+	}
+
+	// Send confirmation email asynchronously
+	if h.Email != nil {
+		booking, err := h.DB.GetBooking(ctx, body.BookingID)
+		if err == nil {
+			go func() {
+				// Create a new context for the background send
+				sendCtx := context.Background()
+				h.Email.SendBookingConfirmation(sendCtx, *booking)
+			}()
+		}
 	}
 
 	return successResponse(map[string]string{"message": "Payment verified and booking confirmed"})

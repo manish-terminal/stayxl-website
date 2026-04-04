@@ -15,6 +15,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const [guests, setGuests] = useState(2);
   const [guestName, setGuestName] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [specialRequests, setSpecialRequests] = useState('');
@@ -31,6 +32,10 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [unavailableDates, setUnavailableDates] = useState(new Set());
   const [showCalendar, setShowCalendar] = useState(false);
+
+  const formatINR = (amount) => {
+    return (amount || 0).toLocaleString('en-IN');
+  };
 
   const discount = originalPrice ? Math.round(((originalPrice - pricePerNight) / originalPrice) * 100) : 0;
 
@@ -59,6 +64,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
     if (user) {
       setGuestName(user.name || '');
       setGuestPhone(user.phone || '');
+      setGuestEmail(user.email || '');
     }
   }, [user]);
 
@@ -235,6 +241,11 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
       return;
     }
 
+    if (!guestEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     setError('');
     setBookingState('creating');
 
@@ -249,6 +260,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           guests,
           guestName: guestName.trim(),
           guestPhone: guestPhone.trim(),
+          guestEmail: guestEmail.trim(),
           paymentMode,
           couponCode: appliedCoupon?.code,
           specialRequests: specialRequests || undefined,
@@ -367,12 +379,12 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           {/* Price */}
           <div className="mb-5">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-serif font-medium text-[#072720]">₹{pricePerNight.toLocaleString('en-IN')}</span>
+              <span className="text-2xl font-serif font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
               <span className="text-sm text-gray-400">/ night</span>
             </div>
             {originalPrice && (
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-sm text-gray-400 line-through">₹{originalPrice.toLocaleString('en-IN')}</span>
+                <span className="text-sm text-gray-400 line-through">₹{formatINR(originalPrice)}</span>
                 <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">{discount}% off</span>
               </div>
             )}
@@ -419,6 +431,19 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 value={guestName}
                 onChange={(e) => setGuestName(e.target.value)}
                 placeholder="Full name of primary guest"
+                className="w-full text-sm text-[#072720] outline-none bg-transparent placeholder:text-gray-300"
+              />
+            </div>
+          </div>
+
+          <div className="border border-gray-200 rounded-xl overflow-hidden mb-3">
+            <div className="p-3">
+              <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Guest Email</label>
+              <input
+                type="email"
+                value={guestEmail}
+                onChange={(e) => setGuestEmail(e.target.value)}
+                placeholder="Email address for booking details"
                 className="w-full text-sm text-[#072720] outline-none bg-transparent placeholder:text-gray-300"
               />
             </div>
@@ -488,7 +513,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
             {appliedCoupon && (
               <div className="px-3 py-2 bg-green-50 border-t border-green-100 flex items-center justify-between">
                 <span className="text-xs text-green-700">Coupon: {(appliedCoupon.code || appliedCoupon.Code)}</span>
-                <span className="text-xs font-medium text-green-700">−₹{couponDiscount.toLocaleString('en-IN')}</span>
+                <span className="text-xs font-medium text-green-700">−₹{formatINR(couponDiscount)}</span>
               </div>
             )}
           </div>
@@ -539,7 +564,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                           </span>
                         </div>
                         {(offer.minAmount || offer.MinAmount) && (
-                          <p className="text-[10px] text-gray-300 mt-0.5">Min. booking ₹{(offer.minAmount || offer.MinAmount).toLocaleString('en-IN')}</p>
+                          <p className="text-[10px] text-gray-300 mt-0.5">Min. booking ₹{formatINR(offer.minAmount || offer.MinAmount)}</p>
                         )}
                       </button>
                     ))
@@ -569,7 +594,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   </div>
                 )}
                 <p className="text-xs font-medium text-[#072720]">Pay Full</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">₹{total.toLocaleString('en-IN')}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">₹{formatINR(total)}</p>
               </button>
               <button
                 onClick={() => setPaymentMode('ADVANCE')}
@@ -587,7 +612,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   </div>
                 )}
                 <p className="text-xs font-medium text-[#072720]">Pay 30% Now</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">₹{advanceAmount.toLocaleString('en-IN')}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">₹{formatINR(advanceAmount)}</p>
               </button>
             </div>
             {paymentMode === 'ADVANCE' && (
@@ -595,7 +620,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                 </svg>
-                Balance ₹{balanceAmount.toLocaleString('en-IN')} due at check-in
+                Balance ₹{formatINR(balanceAmount)} due at check-in
               </p>
             )}
           </div>
@@ -644,7 +669,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                           </div>
                           <span className="text-xs font-medium text-[#072720] truncate">{exp.name}</span>
                         </div>
-                        <span className="text-xs font-serif text-[#072720] flex-shrink-0 ml-2">₹{exp.price.toLocaleString('en-IN')}</span>
+                        <span className="text-xs font-serif text-[#072720] flex-shrink-0 ml-2">₹{formatINR(exp.price)}</span>
                       </button>
                     );
                   })}
@@ -678,7 +703,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           <div className="space-y-2 mb-5 text-sm">
             <div className="flex justify-between text-gray-500">
               <span>₹{pricePerNight.toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''}</span>
-              <span>₹{subtotal.toLocaleString('en-IN')}</span>
+              <span>₹{formatINR(subtotal)}</span>
             </div>
             {selectedAddons.length > 0 && selectedAddons.map((addon) => (
               <div key={addon.name} className="flex justify-between text-gray-500">
@@ -686,18 +711,18 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   <svg className="w-3 h-3 text-[#C09A59]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                   {addon.name}
                 </span>
-                <span>₹{(addon.price * addon.quantity).toLocaleString('en-IN')}</span>
+                <span>₹{formatINR(addon.price * addon.quantity)}</span>
               </div>
             ))}
             {couponDiscount > 0 && (
               <div className="flex justify-between text-green-600">
                 <span>Coupon discount</span>
-                <span>−₹{couponDiscount.toLocaleString('en-IN')}</span>
+                <span>−₹{formatINR(couponDiscount)}</span>
               </div>
             )}
             <div className="flex justify-between text-gray-500">
               <span>Taxes & fees (18%)</span>
-              <span>₹{taxes.toLocaleString('en-IN')}</span>
+              <span>₹{formatINR(taxes)}</span>
             </div>
             {securityDeposit > 0 && (
               <div className="flex justify-between text-gray-500">
@@ -710,22 +735,22 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                     </div>
                   </div>
                 </span>
-                <span>₹{securityDeposit.toLocaleString('en-IN')}</span>
+                <span>₹{formatINR(securityDeposit)}</span>
               </div>
             )}
             <div className="border-t border-gray-100 pt-2 flex justify-between font-medium text-[#072720]">
               <span>Total</span>
-              <span>₹{total.toLocaleString('en-IN')}</span>
+              <span>₹{formatINR(total)}</span>
             </div>
             {paymentMode === 'ADVANCE' && (
               <>
                 <div className="border-t border-dashed border-gray-200 pt-2 flex justify-between text-[#072720]">
                   <span className="font-medium">Pay Now (30%)</span>
-                  <span className="font-semibold">₹{advanceAmount.toLocaleString('en-IN')}</span>
+                  <span className="font-semibold">₹{formatINR(advanceAmount)}</span>
                 </div>
                 <div className="flex justify-between text-gray-400 text-xs">
                   <span>Due at check-in</span>
-                  <span>₹{balanceAmount.toLocaleString('en-IN')}</span>
+                  <span>₹{formatINR(balanceAmount)}</span>
                 </div>
               </>
             )}
@@ -828,11 +853,11 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-lg font-serif font-medium text-[#072720]">₹{pricePerNight.toLocaleString('en-IN')}</span>
+              <span className="text-lg font-serif font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
               <span className="text-xs text-gray-400">/ night</span>
             </div>
             {originalPrice && (
-              <span className="text-xs text-gray-400 line-through">₹{originalPrice.toLocaleString('en-IN')}</span>
+              <span className="text-xs text-gray-400 line-through">₹{formatINR(originalPrice)}</span>
             )}
           </div>
           <button
@@ -879,7 +904,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 {/* Price Summary */}
                 <div className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
                   <div>
-                    <span className="text-xl font-serif font-medium text-[#072720]">₹{pricePerNight.toLocaleString('en-IN')}</span>
+                    <span className="text-xl font-serif font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
                     <span className="text-xs text-gray-400 ml-1">/ night</span>
                   </div>
                   {originalPrice && (
@@ -910,6 +935,16 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
                       placeholder="Enter full name"
+                      className="w-full text-base font-medium text-[#072720] outline-none bg-transparent placeholder:text-gray-300"
+                    />
+                  </div>
+                  <div className="border border-gray-200 rounded-2xl p-4">
+                    <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      placeholder="Enter email address"
                       className="w-full text-base font-medium text-[#072720] outline-none bg-transparent placeholder:text-gray-300"
                     />
                   </div>
@@ -976,7 +1011,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                     {appliedCoupon && (
                       <div className="px-4 py-2 bg-green-50 border-t border-green-100 flex items-center justify-between">
                         <span className="text-xs text-green-700">Coupon: {(appliedCoupon.code || appliedCoupon.Code)}</span>
-                        <span className="text-xs font-medium text-green-700">−₹{couponDiscount.toLocaleString('en-IN')}</span>
+                        <span className="text-xs font-medium text-green-700">−₹{formatINR(couponDiscount)}</span>
                       </div>
                     )}
                   </div>
@@ -1025,7 +1060,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                                   </span>
                                 </div>
                                 {(offer.minAmount || offer.MinAmount) && (
-                                  <p className="text-[10px] text-gray-400 mt-1">Min. booking ₹{(offer.minAmount || offer.MinAmount).toLocaleString('en-IN')}</p>
+                                  <p className="text-[10px] text-gray-400 mt-1">Min. booking ₹{formatINR(offer.minAmount || offer.MinAmount)}</p>
                                 )}
                               </button>
                             ))
@@ -1049,7 +1084,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                       }`}
                     >
                       <p className="text-sm font-bold text-[#072720]">Pay Full</p>
-                      <p className="text-xs text-gray-400 mt-1">₹{total.toLocaleString('en-IN')}</p>
+                      <p className="text-xs text-gray-400 mt-1">₹{formatINR(total)}</p>
                     </button>
                     <button
                       onClick={() => setPaymentMode('ADVANCE')}
@@ -1060,7 +1095,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                       }`}
                     >
                       <p className="text-sm font-bold text-[#072720]">Pay 30%</p>
-                      <p className="text-xs text-gray-400 mt-1">₹{advanceAmount.toLocaleString('en-IN')}</p>
+                      <p className="text-xs text-gray-400 mt-1">₹{formatINR(advanceAmount)}</p>
                     </button>
                   </div>
                   {paymentMode === 'ADVANCE' && (
@@ -1068,7 +1103,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      Balance ₹{balanceAmount.toLocaleString('en-IN')} due at check-in
+                      Balance ₹{formatINR(balanceAmount)} due at check-in
                     </p>
                   )}
                 </div>
@@ -1120,7 +1155,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                                   <p className="text-[11px] text-gray-400 truncate">{exp.description}</p>
                                 </div>
                               </div>
-                              <span className="text-sm font-serif font-medium text-[#072720] flex-shrink-0 ml-3">₹{exp.price.toLocaleString('en-IN')}</span>
+                              <span className="text-sm font-serif font-medium text-[#072720] flex-shrink-0 ml-3">₹{formatINR(exp.price)}</span>
                             </button>
                           );
                         })}
@@ -1155,7 +1190,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 <div className="space-y-3 pb-4">
                   <div className="flex justify-between text-sm text-gray-500">
                     <span>Rate x {nights} night{nights > 1 ? 's' : ''}</span>
-                    <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                    <span>₹{formatINR(subtotal)}</span>
                   </div>
                   {selectedAddons.length > 0 && selectedAddons.map((addon) => (
                     <div key={addon.name} className="flex justify-between text-sm text-gray-500">
@@ -1163,28 +1198,28 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                         <svg className="w-3 h-3 text-[#C09A59]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                         {addon.name}
                       </span>
-                      <span>₹{(addon.price * addon.quantity).toLocaleString('en-IN')}</span>
+                      <span>₹{formatINR(addon.price * addon.quantity)}</span>
                     </div>
                   ))}
                   {appliedCoupon && (
                     <div className="flex justify-between text-sm text-green-600">
                       <span>Discount ({(appliedCoupon.code || appliedCoupon.Code)})</span>
-                      <span>−₹{couponDiscount.toLocaleString('en-IN')}</span>
+                      <span>−₹{formatINR(couponDiscount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm text-gray-500">
                     <span>Taxes & Fees</span>
-                    <span>₹{taxes.toLocaleString('en-IN')}</span>
+                    <span>₹{formatINR(taxes)}</span>
                   </div>
                   {securityDeposit > 0 && (
                     <div className="flex justify-between text-sm text-gray-500">
                       <span>Security deposit (Refundable)</span>
-                      <span>₹{securityDeposit.toLocaleString('en-IN')}</span>
+                      <span>₹{formatINR(securityDeposit)}</span>
                     </div>
                   )}
                   <div className="pt-3 border-t border-gray-100 flex justify-between font-serif text-lg font-medium text-[#072720]">
                     <span>Total Amount</span>
-                    <span>₹{total.toLocaleString('en-IN')}</span>
+                    <span>₹{formatINR(total)}</span>
                   </div>
                 </div>
               </div>

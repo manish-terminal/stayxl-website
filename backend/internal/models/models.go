@@ -46,6 +46,7 @@ type Booking struct {
 	Guests         int       `dynamodbav:"guests" json:"guests"`
 	GuestName      string    `dynamodbav:"guestName" json:"guestName"`
 	GuestPhone     string    `dynamodbav:"guestPhone" json:"guestPhone"`
+	GuestEmail     string    `dynamodbav:"guestEmail" json:"guestEmail"`
 	BaseAmount     int       `dynamodbav:"baseAmount" json:"baseAmount"`
 	DiscountAmount int       `dynamodbav:"discountAmount" json:"discountAmount"`
 	TotalAmount    int       `dynamodbav:"totalAmount" json:"totalAmount"`
@@ -78,6 +79,7 @@ type BookingRequest struct {
 	Guests      int     `json:"guests"`
 	GuestName   string  `json:"guestName"`
 	GuestPhone  string  `json:"guestPhone"`
+	GuestEmail  string  `json:"guestEmail"`
 	Addons          []Addon `json:"addons"`
 	PaymentMode     string  `json:"paymentMode"`
 	CouponCode      string  `json:"couponCode,omitempty"`

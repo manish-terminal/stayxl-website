@@ -98,10 +98,11 @@ export default function BookingConfirmation({ booking, onClose }) {
               <p className="text-sm font-medium text-[#072720]">{formatDate(booking.checkOut)}</p>
               <p className="text-xs text-gray-400 mt-1">By 11:00 AM</p>
             </div>
-            <div className="bg-white p-5 col-span-2 flex items-center justify-between">
+            <div className="bg-white p-5 col-span-2 flex items-center justify-between border-t border-gray-100">
               <div>
                 <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Primary Guest</p>
                 <p className="text-sm font-medium text-[#072720]">{booking.guestName || 'Valued Guest'}</p>
+                <p className="text-[10px] text-gray-400 mt-1">{booking.guestEmail}</p>
               </div>
               <div className="text-right">
                 <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">Total Stay</p>

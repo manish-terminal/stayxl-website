@@ -7,7 +7,13 @@ import { successResponse, errorResponse, handleError } from '@/app/lib/api-helpe
  */
 export async function GET() {
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        
+        if (!apiUrl) {
+            console.error('[API Error] NEXT_PUBLIC_API_URL is not defined in environment');
+            return errorResponse('Backend API URL not configured. Please check .env file.', 500);
+        }
+
         const backendUrl = `${apiUrl}/api/offers`;
         
         const response = await fetch(backendUrl);

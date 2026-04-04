@@ -11,7 +11,13 @@ export async function GET(
 ) {
     try {
         const { slug } = await params;
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        
+        if (!apiUrl) {
+            console.error('[API Error] NEXT_PUBLIC_API_URL is not defined in environment');
+            return errorResponse('Backend API URL not configured. Please check .env file.', 500);
+        }
+
         const backendUrl = `${apiUrl}/api/villas/${slug}/unavailable-dates`;
         
         const response = await fetch(backendUrl);

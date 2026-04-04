@@ -29,7 +29,8 @@ type Villa struct {
 }
 
 type Pricing struct {
-	SecurityDeposit int `dynamodbav:"securityDeposit"`
+	SecurityDeposit  int `dynamodbav:"securityDeposit"`
+	KitchenAccessFee int `dynamodbav:"kitchenAccessFee"`
 }
 
 func main() {
@@ -140,6 +141,48 @@ func main() {
 			BathroomCount: 3,
 			IsActive:      true,
 			Pricing:       Pricing{SecurityDeposit: 5000},
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+		{
+			ID:            "v-sagewood",
+			Slug:          "sagewood-villa-hyderabad",
+			Name:          "Sagewood",
+			Location:      "Hyderabad",
+			PricePerNight: 16500,
+			Guests:        12,
+			BedroomCount:  4,
+			BathroomCount: 4,
+			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000, KitchenAccessFee: 1500},
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+		{
+			ID:            "v-kodur",
+			Slug:          "kodur",
+			Name:          "Kodur",
+			Location:      "Shahazadiguda, Telangana",
+			PricePerNight: 12500,
+			Guests:        12,
+			BedroomCount:  3,
+			BathroomCount: 3,
+			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000, KitchenAccessFee: 1500},
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+		{
+			ID:            "v-tranquilla",
+			Slug:          "tranquilla",
+			Name:          "Tranquilla",
+			Location:      "Shamirpet, Bommarasipet, Hyderabad, Telangana",
+			PricePerNight: 35000,
+			Guests:        14,
+			BedroomCount:  5,
+			BathroomCount: 6,
+			IsActive:      true,
+			Pricing:       Pricing{SecurityDeposit: 5000, KitchenAccessFee: 1500},
 			CreatedAt:     now,
 			UpdatedAt:     now,
 		},

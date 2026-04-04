@@ -19,7 +19,13 @@ export async function GET(
             return errorResponse('Dates are required', 400);
         }
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        
+        if (!apiUrl) {
+            console.error('[API Error] NEXT_PUBLIC_API_URL is not defined in environment');
+            return errorResponse('Backend API URL not configured. Please check .env file.', 500);
+        }
+
         // Map checkIn/checkOut to startDate/endDate for Go backend
         const backendUrl = `${apiUrl}/api/villas/${slug}/availability?startDate=${checkIn}T00:00:00Z&endDate=${checkOut}T00:00:00Z`;
         
