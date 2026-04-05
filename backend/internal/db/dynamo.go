@@ -457,3 +457,29 @@ func (d *DynamoClient) UpdateVillaPrice(ctx context.Context, villaID string, new
 	})
 	return err
 }
+
+// GetDatePricingInRange returns all price overrides for a villa within a specific date range
+func (d *DynamoClient) GetDatePricingInRange(ctx context.Context, villaID string, startDate, endDate string) ([]models.DatePricing, error) {
+	// We use the VillaPricingIndex (GSI: villaId) and filter by date
+	// Note: Since 'date' is a string YYYY-MM-DD, lexicographical comparison works
+	result, err := d.Client.Query(ctx, &dynamodb.QueryInput{
+		TableName:              aws.String(d.DatePricingTable),
+		IndexName:              aws.String("VillaPricingIndex"),
+		KeyConditionExpression: aws.String("villaId = :vid"),
+		FilterExpression:       aws.String("#d >= :start AND #d < :end"), // Exclusive of end date (checkout)
+		ExpressionAttributeNames: map[string]string{
+			"#d": "date",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":vid":   &types.AttributeValueMemberS{Value: villaID},
+			":start": &types.AttributeValueMemberS{Value: startDate},
+			":end":   &types.AttributeValueMemberS{Value: endDate},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	var pricing []models.DatePricing
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &pricing)
+	return pricing, err
+}

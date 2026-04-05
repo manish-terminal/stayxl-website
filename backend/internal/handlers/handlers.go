@@ -291,7 +291,52 @@ func (h *AppHandler) handleVillaAvailability(ctx context.Context, req events.API
 		return errorResponse(http.StatusInternalServerError, err.Error())
 	}
 
-	return successResponse(map[string]bool{"available": available})
+	// ─── DYNAMIC PRICING CALCULATION ───
+	basePrice := villa.PricePerNight
+	if basePrice == 0 {
+		basePrice = 28500 // Fallback if not set in DB
+	}
+
+	overrides, err := h.DB.GetDatePricingInRange(ctx, villa.ID, start.Format("2006-01-02"), end.Format("2006-01-02"))
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, "Failed to fetch pricing: "+err.Error())
+	}
+
+	priceMap := make(map[string]int)
+	for _, o := range overrides {
+		priceMap[o.Date] = o.Price
+	}
+
+	totalPrice := 0
+	nightlyDetails := []map[string]interface{}{}
+	nights := 0
+
+	for d := start; d.Before(end); d = d.AddDate(0, 0, 1) {
+		ds := d.Format("2006-01-02")
+		price := basePrice
+		isOverride := false
+
+		if p, ok := priceMap[ds]; ok {
+			price = p
+			isOverride = true
+		}
+
+		totalPrice += price
+		nights++
+		nightlyDetails = append(nightlyDetails, map[string]interface{}{
+			"date":       ds,
+			"price":      price,
+			"isOverride": isOverride,
+		})
+	}
+
+	return successResponse(map[string]interface{}{
+		"available":      available,
+		"basePrice":      basePrice,
+		"totalPrice":     totalPrice,
+		"nights":         nights,
+		"nightlyDetails": nightlyDetails,
+	})
 }
 
 // ─── BOOKING & PAYMENT HANDLERS ───

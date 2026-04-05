@@ -42,7 +42,8 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const nights = checkIn && checkOut
     ? Math.max(1, Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)))
     : 1;
-  const subtotal = pricePerNight * nights;
+  const totalBasePrice = (availabilityData?.totalPrice) ? availabilityData.totalPrice : (pricePerNight * nights);
+  const subtotal = totalBasePrice;
   const addonTotal = selectedAddons.reduce((sum, a) => sum + a.price * a.quantity, 0);
   const couponDiscount = (() => {
     if (!appliedCoupon) return 0;
@@ -378,9 +379,16 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
           {/* Price */}
           <div className="mb-5">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl  font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
-              <span className="text-sm text-gray-400">/ night</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-medium text-[#072720]">₹{formatINR(availabilityData?.totalPrice ? Math.round(availabilityData.totalPrice / nights) : pricePerNight)}</span>
+                <span className="text-sm text-gray-400">/ night</span>
+              </div>
+              {availabilityData?.nightlyDetails?.some(d => d.isOverride) && (
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#C6A87D] bg-[#C6A87D]/10 px-2 py-0.5 rounded-full">
+                  Custom Rate
+                </span>
+              )}
             </div>
             {originalPrice && (
               <div className="flex items-center gap-2 mt-1">
@@ -702,7 +710,12 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           {/* Price Breakdown */}
           <div className="space-y-2 mb-5 text-sm">
             <div className="flex justify-between text-gray-500">
-              <span>₹{pricePerNight.toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''}</span>
+              <div className="flex flex-col">
+                <span>Total for {nights} night{nights > 1 ? 's' : ''}</span>
+                {availabilityData?.nightlyDetails?.some(d => d.isOverride) && (
+                  <span className="text-[10px] text-amber-600 font-medium">Includes dated seasonal pricing</span>
+                )}
+              </div>
               <span>₹{formatINR(subtotal)}</span>
             </div>
             {selectedAddons.length > 0 && selectedAddons.map((addon) => (
