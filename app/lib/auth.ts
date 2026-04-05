@@ -42,13 +42,36 @@ export async function getAuthUser(req: NextRequest) {
         token = req.cookies.get('token')?.value ?? undefined;
     }
 
-    if (!token) return null;
+    if (!token) {
+        // DEVELOPMENT BYPASS: Return mock admin if no token during local dev
+        if (process.env.NODE_ENV === 'development') {
+            return {
+                id: 'dev-admin-id',
+                email: 'admin@stayxl.com',
+                phone: '9999999999',
+                role: 'ADMIN',
+                name: 'Dev Admin',
+            };
+        }
+        return null;
+    }
 
     const payload = verifyToken(token);
-    if (!payload) return null;
+    if (!payload) {
+        // DEVELOPMENT BYPASS: Allow local testing without a real token
+        if (process.env.NODE_ENV === 'development') {
+            return {
+                id: 'dev-admin-id',
+                email: 'admin@stayxl.com',
+                phone: '9999999999',
+                role: 'ADMIN',
+                name: 'Dev Admin',
+            };
+        }
+        return null;
+    }
 
     // TODO: Replace with call to AWS Go Backend /api/users/me
-    // For now, return a mock user so the app doesn't crash on auth checks
     return {
         id: payload.userId,
         email: payload.email,

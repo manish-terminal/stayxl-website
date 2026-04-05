@@ -257,6 +257,12 @@ export default function Footer() {
                   {link}
                 </Link>
               ))}
+              <Link
+                href="/admin/calendar"
+                className="text-[11px] text-[#C6A87D]/40 tracking-wider hover:text-[#C6A87D]/80 transition-colors duration-300 ml-4 font-medium"
+              >
+                Admin Dashboard
+              </Link>
             </div>
           </div>
         </div>

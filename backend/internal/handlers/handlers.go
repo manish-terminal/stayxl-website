@@ -14,12 +14,15 @@ import (
 	"stayxl-backend/internal/models"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // AppHandler holds dependencies for HTTP handlers
 type AppHandler struct {
-	DB    *db.DynamoClient
-	Email *email.EmailService
+	DB        *db.DynamoClient
+	Email     *email.EmailService
+	JWTSecret string
+	AdminKey  string
 }
 
 // HandleRequest routes incoming APIGateway requests to specific handlers
@@ -465,21 +468,77 @@ func (h *AppHandler) handleVerifyPayment(ctx context.Context, req events.APIGate
 
 // ─── ADMIN HANDLERS ───
 
-const adminKey = "stayxl-admin-secret-2026"
-
-func checkAdminAuth(req events.APIGatewayProxyRequest) error {
+func (h *AppHandler) checkAdminAuth(req events.APIGatewayProxyRequest) error {
+	// 1. Check for legacy X-Admin-Key (used by Next.js proxy and internal tools)
 	key := req.Headers["x-admin-key"]
 	if key == "" {
 		key = req.Headers["X-Admin-Key"]
 	}
-	if key != adminKey {
-		return fmt.Errorf("unauthorized")
+	if key != "" && key == h.AdminKey {
+		return nil
 	}
-	return nil
+
+	// 2. Check for Authorization: Bearer <JWT> (used by direct frontend calls)
+	authHeader := req.Headers["authorization"]
+	if authHeader == "" {
+		authHeader = req.Headers["Authorization"]
+	}
+
+	if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		
+		claims, err := h.verifyJWT(tokenString)
+		if err != nil {
+			return fmt.Errorf("invalid token: %v", err)
+		}
+
+		if claims.Role != "ADMIN" && claims.Role != "SUPER_ADMIN" {
+			return fmt.Errorf("forbidden: insufficient permissions")
+		}
+
+		return nil
+	}
+
+	return fmt.Errorf("unauthorized")
+}
+
+func (h *AppHandler) verifyJWT(tokenString string) (*models.JWTPayload, error) {
+	secret := h.JWTSecret
+	if secret == "" {
+		// Fallback for local development if secret not set in environment or Secrets Manager
+		secret = "stayxl-jwt-secret-change-in-production-2026" 
+	}
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(secret), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		payload := &models.JWTPayload{
+			UserID: fmt.Sprintf("%v", claims["userId"]),
+			Role:   fmt.Sprintf("%v", claims["role"]),
+		}
+		if email, ok := claims["email"].(string); ok {
+			payload.Email = email
+		}
+		if phone, ok := claims["phone"].(string); ok {
+			payload.Phone = phone
+		}
+		return payload, nil
+	}
+
+	return nil, fmt.Errorf("invalid claims")
 }
 
 func (h *AppHandler) handleAdminBlockDates(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if err := checkAdminAuth(req); err != nil {
+	if err := h.checkAdminAuth(req); err != nil {
 		return errorResponse(http.StatusUnauthorized, "Unauthorized")
 	}
 
@@ -511,7 +570,7 @@ func (h *AppHandler) handleAdminBlockDates(ctx context.Context, req events.APIGa
 }
 
 func (h *AppHandler) handleAdminListBlockedDates(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if err := checkAdminAuth(req); err != nil {
+	if err := h.checkAdminAuth(req); err != nil {
 		return errorResponse(http.StatusUnauthorized, "Unauthorized")
 	}
 
@@ -529,7 +588,7 @@ func (h *AppHandler) handleAdminListBlockedDates(ctx context.Context, req events
 }
 
 func (h *AppHandler) handleAdminUnblockDates(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
-	if err := checkAdminAuth(req); err != nil {
+	if err := h.checkAdminAuth(req); err != nil {
 		return errorResponse(http.StatusUnauthorized, "Unauthorized")
 	}
 
@@ -547,7 +606,7 @@ func (h *AppHandler) handleAdminUnblockDates(ctx context.Context, req events.API
 }
 
 func (h *AppHandler) handleAdminSetDatePrice(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if err := checkAdminAuth(req); err != nil {
+	if err := h.checkAdminAuth(req); err != nil {
 		return errorResponse(http.StatusUnauthorized, "Unauthorized")
 	}
 
@@ -577,7 +636,7 @@ func (h *AppHandler) handleAdminSetDatePrice(ctx context.Context, req events.API
 }
 
 func (h *AppHandler) handleAdminListDatePricing(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if err := checkAdminAuth(req); err != nil {
+	if err := h.checkAdminAuth(req); err != nil {
 		return errorResponse(http.StatusUnauthorized, "Unauthorized")
 	}
 
@@ -595,7 +654,7 @@ func (h *AppHandler) handleAdminListDatePricing(ctx context.Context, req events.
 }
 
 func (h *AppHandler) handleAdminDeleteDatePrice(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
-	if err := checkAdminAuth(req); err != nil {
+	if err := h.checkAdminAuth(req); err != nil {
 		return errorResponse(http.StatusUnauthorized, "Unauthorized")
 	}
 
@@ -613,7 +672,7 @@ func (h *AppHandler) handleAdminDeleteDatePrice(ctx context.Context, req events.
 }
 
 func (h *AppHandler) handleAdminUpdateBasePrice(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
-	if err := checkAdminAuth(req); err != nil {
+	if err := h.checkAdminAuth(req); err != nil {
 		return errorResponse(http.StatusUnauthorized, "Unauthorized")
 	}
 

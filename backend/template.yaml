@@ -15,6 +15,7 @@ Globals:
         BLOCKED_DATES_TABLE: !Ref StayXLBlockedDatesTable
         PAYMENTS_TABLE: !Ref StayXLPaymentsTable
         DATE_PRICING_TABLE: !Ref StayXLDatePricingTable
+        STAYXL_SECRET_ID: !Ref StayXLJWTSecret # Fetch JWT_SECRET and ADMIN_KEY during runtime
 
 Resources:
   StayXLApiFunction:
@@ -40,6 +41,8 @@ Resources:
             TableName: !Ref StayXLPaymentsTable
         - DynamoDBCrudPolicy:
             TableName: !Ref StayXLDatePricingTable
+        - SecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref StayXLJWTSecret
       Events:
         CatchAll:
           Type: Api
@@ -229,6 +232,17 @@ Resources:
             Principal: '*'
             Action: 's3:GetObject'
             Resource: !Sub "arn:aws:s3:::${StayXLVillaImagesBucket}/*"
+
+  # Secrets Manager Resource
+  StayXLJWTSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub "StayXLJWTSecret-${AWS::StackName}"
+      Description: "JWT Signing Secret for StayXL"
+      # Securely managed by AWS Secrets Manager Console, initial value can be dummy
+      GenerateSecretString:
+        SecretStringTemplate: '{ "JWT_SECRET": "your-jwt-secret-here", "ADMIN_KEY": "stayxl-admin-secret-2026" }'
+        GenerateStringKey: "JWT_SECRET" # This will just ensure one is generated if the template is empty
 
 Outputs:
   ApiEndpoint:

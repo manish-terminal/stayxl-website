@@ -7,7 +7,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export async function apiFetch(endpoint: string, options: any = {}) {
   // Always use local origin for client-side /api calls to hit Next.js proxies
   const isClient = typeof window !== 'undefined';
-  const url = (isClient && endpoint.startsWith('/api/'))
+  const isAdminRoute = endpoint.startsWith('/api/admin/');
+  
+  const url = (isClient && endpoint.startsWith('/api/') && !isAdminRoute)
     ? endpoint 
     : (endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`);
   
@@ -22,6 +24,11 @@ export async function apiFetch(endpoint: string, options: any = {}) {
 
   if (token) {
     defaultHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
+  const adminKey = typeof window !== 'undefined' ? localStorage.getItem('stayxl_admin_key') : null;
+  if (adminKey) {
+    defaultHeaders['X-Admin-Key'] = adminKey;
   }
 
   const response = await fetch(url, {

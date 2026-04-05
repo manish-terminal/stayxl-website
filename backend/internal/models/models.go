@@ -149,3 +149,10 @@ type Payment struct {
 	CreatedAt         time.Time `dynamodbav:"createdAt" json:"createdAt"`
 	UpdatedAt         time.Time `dynamodbav:"updatedAt" json:"updatedAt"`
 }
+// JWTPayload represents the decoded JWT token payload
+type JWTPayload struct {
+	UserID string `json:"userId"`
+	Email  string `json:"email"`
+	Phone  string `json:"phone"`
+	Role   string `json:"role"`
+}
