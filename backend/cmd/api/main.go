@@ -28,12 +28,11 @@ func main() {
 	// Initialize App Handler
 	emailService, _ := email.NewEmailService(ctx, "bookings@stayxl.com") // Fallback if no env var, user should set up SES
 	
-	// Fetch JWT and Admin Secrets from AWS Secrets Manager
-	jwtSecret := os.Getenv("JWT_SECRET") 
-	adminKey := os.Getenv("ADMIN_KEY")
+	// Fetch Admin Secret from AWS Secrets Manager
+	adminKey := os.Getenv("ADMIN_KEY") // Local dev override
 
-	if jwtSecret == "" || adminKey == "" {
-		secretID := os.Getenv("STAYXL_SECRET_ID")
+	if adminKey == "" {
+		secretID := os.Getenv("STAYXL_ADMIN_SECRET_ID")
 		if secretID != "" {
 			cfg, err := config.LoadDefaultConfig(ctx)
 			if err == nil {
@@ -44,14 +43,9 @@ func main() {
 				if err == nil && out.SecretString != nil {
 					var secretData map[string]string
 					if err := json.Unmarshal([]byte(*out.SecretString), &secretData); err == nil {
-						if jwtSecret == "" {
-							jwtSecret = secretData["JWT_SECRET"]
-						}
-						if adminKey == "" {
-							adminKey = secretData["ADMIN_KEY"]
-						}
-					} else if jwtSecret == "" {
-						jwtSecret = *out.SecretString
+						adminKey = secretData["ADMIN_KEY"]
+					} else {
+						adminKey = *out.SecretString
 					}
 				}
 			}
@@ -61,7 +55,6 @@ func main() {
 	app := &handlers.AppHandler{
 		DB:        dbClient,
 		Email:     emailService,
-		JWTSecret: jwtSecret,
 		AdminKey:  adminKey,
 	}
 
