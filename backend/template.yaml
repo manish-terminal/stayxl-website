@@ -27,22 +27,17 @@ Resources:
       Architectures:
         - arm64
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref StayXLUsersTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref StayXLVillasTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref StayXLBookingsTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref StayXLOffersTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref StayXLBlockedDatesTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref StayXLPaymentsTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref StayXLDatePricingTable
-        - SecretsManagerGetSecretValuePolicy:
-            SecretArn: !Ref StayXLAdminSecret
+        - DynamoDBCrudPolicy: { TableName: !Ref StayXLUsersTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref StayXLVillasTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref StayXLBookingsTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref StayXLOffersTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref StayXLBlockedDatesTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref StayXLPaymentsTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref StayXLDatePricingTable }
+        - Statement:
+            - Effect: Allow
+              Action: 'secretsmanager:GetSecretValue'
+              Resource: !Ref StayXLAdminSecret
       Events:
         CatchAll:
           Type: Api
@@ -237,7 +232,6 @@ Resources:
   StayXLAdminSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: StayXLAdminPassphrase
       Description: "Admin Access Secret for StayXL"
       GenerateSecretString:
         SecretStringTemplate: '{ "ADMIN_KEY": "stayxl-admin-secret-2026" }'
