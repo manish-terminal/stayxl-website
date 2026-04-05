@@ -65,7 +65,7 @@ function BookingCard({ booking }) {
           <div>
             <Link
               href={`/villas/${booking.villa?.slug}`}
-              className="text-base md:text-lg font-serif font-medium text-[#072720] hover:underline decoration-[#072720]/30 underline-offset-4"
+              className="text-base md:text-lg  font-medium text-[#072720] hover:underline decoration-[#072720]/30 underline-offset-4"
             >
               {booking.villa?.name || 'Villa'}
             </Link>
@@ -215,7 +215,7 @@ export default function MyBookingsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-serif font-medium text-[#072720] mb-2">Sign in to view your bookings</h1>
+          <h1 className="text-2xl  font-medium text-[#072720] mb-2">Sign in to view your bookings</h1>
           <p className="text-sm text-gray-400 mb-8">Access your booking history, upcoming stays, and payment details.</p>
           <button
             onClick={() => setShowLogin(true)}
@@ -240,7 +240,7 @@ export default function MyBookingsPage() {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-3xl md:text-4xl font-serif font-medium text-[#072720]">My Bookings</h1>
+          <h1 className="text-3xl md:text-4xl  font-medium text-[#072720]">My Bookings</h1>
           <p className="text-sm text-gray-400 mt-1">Manage your stays and view booking details</p>
 
           {/* Filter Tabs */}
@@ -309,7 +309,7 @@ export default function MyBookingsPage() {
             </div>
             {filter !== 'ALL' ? (
               <>
-                <h2 className="text-xl font-serif font-medium text-[#072720] mb-2">No {filter.toLowerCase()} bookings</h2>
+                <h2 className="text-xl  font-medium text-[#072720] mb-2">No {filter.toLowerCase()} bookings</h2>
                 <p className="text-sm text-gray-400 mb-6">Try switching to a different filter.</p>
                 <button
                   onClick={() => setFilter('ALL')}
@@ -320,7 +320,7 @@ export default function MyBookingsPage() {
               </>
             ) : (
               <>
-                <h2 className="text-xl font-serif font-medium text-[#072720] mb-2">No bookings yet</h2>
+                <h2 className="text-xl  font-medium text-[#072720] mb-2">No bookings yet</h2>
                 <p className="text-sm text-gray-400 mb-6">Discover our handpicked luxury villas and book your perfect getaway.</p>
                 <Link
                   href="/villas"

@@ -36,6 +36,7 @@ export default function BestRatedVillas() {
       rating: villa.rating,
       reviews: villa.reviewCount,
       mostInDemand: villa.isFeatured,
+      tags: villa.tags || [],
     };
   };
 
@@ -71,7 +72,7 @@ export default function BestRatedVillas() {
         {/* Section Header */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#072720] font-serif mb-2">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#072720]  mb-2">
               Best Rated Villas
             </h2>
             <p className="text-gray-600">
@@ -86,13 +87,13 @@ export default function BestRatedVillas() {
         {/* Desktop: Grid Layout */}
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {villas.map((villa) => (
-            <div key={villa.id} className="relative">
+            <div key={villa.id} className="relative h-full">
               {villa.isFeatured && (
                 <div className="absolute top-4 left-4 z-10 bg-[#072720] text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
                   🔥 Most in Demand
                 </div>
               )}
-              <Link href={`/villas/${villa.slug}`}>
+              <Link href={`/villas/${villa.slug}`} className="block h-full">
                 <VillaCard {...mapVilla(villa)} />
               </Link>
             </div>
@@ -103,14 +104,14 @@ export default function BestRatedVillas() {
         <div className="md:hidden overflow-x-auto scrollbar-hide -mx-4 px-4">
           <div className="flex gap-4 pb-4">
             {villas.map((villa) => (
-              <div key={villa.id} className="flex-none w-[85vw] max-w-sm">
-                <div className="relative">
+              <div key={villa.id} className="flex-none w-[85vw] max-w-sm h-full">
+                <div className="relative h-full">
                   {villa.isFeatured && (
                     <div className="absolute top-4 left-4 z-10 bg-[#072720] text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
                       🔥 Most in Demand
                     </div>
                   )}
-                  <Link href={`/villas/${villa.slug}`}>
+                  <Link href={`/villas/${villa.slug}`} className="block h-full">
                     <VillaCard {...mapVilla(villa)} />
                   </Link>
                 </div>

@@ -31,7 +31,7 @@ export default function BedroomAccordion({ bedroomDetails = [], bathroomDetails 
 
   return (
     <div>
-      <h2 className="text-lg font-serif font-medium text-[#072720] mb-4">
+      <h2 className="text-lg  font-medium text-[#072720] mb-4">
         Bedrooms & Bathrooms
       </h2>
 

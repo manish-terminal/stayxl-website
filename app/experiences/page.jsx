@@ -69,7 +69,7 @@ export default function ExperiencesPage() {
           <p className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase text-[#C09A59] font-semibold mb-5">
             Curated Experiences
           </p>
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white tracking-wide leading-tight mb-5 max-w-3xl">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl  font-light text-white tracking-wide leading-tight mb-5 max-w-3xl">
             Extraordinary Moments,{' '}
             <span className="text-white/30">Unforgettable Stays</span>
           </h1>
@@ -107,7 +107,7 @@ export default function ExperiencesPage() {
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">
               Choose Your Experience
             </p>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">
+            <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">
               Every Moment Deserves{' '}
               <span className="text-white/30">to Be Extraordinary</span>
             </h2>
@@ -156,7 +156,7 @@ export default function ExperiencesPage() {
 
                   {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-xl md:text-2xl font-serif font-light text-white tracking-wide mb-2 group-hover:text-[#C09A59] transition-colors duration-500">
+                    <h3 className="text-xl md:text-2xl  font-light text-white tracking-wide mb-2 group-hover:text-[#C09A59] transition-colors duration-500">
                       {exp.heading}
                     </h3>
                     <p className="text-xs text-white/50 leading-relaxed max-w-md mb-3">
@@ -194,7 +194,7 @@ export default function ExperiencesPage() {
               { value: '24/7', label: 'Concierge Support' },
             ].map((stat, i) => (
               <div key={i}>
-                <p className="text-2xl md:text-3xl font-serif font-light text-[#C09A59] mb-1">
+                <p className="text-2xl md:text-3xl  font-light text-[#C09A59] mb-1">
                   {stat.value}
                 </p>
                 <p className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-medium">
@@ -213,7 +213,7 @@ export default function ExperiencesPage() {
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">
               Simple Process
             </p>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">
+            <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">
               How It{' '}
               <span className="text-white/30">Works</span>
             </h2>
@@ -285,7 +285,7 @@ export default function ExperiencesPage() {
           <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">
             Let&apos;s Create Something Special
           </p>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-white tracking-wide leading-snug mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl  font-light text-white tracking-wide leading-snug mb-4">
             Have a Custom Experience in Mind?
           </h2>
           <p className="text-sm text-white/40 font-light mb-10 max-w-md mx-auto leading-relaxed">

@@ -16,7 +16,7 @@ export default function SpacesSlider({ spaces = [] }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-serif font-medium text-[#072720]">Spaces</h2>
+        <h2 className="text-lg  font-medium text-[#072720]">Spaces</h2>
         <div className="flex gap-1.5">
           <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-[#072720] hover:text-[#072720] transition-colors" aria-label="Previous">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>

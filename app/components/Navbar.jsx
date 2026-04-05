@@ -40,7 +40,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center">
-              <span className="text-white text-2xl lg:text-3xl font-serif font-bold tracking-wide hover:opacity-90 transition-opacity">
+              <span className="text-white text-2xl lg:text-3xl  font-bold tracking-wide hover:opacity-90 transition-opacity">
                 StayXL
               </span>
             </Link>

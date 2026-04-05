@@ -140,7 +140,7 @@ function PriveCard({ villa, index }) {
       {/* Card Info */}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-base font-serif font-medium text-white group-hover:text-[#C09A59] transition-colors duration-300">{villa.name}</h3>
+          <h3 className="text-base  font-medium text-white group-hover:text-[#C09A59] transition-colors duration-300">{villa.name}</h3>
           <div className="flex items-center gap-1.5 mt-1">
             <svg className="w-3.5 h-3.5 text-[#C09A59]" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
@@ -217,13 +217,13 @@ function TestimonialsCarousel() {
         </p>
 
         {/* Large gold quotation mark */}
-        <div className="text-[#C09A59]/20 text-7xl md:text-8xl font-serif leading-none mb-4 select-none">&ldquo;</div>
+        <div className="text-[#C09A59]/20 text-7xl md:text-8xl  leading-none mb-4 select-none">&ldquo;</div>
 
         {/* Quote */}
         <div className="min-h-[120px] md:min-h-[100px] flex items-center justify-center">
           <p
             key={active}
-            className="text-base md:text-lg lg:text-xl font-serif font-light text-white/80 leading-relaxed tracking-wide italic animate-fade-in"
+            className="text-base md:text-lg lg:text-xl  font-light text-white/80 leading-relaxed tracking-wide italic animate-fade-in"
           >
             {t.quote}
           </p>
@@ -311,7 +311,7 @@ export default function PrivePage() {
           </p>
 
           {/* Main Heading */}
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white tracking-wide leading-tight mb-5 max-w-3xl">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl  font-light text-white tracking-wide leading-tight mb-5 max-w-3xl">
             Finest Villas.
             <br />
             <span className="text-white/60">Unmatched Service.</span>
@@ -375,7 +375,7 @@ export default function PrivePage() {
                 Bespoke Homes & Experiences
               </p>
 
-              <h2 className="text-3xl md:text-4xl lg:text-[2.8rem] font-serif font-light text-white tracking-wide leading-snug mb-6">
+              <h2 className="text-3xl md:text-4xl lg:text-[2.8rem]  font-light text-white tracking-wide leading-snug mb-6">
                 Live The
                 <br />
                 <span className="text-white/30">Good Life.</span>
@@ -397,7 +397,7 @@ export default function PrivePage() {
                   { value: '10K+', label: 'Happy Guests' },
                 ].map((stat, i) => (
                   <div key={i} className="text-center">
-                    <p className="text-2xl font-serif font-light text-[#C09A59]">{stat.value}</p>
+                    <p className="text-2xl  font-light text-[#C09A59]">{stat.value}</p>
                     <p className="text-[10px] tracking-wider uppercase text-white/40 mt-1">{stat.label}</p>
                   </div>
                 ))}
@@ -417,7 +417,7 @@ export default function PrivePage() {
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">
               Our Collection
             </p>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-white tracking-wide leading-snug mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl  font-light text-white tracking-wide leading-snug mb-4">
               Only The Finest Villas
               <br className="hidden md:block" />
               <span className="text-white/30"> in India</span>
@@ -454,7 +454,7 @@ export default function PrivePage() {
             Ready to Experience Luxury?
           </p>
 
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-white tracking-wide leading-snug mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl  font-light text-white tracking-wide leading-snug mb-4">
             Book Your
             <br />
             <span className="text-white/30">Private Escape</span>

@@ -96,6 +96,37 @@ type BlockedDate struct {
 	CreatedAt time.Time `dynamodbav:"createdAt" json:"createdAt"`
 }
 
+// DatePricing represents per-date price overrides set by admin
+type DatePricing struct {
+	ID        string    `dynamodbav:"id" json:"id"`
+	VillaID   string    `dynamodbav:"villaId" json:"villaId"`
+	Date      string    `dynamodbav:"date" json:"date"` // YYYY-MM-DD
+	Price     int       `dynamodbav:"price" json:"price"`
+	Reason    string    `dynamodbav:"reason" json:"reason"`
+	CreatedAt time.Time `dynamodbav:"createdAt" json:"createdAt"`
+}
+
+// AdminBlockDateRequest is the request body for blocking dates
+type AdminBlockDateRequest struct {
+	VillaID   string `json:"villaId"`
+	StartDate string `json:"startDate"`
+	EndDate   string `json:"endDate"`
+	Reason    string `json:"reason"`
+}
+
+// AdminPriceOverrideRequest is the request body for setting date-specific pricing
+type AdminPriceOverrideRequest struct {
+	VillaID string `json:"villaId"`
+	Date    string `json:"date"`
+	Price   int    `json:"price"`
+	Reason  string `json:"reason"`
+}
+
+// AdminUpdateBasePriceRequest is the request body for updating a villa's base price
+type AdminUpdateBasePriceRequest struct {
+	Price int `json:"price"`
+}
+
 // Offer represents coupon codes
 type Offer struct {
 	Code      string    `dynamodbav:"code" json:"code"`

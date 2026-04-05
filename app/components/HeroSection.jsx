@@ -50,7 +50,7 @@ export default function HeroSection() {
           <div className="w-12 h-px bg-white/40 mx-auto mb-6 md:mb-8"></div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-light text-white mb-4 md:mb-6 tracking-wide leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl  font-light text-white mb-4 md:mb-6 tracking-wide leading-tight">
             Monday Blues Sale
           </h1>
 

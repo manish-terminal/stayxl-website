@@ -65,7 +65,7 @@ export default function BookingConfirmation({ booking, onClose }) {
             </div>
           </div>
           
-          <h2 className="text-2xl sm:text-3xl font-serif font-medium text-white mb-2">Booking Confirmed!</h2>
+          <h2 className="text-2xl sm:text-3xl  font-medium text-white mb-2">Booking Confirmed!</h2>
           <p className="text-white/60 text-sm font-light tracking-wide">Your luxury getaway at {booking.villaLocation || booking.VillaLocation || booking.villa?.location || 'StayXL'} is ready.</p>
         </div>
 
@@ -74,7 +74,7 @@ export default function BookingConfirmation({ booking, onClose }) {
           {/* Villa Information */}
           <div className="text-center">
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-gray-400 mb-2">Selected Villa</p>
-            <h3 className="text-xl font-serif font-medium text-[#072720] mb-1">
+            <h3 className="text-xl  font-medium text-[#072720] mb-1">
               {booking.villaName || booking.VillaName || booking.villa?.name || 'Luxury Estate'}
             </h3>
             <div className="flex items-center justify-center gap-1.5 text-sm text-gray-500">
@@ -126,7 +126,7 @@ export default function BookingConfirmation({ booking, onClose }) {
                       </div>
                       <span className="text-sm font-medium text-[#072720]">{addon.name}</span>
                     </div>
-                    <span className="text-sm font-serif font-medium text-[#072720]">₹{(addon.price * (addon.quantity || 1)).toLocaleString('en-IN')}</span>
+                    <span className="text-sm  font-medium text-[#072720]">₹{(addon.price * (addon.quantity || 1)).toLocaleString('en-IN')}</span>
                   </div>
                 ))}
               </div>
@@ -137,22 +137,22 @@ export default function BookingConfirmation({ booking, onClose }) {
           <div className="space-y-3 mb-6 px-1 border-t border-gray-100 pt-5">
             <div className="flex justify-between text-xs text-gray-500">
               <span className="font-medium">Stay Base Amount</span>
-              <span className="font-serif">₹{(booking.baseAmount || booking.BaseAmount || 0).toLocaleString('en-IN')}</span>
+              <span className="">₹{(booking.baseAmount || booking.BaseAmount || 0).toLocaleString('en-IN')}</span>
             </div>
             {((booking.discountAmount || booking.DiscountAmount) > 0) && (
               <div className="flex justify-between text-xs text-green-600">
                 <span className="font-medium">Coupon Discount</span>
-                <span className="font-serif">−₹{(booking.discountAmount || booking.DiscountAmount).toLocaleString('en-IN')}</span>
+                <span className="">−₹{(booking.discountAmount || booking.DiscountAmount).toLocaleString('en-IN')}</span>
               </div>
             )}
             <div className="flex justify-between text-xs text-gray-500">
               <span className="font-medium">Taxes & Fees (18%)</span>
-              <span className="font-serif">₹{(booking.taxAmount || booking.TaxAmount || 0).toLocaleString('en-IN')}</span>
+              <span className="">₹{(booking.taxAmount || booking.TaxAmount || 0).toLocaleString('en-IN')}</span>
             </div>
             {((booking.securityDeposit || booking.SecurityDeposit) > 0) && (
               <div className="flex justify-between text-xs text-orange-600/70">
                 <span className="font-medium">Security Deposit (Refundable)</span>
-                <span className="font-serif">₹{(booking.securityDeposit || booking.SecurityDeposit).toLocaleString('en-IN')}</span>
+                <span className="">₹{(booking.securityDeposit || booking.SecurityDeposit).toLocaleString('en-IN')}</span>
               </div>
             )}
           </div>

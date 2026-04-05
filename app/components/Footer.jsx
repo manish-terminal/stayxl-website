@@ -163,7 +163,7 @@ export default function Footer() {
           <div className="md:col-span-2 lg:col-span-1">
             {/* Brand Name */}
             <Link href="/" className="inline-block mb-4">
-              <span className="text-xl font-serif font-light text-white tracking-wide">
+              <span className="text-xl  font-light text-white tracking-wide">
                 StayXL
               </span>
             </Link>

@@ -24,7 +24,7 @@ export default function ReviewsSection({ reviews = [], rating = 0, reviewCount =
 
   return (
     <div>
-      <h2 className="text-lg font-serif font-medium text-[#072720] mb-5">
+      <h2 className="text-lg  font-medium text-[#072720] mb-5">
         Guest Reviews
       </h2>
 
@@ -32,7 +32,7 @@ export default function ReviewsSection({ reviews = [], rating = 0, reviewCount =
       <div className="flex items-start gap-6 md:gap-10 mb-6 pb-6 border-b border-gray-100">
         {/* Big number */}
         <div className="text-center flex-shrink-0">
-          <div className="text-4xl font-serif font-light text-[#072720]">{rating}</div>
+          <div className="text-4xl  font-light text-[#072720]">{rating}</div>
           <div className="flex items-center gap-0.5 mt-1 justify-center">
             {[1, 2, 3, 4, 5].map((s) => (
               <svg key={s} className={`w-3.5 h-3.5 ${s <= Math.round(rating) ? 'text-[#C6A87D]' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">

@@ -39,7 +39,7 @@ function TrustItem({ icon, title, description }) {
       </div>
 
       {/* Title */}
-      <h3 className="text-base font-semibold text-[#072720] tracking-wide mb-2 font-serif">
+      <h3 className="text-base font-semibold text-[#072720] tracking-wide mb-2 ">
         {title}
       </h3>
 
@@ -57,7 +57,7 @@ export default function TrustSection() {
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Heading */}
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-light text-[#072720] tracking-wide">
+          <h2 className="text-xl md:text-3xl lg:text-4xl  font-light text-[#072720] tracking-wide">
             Your Trusted Getaway Partner{' '}
             <span className="inline-block">✨</span>
           </h2>

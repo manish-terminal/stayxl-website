@@ -379,7 +379,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
           {/* Price */}
           <div className="mb-5">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-serif font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
+              <span className="text-2xl  font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
               <span className="text-sm text-gray-400">/ night</span>
             </div>
             {originalPrice && (
@@ -669,7 +669,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                           </div>
                           <span className="text-xs font-medium text-[#072720] truncate">{exp.name}</span>
                         </div>
-                        <span className="text-xs font-serif text-[#072720] flex-shrink-0 ml-2">₹{formatINR(exp.price)}</span>
+                        <span className="text-xs  text-[#072720] flex-shrink-0 ml-2">₹{formatINR(exp.price)}</span>
                       </button>
                     );
                   })}
@@ -853,7 +853,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-lg font-serif font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
+              <span className="text-lg  font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
               <span className="text-xs text-gray-400">/ night</span>
             </div>
             {originalPrice && (
@@ -887,7 +887,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
 
             {/* Header */}
             <div className="px-6 pb-4 flex items-center justify-between border-b border-gray-50">
-              <h3 className="text-lg font-serif font-medium text-[#072720]">Complete your booking</h3>
+              <h3 className="text-lg  font-medium text-[#072720]">Complete your booking</h3>
               <button 
                 onClick={() => setIsMobileDrawerOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -904,7 +904,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 {/* Price Summary */}
                 <div className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
                   <div>
-                    <span className="text-xl font-serif font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
+                    <span className="text-xl  font-medium text-[#072720]">₹{formatINR(pricePerNight)}</span>
                     <span className="text-xs text-gray-400 ml-1">/ night</span>
                   </div>
                   {originalPrice && (
@@ -1155,7 +1155,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                                   <p className="text-[11px] text-gray-400 truncate">{exp.description}</p>
                                 </div>
                               </div>
-                              <span className="text-sm font-serif font-medium text-[#072720] flex-shrink-0 ml-3">₹{formatINR(exp.price)}</span>
+                              <span className="text-sm  font-medium text-[#072720] flex-shrink-0 ml-3">₹{formatINR(exp.price)}</span>
                             </button>
                           );
                         })}
@@ -1217,7 +1217,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                       <span>₹{formatINR(securityDeposit)}</span>
                     </div>
                   )}
-                  <div className="pt-3 border-t border-gray-100 flex justify-between font-serif text-lg font-medium text-[#072720]">
+                  <div className="pt-3 border-t border-gray-100 flex justify-between  text-lg font-medium text-[#072720]">
                     <span>Total Amount</span>
                     <span>₹{formatINR(total)}</span>
                   </div>

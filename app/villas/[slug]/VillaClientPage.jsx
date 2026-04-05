@@ -10,12 +10,15 @@ import VillaStory from '../../components/villa/VillaStory';
 import BedroomAccordion from '../../components/villa/BedroomAccordion';
 import AmenitiesGrid from '../../components/villa/AmenitiesGrid';
 import SpacesSlider from '../../components/villa/SpacesSlider';
+import StayXLExperience from '../../components/villa/StayXLExperience';
 import ExperiencesSlider from '../../components/villa/ExperiencesSlider';
+import FoodSection from '../../components/villa/FoodSection';
 import LocationSection from '../../components/villa/LocationSection';
 import PolicyTabs from '../../components/villa/PolicyTabs';
 import ReviewsSection from '../../components/villa/ReviewsSection';
 import SimilarVillasCarousel from '../../components/villa/SimilarVillasCarousel';
 import SupportCTA from '../../components/villa/SupportCTA';
+import VillaBadges from '../../components/villa/VillaBadges';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 
@@ -75,6 +78,21 @@ export default function VillaClientPage({ villa }) {
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Main Content */}
           <div className="flex-1 min-w-0">
+            {/* Villa Address */}
+            {villa.locationInfo?.address && (
+              <div className="mb-6">
+                <p className="text-sm md:text-base text-[#072720]/60 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#C6A87D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                  </svg>
+                  {villa.locationInfo.address}
+                </p>
+              </div>
+            )}
+
+       
+
             <VillaOverviewBar
               guests={villa.guests}
               eventCapacity={villa.eventCapacity}
@@ -83,6 +101,15 @@ export default function VillaClientPage({ villa }) {
               area={villa.area}
               highlights={villa.highlights}
             />
+                 {/* The StayXL Experience */}
+            <div className="mb-10 -mx-4 md:-mx-6 lg:-mx-8">
+              <StayXLExperience />
+            </div>
+
+            {/* Villa Badges */}
+            <div className="mb-8">
+              <VillaBadges tags={villa.tags} />
+            </div>
 
             {/* Offers */}
             <div className="py-8 border-b border-gray-100">
@@ -109,6 +136,7 @@ export default function VillaClientPage({ villa }) {
               <SpacesSlider spaces={villa.spaces} />
             </div>
 
+
             {/* Experiences & Add-Ons */}
             <div className="py-8 border-b border-gray-100">
               <ExperiencesSlider
@@ -117,6 +145,13 @@ export default function VillaClientPage({ villa }) {
                 onToggle={toggleAddon}
               />
             </div>
+
+            {/* Meals / Food */}
+            {villa.mealsData && (
+              <div className="py-8 border-b border-gray-100">
+                <FoodSection mealsData={villa.mealsData} />
+              </div>
+            )}
 
             {/* Location */}
             <div className="py-8 border-b border-gray-100">

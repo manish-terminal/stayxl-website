@@ -111,7 +111,7 @@ export default function TrustMetrics() {
           </div>
 
           {/* Value */}
-          <p className="text-2xl md:text-3xl font-serif font-light text-[#072720] tracking-tight mb-1">
+          <p className="text-2xl md:text-3xl  font-light text-[#072720] tracking-tight mb-1">
             <AnimatedCounter
               value={metric.value}
               suffix={metric.suffix}

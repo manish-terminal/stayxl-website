@@ -39,7 +39,7 @@ export default function TrustedPartnersSection() {
           </p>
 
           {/* Heading */}
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-[#072720] tracking-wide leading-snug mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl  font-light text-[#072720] tracking-wide leading-snug mb-4">
             Book With Confidence Across
             <br className="hidden md:block" />
             Global Platforms

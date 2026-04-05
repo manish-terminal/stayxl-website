@@ -39,7 +39,7 @@ function HeroBanner({ data }) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
       <div className={`relative z-10 h-full flex flex-col items-center justify-center text-center px-6 transition-all duration-1000 ease-out ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <p className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase text-[#C09A59] font-semibold mb-5">{data.caption}</p>
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white tracking-wide leading-tight mb-5 max-w-3xl">{data.heading}</h1>
+        <h1 className="text-3xl md:text-5xl lg:text-6xl  font-light text-white tracking-wide leading-tight mb-5 max-w-3xl">{data.heading}</h1>
         <p className="text-sm md:text-base text-white/50 font-light max-w-lg mb-8 leading-relaxed">{data.subtext}</p>
         <a href="#intro" className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#C09A59] text-white text-xs tracking-[0.2em] uppercase font-medium rounded-full hover:bg-white hover:text-[#072720] transition-all duration-400 hover:shadow-[0_0_30px_rgba(192,154,89,0.3)]">
           Explore Experience
@@ -71,7 +71,7 @@ function IntroStory({ intro }) {
           </div>
           <div>
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">The Experience</p>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-white tracking-wide leading-snug mb-6">{intro.heading}</h2>
+            <h2 className="text-3xl md:text-4xl  font-light text-white tracking-wide leading-snug mb-6">{intro.heading}</h2>
             <p className="text-sm text-white/50 leading-relaxed mb-6">{intro.description}</p>
             <ul className="space-y-2.5">
               {intro.highlights.map((h, i) => (
@@ -98,7 +98,7 @@ function WhyChoose({ features }) {
       <div className="max-w-6xl mx-auto px-6 md:px-8">
         <div className={`text-center mb-12 transition-all duration-1000 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">Why Choose Us</p>
-          <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">What Makes It <span className="text-white/30">Special</span></h2>
+          <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">What Makes It <span className="text-white/30">Special</span></h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {features.map((f, i) => (
@@ -124,7 +124,7 @@ function CuratedVillas({ villas }) {
       <div className="max-w-6xl mx-auto px-6 md:px-8">
         <div className={`text-center mb-12 transition-all duration-1000 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">Curated Properties</p>
-          <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">Perfect Villas <span className="text-white/30">for This Experience</span></h2>
+          <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">Perfect Villas <span className="text-white/30">for This Experience</span></h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {villas.map((v, i) => (
@@ -143,7 +143,7 @@ function CuratedVillas({ villas }) {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>
                 </div>
               </div>
-              <h3 className="text-base font-serif font-medium text-white group-hover:text-[#C09A59] transition-colors">{v.name}</h3>
+              <h3 className="text-base  font-medium text-white group-hover:text-[#C09A59] transition-colors">{v.name}</h3>
               <p className="text-xs text-white/40 mt-1">{v.location}</p>
             </Link>
           ))}
@@ -166,7 +166,7 @@ function ServicesSlider({ services }) {
         <div className={`flex items-center justify-between mb-10 transition-all duration-1000 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <div>
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-2">Add-On Services</p>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">Enhance <span className="text-white/30">Your Experience</span></h2>
+            <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">Enhance <span className="text-white/30">Your Experience</span></h2>
           </div>
           <div className="flex gap-1.5">
             <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/40 hover:border-[#C09A59] hover:text-[#C09A59] transition-colors" aria-label="Previous"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
@@ -198,7 +198,7 @@ function TimelineFlow({ timeline }) {
       <div className="max-w-3xl mx-auto px-6 md:px-8">
         <div className={`text-center mb-14 transition-all duration-1000 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">How It Works</p>
-          <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">From Enquiry <span className="text-white/30">to Experience</span></h2>
+          <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">From Enquiry <span className="text-white/30">to Experience</span></h2>
         </div>
         <div className="relative">
           {/* Vertical line */}
@@ -207,7 +207,7 @@ function TimelineFlow({ timeline }) {
             {timeline.map((t, i) => (
               <div key={i} className={`flex gap-5 md:gap-8 transition-all duration-700 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`} style={{ transitionDelay: `${i * 200}ms` }}>
                 <div className="relative flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#C09A59]/10 border border-[#C09A59]/30 flex items-center justify-center">
-                  <span className="text-sm font-serif font-medium text-[#C09A59]">{t.step}</span>
+                  <span className="text-sm  font-medium text-[#C09A59]">{t.step}</span>
                 </div>
                 <div className="pt-1">
                   <h3 className="text-sm font-semibold text-white mb-1">{t.title}</h3>
@@ -232,7 +232,7 @@ function GallerySection({ gallery }) {
       <div className="max-w-6xl mx-auto px-6 md:px-8">
         <div className={`text-center mb-10 transition-all duration-1000 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">Gallery</p>
-          <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">A Glimpse <span className="text-white/30">of the Experience</span></h2>
+          <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">A Glimpse <span className="text-white/30">of the Experience</span></h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
           {gallery.slice(0, 6).map((img, i) => (
@@ -262,9 +262,9 @@ function TestimonialsSection({ testimonials }) {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-px bg-[#C09A59]/40" />
       <div className="max-w-3xl mx-auto px-6 md:px-8 text-center">
         <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-10">Guest Stories</p>
-        <div className="text-[#C09A59]/20 text-7xl md:text-8xl font-serif leading-none mb-4 select-none">&ldquo;</div>
+        <div className="text-[#C09A59]/20 text-7xl md:text-8xl  leading-none mb-4 select-none">&ldquo;</div>
         <div className="min-h-[100px] flex items-center justify-center">
-          <p key={active} className="text-base md:text-lg lg:text-xl font-serif font-light text-white/80 leading-relaxed tracking-wide italic" style={{ animation: 'fadeIn 0.6s ease-out' }}>{t.quote}</p>
+          <p key={active} className="text-base md:text-lg lg:text-xl  font-light text-white/80 leading-relaxed tracking-wide italic" style={{ animation: 'fadeIn 0.6s ease-out' }}>{t.quote}</p>
         </div>
         <div className="mt-8 flex flex-col items-center gap-2">
           <div className="w-11 h-11 rounded-full bg-[#C09A59]/15 border border-[#C09A59]/30 flex items-center justify-center">
@@ -295,7 +295,7 @@ function FaqSection({ faqs }) {
       <div className="max-w-3xl mx-auto px-6 md:px-8">
         <div className={`text-center mb-12 transition-all duration-1000 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">Have Questions?</p>
-          <h2 className="text-2xl md:text-3xl font-serif font-light text-white tracking-wide">Frequently Asked <span className="text-white/30">Questions</span></h2>
+          <h2 className="text-2xl md:text-3xl  font-light text-white tracking-wide">Frequently Asked <span className="text-white/30">Questions</span></h2>
         </div>
         <div className="space-y-2">
           {faqs.map((faq, i) => (
@@ -324,7 +324,7 @@ function ConversionCTA({ headline, subtext }) {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-px bg-[#C09A59]" />
       <div className="max-w-2xl mx-auto px-6 md:px-8 text-center">
         <p className="text-[10px] tracking-[0.35em] uppercase text-[#C09A59] font-semibold mb-4">Ready to Begin?</p>
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-white tracking-wide leading-snug mb-4">{headline}</h2>
+        <h2 className="text-2xl md:text-3xl lg:text-4xl  font-light text-white tracking-wide leading-snug mb-4">{headline}</h2>
         <p className="text-sm text-white/40 font-light mb-10 max-w-md mx-auto leading-relaxed">{subtext}</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a href="tel:+919876543210" className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#C09A59] text-white text-xs tracking-[0.2em] uppercase font-medium rounded-full hover:bg-white hover:text-[#072720] transition-all duration-400 hover:shadow-[0_0_30px_rgba(192,154,89,0.25)]">
@@ -353,7 +353,7 @@ export default function ExperiencePage() {
       <main className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <Navbar />
         <div className="text-center">
-          <h1 className="text-2xl font-serif text-white mb-2">Experience Not Found</h1>
+          <h1 className="text-2xl  text-white mb-2">Experience Not Found</h1>
           <p className="text-sm text-white/40 mb-6">The experience you&apos;re looking for doesn&apos;t exist.</p>
           <Link href="/" className="text-sm text-[#C09A59] hover:underline">← Back to Home</Link>
         </div>

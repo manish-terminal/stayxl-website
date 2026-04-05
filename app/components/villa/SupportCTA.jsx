@@ -4,7 +4,7 @@ export default function SupportCTA() {
   return (
     <section className="bg-[#072720] py-10 md:py-14">
       <div className="max-w-3xl mx-auto px-6 md:px-8 text-center">
-        <h2 className="text-xl md:text-2xl font-serif font-light text-white mb-2">
+        <h2 className="text-xl md:text-2xl  font-light text-white mb-2">
           Need Help Planning Your Stay?
         </h2>
         <p className="text-sm text-white/40 mb-6">

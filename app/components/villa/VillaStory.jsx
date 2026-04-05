@@ -10,7 +10,7 @@ export default function VillaStory({ story = '', name = '' }) {
 
   return (
     <div>
-      <h2 className="text-lg font-serif font-medium text-[#072720] mb-4">
+      <h2 className="text-lg  font-medium text-[#072720] mb-4">
         About {name}
       </h2>
 

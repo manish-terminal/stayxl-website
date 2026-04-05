@@ -1,13 +1,22 @@
 'use client';
 
+import { useState } from 'react';
+
+const TABS = [
+  { id: 'attractions', label: 'Nearby Attractions' },
+  { id: 'reach', label: 'How to Reach' },
+  { id: 'tips', label: 'Travel Tips' },
+];
+
 export default function LocationSection({ locationInfo }) {
-  // Handle both string and object location data
+  const [activeTab, setActiveTab] = useState('attractions');
+
   const data = typeof locationInfo === 'object' && locationInfo !== null ? locationInfo : null;
 
   if (!data || typeof data === 'string') {
     return (
       <div>
-        <h2 className="text-lg font-serif font-medium text-[#072720] mb-4">Location</h2>
+        <h2 className="text-lg  font-medium text-[#072720] mb-4">Location</h2>
         <p className="text-sm text-gray-400">{typeof locationInfo === 'string' ? locationInfo : 'Location details coming soon.'}</p>
       </div>
     );
@@ -15,7 +24,7 @@ export default function LocationSection({ locationInfo }) {
 
   return (
     <div>
-      <h2 className="text-lg font-serif font-medium text-[#072720] mb-5">Location & Getting There</h2>
+      <h2 className="text-lg  font-medium text-[#072720] mb-5">Location & Getting There</h2>
 
       {/* Map Placeholder */}
       <div className="relative w-full h-52 md:h-64 rounded-xl overflow-hidden bg-gray-100 mb-6">
@@ -39,49 +48,72 @@ export default function LocationSection({ locationInfo }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 3 Tabs */}
+      <div className="flex gap-1 bg-gray-50 rounded-lg p-1 mb-5">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 text-xs font-medium py-2 px-3 rounded-md transition-all duration-200 ${
+              activeTab === tab.id
+                ? 'bg-white text-[#072720] shadow-sm'
+                : 'text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      <div className="min-h-[180px]">
+
         {/* Nearby Attractions */}
-        <div>
-          <h3 className="text-xs tracking-[0.2em] uppercase text-gray-400 font-semibold mb-3">Nearby Attractions</h3>
-          <div className="space-y-2">
+        {activeTab === 'attractions' && (
+          <div className="space-y-1">
             {data.nearbyAttractions?.map((place, i) => (
-              <div key={i} className="flex items-center justify-between py-1.5">
+              <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                 <span className="text-sm text-[#072720]/70">{place.name}</span>
-                <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded">{place.distance}</span>
+                <span className="text-xs text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full flex-shrink-0 ml-3">{place.distance}</span>
               </div>
             ))}
           </div>
-        </div>
+        )}
 
-        {/* Distances & Tips */}
-        <div>
-          <h3 className="text-xs tracking-[0.2em] uppercase text-gray-400 font-semibold mb-3">How to Reach</h3>
-          <div className="space-y-2 mb-5">
+        {/* How to Reach */}
+        {activeTab === 'reach' && (
+          <div className="space-y-3">
             {data.distances && Object.entries(data.distances).map(([key, value], i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-[#072720]/70">
-                <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                </svg>
-                <span>{value}</span>
+              <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                  {key === 'airport' ? (
+                    <svg className="w-4 h-4 text-[#C6A87D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 text-[#C6A87D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                  )}
+                </div>
+                <span className="text-sm text-[#072720]/70">{value}</span>
               </div>
             ))}
           </div>
+        )}
 
-          {data.travelTips && (
-            <>
-              <h3 className="text-xs tracking-[0.2em] uppercase text-gray-400 font-semibold mb-3">Travel Tips</h3>
-              <ul className="space-y-1.5">
-                {data.travelTips.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-gray-400 leading-relaxed">
-                    <span className="text-[#C6A87D] mt-0.5">•</span>
-                    {tip}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
+        {/* Travel Tips */}
+        {activeTab === 'tips' && data.travelTips && (
+          <ul className="space-y-2.5">
+            {data.travelTips.map((tip, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-sm text-[#072720]/60 leading-relaxed">
+                <span className="text-[#C6A87D] mt-0.5 flex-shrink-0">•</span>
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

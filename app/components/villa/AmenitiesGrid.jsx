@@ -56,7 +56,7 @@ export default function AmenitiesGrid({ amenities = {} }) {
 
   return (
     <div>
-      <h2 className="text-lg font-serif font-medium text-[#072720] mb-5">
+      <h2 className="text-lg  font-medium text-[#072720] mb-5">
         Amenities
       </h2>
 

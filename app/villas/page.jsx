@@ -166,7 +166,7 @@ export default function VillasPage() {
     <main className="min-h-screen bg-[#faf9f6]">
       <Navbar />
       <div className="bg-[#072720] text-white py-16 md:py-20 text-center">
-        <h1 className="text-4xl md:text-5xl font-serif font-light mb-4">Explore Our Collection</h1>
+        <h1 className="text-4xl md:text-5xl  font-light mb-4">Explore Our Collection</h1>
         <p className="text-white/60 font-light tracking-widest uppercase text-sm">Handpicked Luxury Stays</p>
       </div>
       

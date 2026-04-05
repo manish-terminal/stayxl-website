@@ -120,7 +120,7 @@ export default function EventsSection() {
           {/* Decorative line */}
           <div className="w-10 h-px bg-[#072720]/20 mx-auto mb-6"></div>
 
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-[#072720] tracking-wide leading-snug mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl  font-light text-[#072720] tracking-wide leading-snug mb-4">
             Experiences & Add-Ons
           </h2>
 

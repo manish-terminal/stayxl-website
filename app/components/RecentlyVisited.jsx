@@ -10,8 +10,8 @@ export default function RecentlyVisited() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Just show first 4 for now
-    setVillas(staticVillas.slice(0, 4));
+    // Show top 8 villas (we currently have 5)
+    setVillas(staticVillas.slice(0, 8));
     setLoading(false);
   }, []);
 
@@ -32,6 +32,7 @@ export default function RecentlyVisited() {
       amenities: allAmenities.slice(0, 3),
       price: villa.pricePerNight,
       slug: villa.slug,
+      tags: villa.tags || [],
     };
   };
 
@@ -67,7 +68,7 @@ export default function RecentlyVisited() {
         {/* Section Header */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#072720] font-serif mb-2">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#072720]  mb-2">
               Our Villas
             </h2>
             <p className="text-gray-600">
@@ -80,9 +81,9 @@ export default function RecentlyVisited() {
         </div>
 
         {/* Desktop: Grid Layout */}
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
           {villas.map((villa) => (
-            <Link key={villa.id} href={`/villas/${villa.slug}`}>
+            <Link key={villa.id} href={`/villas/${villa.slug}`} className="block h-full">
               <VillaCard {...mapVilla(villa)} />
             </Link>
           ))}
@@ -92,8 +93,8 @@ export default function RecentlyVisited() {
         <div className="md:hidden overflow-x-auto scrollbar-hide -mx-4 px-4">
           <div className="flex gap-4 pb-4">
             {villas.map((villa) => (
-              <div key={villa.id} className="flex-none w-[85vw] max-w-sm">
-                <Link href={`/villas/${villa.slug}`}>
+              <div key={villa.id} className="flex-none w-[85vw] max-w-sm h-auto flex flex-col">
+                <Link href={`/villas/${villa.slug}`} className="block h-full">
                   <VillaCard {...mapVilla(villa)} />
                 </Link>
               </div>

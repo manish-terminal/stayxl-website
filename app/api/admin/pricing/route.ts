@@ -6,15 +6,15 @@ const GO_BACKEND = process.env.GO_BACKEND_URL || 'https://your-api-gateway.execu
 const ADMIN_KEY = process.env.ADMIN_API_KEY || 'stayxl-admin-secret-2026';
 
 /**
- * POST /api/admin/block-dates
- * Block dates for a villa (admin only)
+ * POST /api/admin/pricing
+ * Set date-specific price override (admin only)
  */
 export async function POST(req: NextRequest) {
     try {
         await requireAdmin(req);
         const body = await req.json();
 
-        const res = await fetch(`${GO_BACKEND}/api/admin/block-dates`, {
+        const res = await fetch(`${GO_BACKEND}/api/admin/pricing`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_KEY },
             body: JSON.stringify(body),
@@ -28,15 +28,15 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * GET /api/admin/block-dates?villaId=...
- * List blocked dates for a villa (admin only)
+ * GET /api/admin/pricing?villaId=...
+ * List date-specific pricing for a villa (admin only)
  */
 export async function GET(req: NextRequest) {
     try {
         await requireAdmin(req);
         const villaId = req.nextUrl.searchParams.get('villaId');
 
-        const res = await fetch(`${GO_BACKEND}/api/admin/block-dates?villaId=${villaId}`, {
+        const res = await fetch(`${GO_BACKEND}/api/admin/pricing?villaId=${villaId}`, {
             headers: { 'X-Admin-Key': ADMIN_KEY },
         });
 
@@ -48,15 +48,15 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * DELETE /api/admin/block-dates?id=...
- * Unblock dates for a villa (admin only)
+ * DELETE /api/admin/pricing?id=...
+ * Delete a date-specific price override (admin only)
  */
 export async function DELETE(req: NextRequest) {
     try {
         await requireAdmin(req);
         const id = req.nextUrl.searchParams.get('id');
 
-        const res = await fetch(`${GO_BACKEND}/api/admin/block-dates/${id}`, {
+        const res = await fetch(`${GO_BACKEND}/api/admin/pricing/${id}`, {
             method: 'DELETE',
             headers: { 'X-Admin-Key': ADMIN_KEY },
         });

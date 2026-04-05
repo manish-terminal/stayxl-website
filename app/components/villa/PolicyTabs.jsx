@@ -24,7 +24,7 @@ export default function PolicyTabs({ policies = {}, rules = [], pricing = {} }) 
 
   return (
     <div>
-      <h2 className="text-lg font-serif font-medium text-[#072720] mb-5">Policies & Rules</h2>
+      <h2 className="text-lg  font-medium text-[#072720] mb-5">Policies & Rules</h2>
 
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto scrollbar-hide mb-5 pb-0.5">

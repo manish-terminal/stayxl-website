@@ -20,7 +20,7 @@ export default function ExperiencesSlider({ experiences = [], selectedAddons = [
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-serif font-medium text-[#072720]">Experiences & Add-Ons</h2>
+          <h2 className="text-lg  font-medium text-[#072720]">Experiences & Add-Ons</h2>
           <p className="text-xs text-gray-400 mt-0.5">Enhance your stay with curated services</p>
         </div>
         <div className="flex gap-1.5">
@@ -89,7 +89,7 @@ export default function ExperiencesSlider({ experiences = [], selectedAddons = [
 
               {exp.description && <p className="text-xs text-gray-400 leading-relaxed mb-2 line-clamp-2">{exp.description}</p>}
               <div className="flex items-center justify-between">
-                <span className="text-sm font-serif font-medium text-[#072720]">
+                <span className="text-sm  font-medium text-[#072720]">
                   {exp.price !== null ? `₹${exp.price.toLocaleString('en-IN')}` : 'Request Price'}
                 </span>
                 {onToggle && exp.price !== null ? (

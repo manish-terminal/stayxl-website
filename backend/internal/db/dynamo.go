@@ -323,6 +323,7 @@ type DynamoClient struct {
 	OffersTable       string
 	BlockedDatesTable string
 	PaymentsTable     string
+	DatePricingTable  string
 }
 
 // NewDynamoClient initializes and returns a DynamoClient
@@ -342,6 +343,7 @@ func NewDynamoClient(ctx context.Context) (*DynamoClient, error) {
 		OffersTable:       getEnv("OFFERS_TABLE", "StayXLOffers"),
 		BlockedDatesTable: getEnv("BLOCKED_DATES_TABLE", "StayXLBlockedDates"),
 		PaymentsTable:     getEnv("PAYMENTS_TABLE", "StayXLPayments"),
+		DatePricingTable:  getEnv("DATE_PRICING_TABLE", "StayXLDatePricing"),
 	}, nil
 }
 
@@ -350,4 +352,108 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+// ─── ADMIN: BLOCKED DATES ───
+
+// SaveBlockedDate stores a blocked date range
+func (d *DynamoClient) SaveBlockedDate(ctx context.Context, bd *models.BlockedDate) error {
+	av, err := attributevalue.MarshalMap(bd)
+	if err != nil {
+		return err
+	}
+	_, err = d.Client.PutItem(ctx, &dynamodb.PutItemInput{
+		TableName: aws.String(d.BlockedDatesTable),
+		Item:      av,
+	})
+	return err
+}
+
+// DeleteBlockedDate removes a blocked date range by ID
+func (d *DynamoClient) DeleteBlockedDate(ctx context.Context, id string) error {
+	_, err := d.Client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
+		TableName: aws.String(d.BlockedDatesTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+	})
+	return err
+}
+
+// GetBlockedDatesByVilla returns all blocked date ranges for a villa
+func (d *DynamoClient) GetBlockedDatesByVilla(ctx context.Context, villaID string) ([]models.BlockedDate, error) {
+	result, err := d.Client.Query(ctx, &dynamodb.QueryInput{
+		TableName:              aws.String(d.BlockedDatesTable),
+		IndexName:              aws.String("VillaBlockedIndex"),
+		KeyConditionExpression: aws.String("villaId = :vid"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":vid": &types.AttributeValueMemberS{Value: villaID},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	var dates []models.BlockedDate
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &dates)
+	return dates, err
+}
+
+// ─── ADMIN: DATE PRICING ───
+
+// SaveDatePricing stores a date-specific price override
+func (d *DynamoClient) SaveDatePricing(ctx context.Context, dp *models.DatePricing) error {
+	av, err := attributevalue.MarshalMap(dp)
+	if err != nil {
+		return err
+	}
+	_, err = d.Client.PutItem(ctx, &dynamodb.PutItemInput{
+		TableName: aws.String(d.DatePricingTable),
+		Item:      av,
+	})
+	return err
+}
+
+// DeleteDatePricing removes a date-specific price override by ID
+func (d *DynamoClient) DeleteDatePricing(ctx context.Context, id string) error {
+	_, err := d.Client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
+		TableName: aws.String(d.DatePricingTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+	})
+	return err
+}
+
+// GetDatePricingByVilla returns all date-specific price overrides for a villa
+func (d *DynamoClient) GetDatePricingByVilla(ctx context.Context, villaID string) ([]models.DatePricing, error) {
+	result, err := d.Client.Query(ctx, &dynamodb.QueryInput{
+		TableName:              aws.String(d.DatePricingTable),
+		IndexName:              aws.String("VillaPricingIndex"),
+		KeyConditionExpression: aws.String("villaId = :vid"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":vid": &types.AttributeValueMemberS{Value: villaID},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	var pricing []models.DatePricing
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &pricing)
+	return pricing, err
+}
+
+// UpdateVillaPrice updates the base pricePerNight of a villa
+func (d *DynamoClient) UpdateVillaPrice(ctx context.Context, villaID string, newPrice int) error {
+	_, err := d.Client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+		TableName: aws.String(d.VillasTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: villaID},
+		},
+		UpdateExpression: aws.String("SET pricePerNight = :price, updatedAt = :updatedAt"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":price":     &types.AttributeValueMemberN{Value: fmt.Sprintf("%d", newPrice)},
+			":updatedAt": &types.AttributeValueMemberS{Value: time.Now().Format(time.RFC3339)},
+		},
+	})
+	return err
 }

@@ -1,188 +1,5 @@
 export const villas = [
   {
-    id: 'v-ivory',
-    slug: 'the-ivory-manor',
-    name: 'The Ivory Manor',
-    tagline: 'A Serene Hilltop Retreat With Panoramic Valley Views',
-    location: 'Kasauli, Himachal Pradesh',
-    rating: 4.9,
-    reviewCount: 127,
-    guests: 8,
-    bedrooms: 4,
-    bathrooms: 3,
-    area: '3,200 sq ft',
-    pricePerNight: 18500,
-    originalPrice: 24000,
-    highlights: ['Private Pool', 'Mountain View', 'Pet Friendly', 'Fireplace'],
-    images: [
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=2070&auto=format&fit=crop',
-    ],
-    story: 'Nestled in the serene hills of Kasauli, The Ivory Manor is a stunning 4-bedroom luxury villa that offers an unparalleled retreat from the hustle and bustle of city life. Surrounded by towering pine and cedar trees, this property sits at an elevation of 6,000 feet, offering breathtaking panoramic views of the Shivalik range.',
-    amenities: {
-      popular: ['Private Pool', 'Mountain View', 'Fireplace', 'BBQ Area', 'Bonfire Pit'],
-      kitchen: ['Modular Kitchen', 'Refrigerator', 'Microwave', 'Coffee Maker'],
-      outdoor: ['Garden', 'Infinity Pool', 'Deck', 'Sun Loungers'],
-    },
-    locationInfo: {
-      address: 'Near Heritage Market, Kasauli, Himachal Pradesh 173204',
-      mapUrl: 'https://maps.google.com/?q=30.8985,76.9615',
-    }
-  },
-  {
-    id: 'v-delsol',
-    slug: 'villa-del-sol',
-    name: 'Villa del Sol',
-    tagline: 'Mediterranean Luxury On The Konkan Coast',
-    location: 'Alibaug, Maharashtra',
-    rating: 4.8,
-    reviewCount: 94,
-    guests: 12,
-    bedrooms: 6,
-    bathrooms: 5,
-    area: '5,500 sq ft',
-    pricePerNight: 24000,
-    originalPrice: 28000,
-    highlights: ['Beachfront', 'Infinity Pool', 'Huge Lawn', 'Outdoor Bar'],
-    images: [
-      'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=2070&auto=format&fit=crop',
-    ],
-    story: 'Villa del Sol is a sprawling Mediterranean-style estate located just steps away from the pristine beaches of Alibaug. With its whitewashed walls, azure accents, and massive coconut groves, it brings the spirit of Mykonos to the Indian coast.',
-    amenities: {
-      popular: ['Beach Access', 'Infinity Pool', 'BBQ Area', 'Outdoor Bar'],
-      kitchen: ['Full Kitchen', 'Washing Machine', 'Dishwasher'],
-      outdoor: ['Private Beach Path', 'Gazebo', 'Hammocks'],
-    },
-    locationInfo: {
-      address: 'Awas Beach Road, Alibaug, Maharashtra 402201',
-      mapUrl: 'https://maps.google.com/?q=18.7300,72.8700',
-    }
-  },
-  {
-    id: 'v-chateau',
-    slug: 'the-grand-chateau',
-    name: 'The Grand Chateau',
-    tagline: 'Indo-Portuguese Opulence In The Heart Of Goa',
-    location: 'North Goa',
-    rating: 4.9,
-    reviewCount: 210,
-    guests: 16,
-    bedrooms: 8,
-    bathrooms: 6,
-    area: '8,000 sq ft',
-    pricePerNight: 32000,
-    originalPrice: 45000,
-    highlights: ['Private Cinema', 'Chef Service', 'Heritage Decor', 'Large Pool'],
-    images: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2070&auto=format&fit=crop',
-    ],
-    story: 'A meticulously restored Indo-Portuguese mansion, The Grand Chateau offers a royal stay experience. High ceilings, oyster-shell windows, and sprawling courtyards define this heritage masterpiece in the lush countryside of North Goa.',
-    amenities: {
-      popular: ['Private Cinema', 'Heritage Courtyard', 'Butler Service', 'Pool Table'],
-      kitchen: ['Commercial Kitchen', 'Walk-in Pantry', 'Wine Cellar'],
-      outdoor: ['Fountain Garden', 'Swimming Pool', 'Veranda'],
-    },
-    locationInfo: {
-      address: 'Assagao-Badem Road, North Goa 403507',
-      mapUrl: 'https://maps.google.com/?q=15.5900,73.7400',
-    }
-  },
-  {
-    id: 'v-serenity',
-    slug: 'serenity-heights',
-    name: 'Serenity Heights',
-    tagline: 'Modernist Sanctuary Above The Clouds',
-    location: 'Lonavala, Maharashtra',
-    rating: 4.7,
-    reviewCount: 82,
-    guests: 6,
-    bedrooms: 3,
-    bathrooms: 2,
-    area: '2,800 sq ft',
-    pricePerNight: 15200,
-    originalPrice: 20000,
-    highlights: ['Glass Walls', 'Jacuzzi', 'Valley View', 'Modern Art'],
-    images: [
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2070&auto=format&fit=crop',
-    ],
-    story: 'Perched on the edge of a cliff in Lonavala, Serenity Heights is a modernist architectural marvel. Its glass walls offer unhindered views of the Sahyadri mountains, especially magical during the monsoon mist.',
-    amenities: {
-      popular: ['Jacuzzi', 'Valley View Deck', 'Smart Home Tech', 'Fire Pit'],
-      kitchen: ['Open Kitchen', 'Bar Setup', 'Air Fryer'],
-      outdoor: ['Sky Deck', 'Plunge Pool', 'Yoga Lawn'],
-    },
-    locationInfo: {
-      address: 'Tungarli Hill, Lonavala, Maharashtra 410401',
-      mapUrl: 'https://maps.google.com/?q=18.7500,73.4000',
-    }
-  },
-  {
-    id: 'v-woodland',
-    slug: 'woodland-retreat',
-    name: 'Woodland Retreat',
-    tagline: 'Cozy Cabin Vibes Amidst Coffee Plantations',
-    location: 'Coorg, Karnataka',
-    rating: 4.8,
-    reviewCount: 65,
-    guests: 4,
-    bedrooms: 2,
-    bathrooms: 2,
-    area: '1,800 sq ft',
-    pricePerNight: 12800,
-    originalPrice: 16000,
-    highlights: ['Steam Room', 'Nature Trails', 'Organic Garden', 'Library'],
-    images: [
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop',
-    ],
-    story: 'Escape to the whispering woods of Coorg. This intimate 2-bedroom retreat is built with local stone and reclaimed wood, offering a warm cabin-like feel deep within a 50-acre coffee estate.',
-    amenities: {
-      popular: ['Steam Room', 'Nature Trails', 'Library', 'Coffee Estate Walk'],
-      kitchen: ['Farm-to-Table Meals', 'Clay Oven', 'Baking Kit'],
-      outdoor: ['Observation Deck', 'Herb Garden', 'Bonfire Area'],
-    },
-    locationInfo: {
-      address: 'Madenadu Village, Coorg, Karnataka 571201',
-      mapUrl: 'https://maps.google.com/?q=12.4200,75.7300',
-    }
-  },
-  {
-    id: 'v-azure',
-    slug: 'azure-bay-estate',
-    name: 'Azure Bay Estate',
-    tagline: 'Waterfront Tranquility In The Backwaters',
-    location: 'Kochi, Kerala',
-    rating: 4.9,
-    reviewCount: 52,
-    guests: 10,
-    bedrooms: 5,
-    bathrooms: 4,
-    area: '4,500 sq ft',
-    pricePerNight: 28500,
-    originalPrice: 35000,
-    highlights: ['Backwater View', 'Private Jetty', 'Ayurvedic Spa', 'Traditional Architecture'],
-    images: [
-      'https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?q=80&w=2070&auto=format&fit=crop',
-    ],
-    story: 'Azure Bay Estate is a tribute to Kerala’s rich architectural heritage. Situated on the banks of a serene backwater canal, the villa features its own private jetty and a traditional wooden "Ara" for meditation.',
-    amenities: {
-      popular: ['Private Jetty', 'Ayurvedic Spa Room', 'Temple Pond', 'Boat Service'],
-      kitchen: ['Traditional Kitchen', 'Juice Bar', 'Spice Garden'],
-      outdoor: ['Waterfront Deck', 'Fishing Spot', 'Hammocks'],
-    },
-    locationInfo: {
-      address: 'Kumbalangy Waterfront, Kochi, Kerala 682007',
-      mapUrl: 'https://maps.google.com/?q=9.9300,76.2600',
-    }
-  },
-  {
     id: 'v-samaya',
     slug: 'samaya-villa-hyderabad',
     name: 'Samaya',
@@ -262,6 +79,17 @@ export const villas = [
       { name: 'Late Night Mini Bar', price: null, description: 'Stocked mini bar and snacks for late-night gatherings', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop' },
       { name: 'Spa & Group Yoga', price: null, description: 'Wellness sessions by the pool or in the amphitheater', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format&fit=crop' },
     ],
+    mealsData: {
+      bannerImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop',
+      notes: [
+        'Due to the shortage of LPG, meals will be served subject to availability.',
+        'All rates are on a per person, per day basis.',
+        'Jain meals are available upon request.',
+        'Barbecue can also be arranged at an additional cost.',
+        'Reheating and consumption of non-vegetarian food is not allowed.',
+        'Please inform us of your meal preference in advance and allow us a minimum 48 hrs notice prior to your check-in date.',
+      ],
+    },
     policies: {
       checkIn: '2:00 PM',
       checkOut: '11:00 AM',
@@ -290,7 +118,7 @@ export const villas = [
     ],
     // cancellationPolicy: 'Full refund within 12 hours',
     tags: [
-      'Luxury Stay', 'Wedding Friendly', 'Event Friendly', 'Shoot Friendly',
+      'StayXL Luxury', 'Luxury Stay', 'Wedding Friendly', 'Event Friendly', 'Shoot Friendly',
     ],
     media: {
       brochure: 'https://www.canva.com/design/DAHBgKS4Kh8/3k1oRgLVyvv6RtTb9M3Bvg/edit',
@@ -370,8 +198,9 @@ export const villas = [
       ],
     },
     similarVillas: [
-      { slug: 'the-ivory-manor', name: 'The Ivory Manor', location: 'Kasauli', pricePerNight: 18500, guests: 8, image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2070&auto=format&fit=crop' },
-      { slug: 'villa-del-sol', name: 'Villa del Sol', location: 'Alibaug', pricePerNight: 24000, guests: 12, image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=2070&auto=format&fit=crop' },
+      { slug: 'sagewood-villa-hyderabad', name: 'Sagewood', location: 'Hyderabad', pricePerNight: 16500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp' },
+      { slug: 'kodur', name: 'Kodur', location: 'Hyderabad', pricePerNight: 12500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Full%20Villa%20Exterior%20with%20Private%20Lawn.webp' },
+      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Hyderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
     ]
   },
   {
@@ -399,27 +228,28 @@ export const villas = [
     },
     rating: 4.8,
     reviewCount: 42,
-    guests: 12,
+    guests: '12+',
     eventCapacity: 50,
     bedrooms: 4,
     bathrooms: 4,
     area: '4BHK Farmhouse',
     highlights: [
+      'Best budget 4BHK in category',
       'Rooftop seating with pool view',
       'Macramé & Boho chic cozy interiors',
+      'Frequently booked by women',
       'Balanced price-to-design ratio',
-      'Private pool & Gazebo',
-      'Event-friendly for small groups',
     ],
     pricePerNight: 16500,
     originalPrice: 22000,
     offers: [
       { title: 'Book 2 Nights & Get 3rd Night at 50% Off', type: 'stay' },
       { title: 'Flat 40% Off (Up to ₹3,000) Every Wednesday', type: 'limited-day' },
-      { title: 'Complimentary BBQ or Bonfire or Late Checkout (Pick One)', type: 'freebie', note: 'Book now (timer 12hr)' },
+      { title: 'Book now (timer 12hr) = enjoy a complimentary <BBQ or bonfire or late checkout (subject to availabelity)> (pick one).', type: 'freebie', note: 'Book now' },
       { title: 'Event Advantage – 10% Savings on Extra Guest', type: 'event' },
+      { title: 'Free Early Check-In for Event Bookings', type: 'event' },
     ],
-    story: 'Sagewood is the best budget 4BHK private pool villa in Hyderabad, featuring warm, aesthetic farmhouse vibes. It is renowned for its rooftop lounge with scenic top-floor seating and views of the pool. The interiors, styled in Macramé and Boho chic, provide a cozy haven for family stays and social gatherings.',
+    story: 'Best 4BHK Budget Private Pool Villa in Hyderabad with Rooftop Bar. 1–2 day family retreats, friends’ getaways. Macramé-style cozy design, top-floor bar seating. Warm, aesthetic 4BHK farmhouse. Rooftop lounge, Scenic top-floor seating, Aesthetic interiors.',
     bedroomDetails: [
       { type: '4 Bedrooms', note: 'Aesthetic interiors with cozy design' },
     ],
@@ -427,14 +257,25 @@ export const villas = [
       { count: 4 },
     ],
     amenities: {
-      popular: ['Private Pool', 'Lawn', 'Parking', 'Bonfire Area', 'Gazebo'],
-      kitchen: ['Refrigerator', 'Water Purifier', 'Stove', 'Microwave', 'Utensils'],
-      outdoor: ['Rooftop Bar', 'Private Pool', 'Lawn', 'Gazebo', 'Balcony/Terrace'],
-      entertainment: ['Music System', 'TV', 'Indoor/Outdoor Games'],
+      popular: ['🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🌅 Balcony/Terrace', '🔥 Bonfire', '🛖 Gazebo', '🍸 1st floor elevated eating / lounge'],
+      kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
+      outdoor: ['🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🌅 Balcony/Terrace', '🔥 Bonfire', '🛖 Gazebo', '🍸 1st floor elevated eating / lounge'],
+      entertainment: ['🔊 Music System/Speaker', '📺 TV', '🎮 Indoor/Outdoor Games'],
     },
+    images: [
+      'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Private%20Pool.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Indoor%20%7C%20Living%20Room.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Terrace%20Sit-out.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Indoor%20%7C%20Bedroom3.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Exterior%20View%20%28Evening%29.webp',
+    ],
     spaces: [
-      { name: 'Rooftop Lounge', description: 'Scenic top-floor seating area with bar setup', features: ['Bar Seating', 'Pool View', 'Ambient Lighting'], image: 'https://images.unsplash.com/photo-1510629954389-c1e0da47d414?q=80&w=2070&auto=format&fit=crop' },
-      { name: 'Private Pool', description: 'Refreshing pool area surrounded by greenery', features: ['Sun Loungers', 'Clean Water', 'Night Lighting'], image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=2070&auto=format&fit=crop' },
+      { name: 'Rooftop Lounge', description: 'Scenic top-floor seating area with bar setup', features: ['Bar Seating', 'Pool View', 'Ambient Lighting'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Terrace%20Sit-out.webp' },
+      { name: 'Private Pool', description: 'Refreshing pool area surrounded by greenery', features: ['Sun Loungers', 'Clean Water', 'Night Lighting'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Private%20Pool.webp' },
+      { name: 'Grand Lawn', description: 'Expansive lawn area with pool view', features: ['Lush Green', 'Pool View', 'Spacious'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp' },
+      { name: 'Living Room', description: 'Cozy and aesthetic living area', features: ['Boho Chic', 'AC', 'Comfortable'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Indoor%20%7C%20Living%20Room.webp' },
+      { name: 'Master Suite', description: 'Comfortable bedroom with modern decor', features: ['Queen Bed', 'AC', 'En-suite'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Indoor%20%7C%20Bedroom3.webp' },
     ],
     experiences: [
       { name: 'Cancellation Insurance', price: 2500, description: 'Get a full refund if you cancel anytime before check-in. No questions asked.', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=600&auto=format&fit=crop' },
@@ -445,17 +286,29 @@ export const villas = [
       { name: 'Late Night Mini Bar', price: null, description: 'Stocked mini bar and snacks for late-night gatherings', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop' },
       { name: 'Spa & Group Yoga', price: null, description: 'Wellness sessions by the pool or in the amphitheater', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format&fit=crop' },
     ],
+    mealsData: {
+      bannerImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop',
+      notes: [
+        'Due to the shortage of LPG, meals will be served subject to availability.',
+        'All rates are on a per person, per day basis.',
+        'Jain meals are available upon request.',
+        'Barbecue can also be arranged at an additional cost.',
+        'Reheating and consumption of non-vegetarian food is not allowed.',
+        'Please inform us of your meal preference in advance and allow us a minimum 48 hrs notice prior to your check-in date.',
+      ],
+    },
     policies: {
       checkIn: '2:00 PM',
       checkOut: '11:00 AM',
-      earlyCheckIn: 'Complimentary for Event Bookings',
+      earlyCheckIn: 'Subject to availability (call us/text us)',
       refund: 'Refund within 12 hrs on the same account',
       security: 'Private Pool & Lawn restricted access rules apply',
       roomSecurity: 'Each bedroom has separate lock and key',
-      cookingPolicy: 'Guests do not have access to cook. Kitchen amenities (fridge, microwave) are free. Full cooking access available at ₹1500 cleaning fee.',
+      cookingPolicy: 'Guests do not have access to cook. however fridge, microwave and other kitchen amenites are free. if they wish to cook then a cleaning + Upkeep (1500) is charged',
       cancellation: [
         { period: '12+ days before check-in', refund: '100% refund' },
-        { period: 'Within 12 hours', refund: 'Immediate Refund processed' },
+        { period: '6-12 days before check-in', refund: '60% Voucher or 50% refund' },
+        { period: 'Within 6 days of check-in', refund: 'No refund' },
       ]
     },
     pricing: {
@@ -469,8 +322,13 @@ export const villas = [
       'No cooking by guests allowed by default',
     ],
     tags: [
-      'Budget Luxury', 'Rooftop Bar', 'Boho Chic', 'Shoot Friendly', 'Family Retreat',
+      'StayXL Luxury', 'Budget Luxury', 'Rooftop Bar', 'Boho Chic', 'Shoot Friendly', 'Family Retreat',
     ],
+    similarVillas: [
+      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Hyderabad', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
+      { slug: 'kodur', name: 'Kodur', location: 'Hyderabad', pricePerNight: 12500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Full%20Villa%20Exterior%20with%20Private%20Lawn.webp' },
+      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Hyderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
+    ]
   },
   {
     id: 'v-kodur',
@@ -547,6 +405,17 @@ export const villas = [
       { name: 'Late Night Mini Bar', price: null, description: 'Stocked mini bar and snacks for late-night gatherings', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop' },
       { name: 'Spa & Group Yoga', price: null, description: 'Wellness sessions by the pool or in the amphitheater', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format&fit=crop' },
     ],
+    mealsData: {
+      bannerImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop',
+      notes: [
+        'Due to the shortage of LPG, meals will be served subject to availability.',
+        'All rates are on a per person, per day basis.',
+        'Jain meals are available upon request.',
+        'Barbecue can also be arranged at an additional cost.',
+        'Reheating and consumption of non-vegetarian food is not allowed.',
+        'Please inform us of your meal preference in advance and allow us a minimum 48 hrs notice prior to your check-in date.',
+      ],
+    },
     policies: {
       checkIn: '2:00 PM',
       checkOut: '11:00 AM',
@@ -572,7 +441,7 @@ export const villas = [
       'Event setup flexibility must be discussed in advance',
     ],
     tags: [
-      'Women Preferred', 'Scenic', 'Event Friendly', 'Private Pool', 'Farmhouse',
+      'StayXL Luxury', 'Women Preferred', 'Scenic', 'Event Friendly', 'Private Pool', 'Farmhouse',
     ],
     images: [
       'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Full%20Villa%20Exterior%20with%20Private%20Lawn.webp',
@@ -582,6 +451,11 @@ export const villas = [
       'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Bedroom%20with%20TV%20%26%20Attached%20Bathroom.webp',
       'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Spacious%20Lawn%20with%20Villa%20Exterior%20View.webp',
     ],
+    similarVillas: [
+      { slug: 'sagewood-villa-hyderabad', name: 'Sagewood', location: 'Hyderabad', pricePerNight: 16500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp' },
+      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Hyderabad', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
+      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Hyderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
+    ]
   },
   {
     id: 'v-tranquilla',
@@ -658,6 +532,17 @@ export const villas = [
       { name: 'Late Night Mini Bar', price: null, description: 'Stocked mini bar and snacks for late-night gatherings', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop' },
       { name: 'Spa & Group Yoga', price: null, description: 'Wellness sessions by the pool or in the amphitheater', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format&fit=crop' },
     ],
+    mealsData: {
+      bannerImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop',
+      notes: [
+        'Due to the shortage of LPG, meals will be served subject to availability.',
+        'All rates are on a per person, per day basis.',
+        'Jain meals are available upon request.',
+        'Barbecue can also be arranged at an additional cost.',
+        'Reheating and consumption of non-vegetarian food is not allowed.',
+        'Please inform us of your meal preference in advance and allow us a minimum 48 hrs notice prior to your check-in date.',
+      ],
+    },
     policies: {
       checkIn: '2:00 PM',
       checkOut: '11:00 AM',
@@ -683,7 +568,7 @@ export const villas = [
       'Resort rules must be followed in common areas',
     ],
     tags: [
-      'Resort Estate', 'Luxury', 'Family Retreat', 'Group Stays', 'Intimate Event',
+      'StayXL Luxury', 'Resort Estate', 'Luxury', 'Family Retreat', 'Group Stays', 'Intimate Event',
     ],
     images: [
       'https://dsjeotxrgpksr.cloudfront.net/villas/tranquilla/Outdoor%20%7C%20Exterior%20%3A%20Poolside%20View.webp',
@@ -693,5 +578,137 @@ export const villas = [
       'https://dsjeotxrgpksr.cloudfront.net/villas/tranquilla/Outdoor%20%7C%20Full%20Lawn%20%2B%20Villa%20View.webp',
       'https://dsjeotxrgpksr.cloudfront.net/villas/tranquilla/Indoor%20%7C%20Bedroom.webp',
     ],
+    similarVillas: [
+      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Hyderabad', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
+      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Hyderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
+    ]
+  },
+  {
+    id: 'v-rise',
+    slug: 'rise-villa-hyderabad',
+    name: 'Rise',
+    tagline: 'Affordable Private Pool Farmhouse in Hyderabad for Weekend & Budget Stays',
+    location: 'Medchal Kaman Road, Hyderabad',
+    locationInfo: {
+      address: 'Medchal Kaman Road, Dabilpur, Yellampet, Telangana',
+      mapUrl: 'https://maps.app.goo.gl/HdkyksNEQ9wQR6cV7',
+      nearbyAttractions: [
+        { name: 'Medchal Kaman', distance: '5 mins' },
+      ],
+      distances: {
+        airport: '75 mins from RGIA Airport',
+        station: '45 mins from Secunderabad Station',
+      },
+      travelTips: [
+        'Perfect for budget stays, young crowds, and weekend trips.',
+        'Enjoy the high-energy, youth-friendly setup with indoor games.',
+        'Don\'t miss the indoor projector setup for movie nights.',
+      ]
+    },
+    rating: 4.6,
+    reviewCount: 28,
+    guests: '12+',
+    eventCapacity: 350,
+    bedrooms: 4,
+    bathrooms: 4,
+    area: 'Modern Farmhouse',
+    highlights: [
+      'Most affordable private pool option',
+      'Youth-focused setup',
+      'Indoor projector setup',
+      'Rare “steal deal” pricing',
+      'Separate lawn for large events',
+    ],
+    pricePerNight: 9500,
+    originalPrice: 12000,
+    offers: [
+      { title: 'Book 2 Nights & Get 3rd Night at 50% Off', type: 'stay' },
+      { title: 'Flat 40% Off (Up to ₹3,000) Every Wednesday', type: 'limited-day' },
+      { title: 'Book now (timer 12hr) = enjoy a complimentary <BBQ or bonfire or late checkout (subject to availabelity)> (pick one).', type: 'freebie', note: 'Book now' },
+      { title: 'Event Advantage – 10% Savings on Extra Guest', type: 'event' },
+      { title: 'Free Early Check-In for Event Bookings', type: 'event' },
+    ],
+    story: 'Affordable Private Pool Farmhouse in Hyderabad for Weekend & Budget Stays. Budget stays, young crowd, weekend trips. High energy, youth-friendly setup. Compact modern farmhouse with entertainment focus. Indoor games, Youth-oriented design, Affordable luxury pricing.',
+    bedroomDetails: [
+      { type: '4 Bedrooms', note: 'Compact and comfortable budget rooms' },
+    ],
+    bathroomDetails: [
+      { count: 4 },
+    ],
+    amenities: {
+      popular: ['🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🔥 Bonfire', '📽️ Projector'],
+      kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
+      outdoor: ['🏊 Private Pool', '🍀 Lawn', '🌅 Balcony/Terrace', '🔥 Bonfire'],
+      entertainment: ['🔊 Music System', '📺 TV', '🎮 Indoor/Outdoor Games', '📽️ Projector', '🏏 Cricket', '🏸 Badminton'],
+    },
+    images: [
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Lawn%20%28Night%20View%29.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Indoor%20%7C%20Living%20Room.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Pool%20Experience.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Terrace%20%3A%20Event%20Setup.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Lawn%20%2B%20Sit-out.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Indoor%20%7C%20Bedroom1.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Lawn%20%28Night%20Ambience%29.webp',
+      'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Indoor%20%7C%20Bedroom2.webp',
+    ],
+    spaces: [
+      { name: 'Private Pool', description: 'Budget-friendly pool area for young groups', features: ['Night Lighting', 'Clean Water'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
+      { name: 'Main Lawn', description: 'Separate lawn area for functions and events', features: ['350 Capacity', 'DJ Setup Ready'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Lawn%20%2B%20Sit-out.webp' },
+      { name: 'Entertainment Lounge', description: 'Indoor living space with projector setup', features: ['Projector', 'Boho Seating', 'AC'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Indoor%20%7C%20Living%20Room.webp' },
+      { name: 'Terrace Event Space', description: 'Elevated terrace area for celebrations', features: ['Event Setup', 'View'], image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Terrace%20%3A%20Event%20Setup.webp' },
+    ],
+    experiences: [
+      { name: 'Cancellation Insurance', price: 2500, description: 'Get a full refund if you cancel anytime before check-in. No questions asked.', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Private Chef', price: null, description: 'Gourmet meals prepared by professional chefs on-site', image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Catering Services', price: null, description: 'Buffet or plated dining for large groups and events', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop' },
+      { name: 'Décor & Event Setup', price: null, description: 'Custom decorations for weddings, shoots, or celebrations', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Live Musicians', price: null, description: 'Traditional or contemporary artists to elevate your event', image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Late Night Mini Bar', price: null, description: 'Stocked mini bar and snacks for late-night gatherings', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop' },
+      { name: 'Spa & Group Yoga', price: null, description: 'Wellness sessions by the pool or in the amphitheater', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format&fit=crop' },
+    ],
+    mealsData: {
+      bannerImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop',
+      notes: [
+        'Due to the shortage of LPG, meals will be served subject to availability.',
+        'All rates are on a per person, per day basis.',
+        'Jain meals are available upon request.',
+        'Barbecue can also be arranged at an additional cost.',
+        'Reheating and consumption of non-vegetarian food is not allowed.',
+        'Please inform us of your meal preference in advance and allow us a minimum 48 hrs notice prior to your check-in date.',
+      ],
+    },
+    policies: {
+      checkIn: '2:00 PM',
+      checkOut: '11:00 AM',
+      earlyCheckIn: 'Subject to availability (call us/text us)',
+      refund: 'Refund within 12 hrs on the same account',
+      security: 'CCTV entry monitoring',
+      roomSecurity: 'Each bedroom has separate lock and key',
+      cookingPolicy: 'Guests do not have access to cook. however fridge, microwave and other kitchen amenites are free. if they wish to cook then a cleaning + Upkeep (1500) is charged',
+      cancellation: [
+        { period: '12+ days before check-in', refund: '100% refund' },
+        { period: '6-12 days before check-in', refund: '60% Voucher or 50% refund' },
+        { period: 'Within 6 days of check-in', refund: 'No refund' },
+      ]
+    },
+    pricing: {
+      perHourExtra: 1000,
+      kitchenAccessFee: 1500,
+      securityDeposit: 5000,
+    },
+    rules: [
+      'Kitchen access is restricted to fridge/microwave unless fee is paid',
+      'Late checkout priced at 1k per hr',
+      'No cooking by guests allowed by default',
+    ],
+    tags: [
+      'Affordable Luxury', 'Budget Stay', 'Youth Friendly', 'Large Events', 'Private Pool', 'Projector Room',
+    ],
+    similarVillas: [
+      { slug: 'sagewood-villa-hyderabad', name: 'Sagewood', location: 'Hyderabad', pricePerNight: 16500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp' },
+      { slug: 'kodur', name: 'Kodur', location: 'Hyderabad', pricePerNight: 12500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Full%20Villa%20Exterior%20with%20Private%20Lawn.webp' },
+      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Hyderabad', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
+    ]
   },
 ];

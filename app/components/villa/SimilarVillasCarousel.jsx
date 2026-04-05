@@ -17,7 +17,7 @@ export default function SimilarVillasCarousel({ villas = [] }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-lg font-serif font-medium text-[#072720]">Similar Villas You May Like</h2>
+        <h2 className="text-lg  font-medium text-[#072720]">Similar Villas You May Like</h2>
         <div className="flex gap-1.5">
           <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-[#072720] hover:text-[#072720] transition-colors" aria-label="Previous">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
@@ -61,7 +61,7 @@ export default function SimilarVillasCarousel({ villas = [] }) {
             <p className="text-xs text-gray-400 mb-1.5">{villa.location}</p>
             <div className="flex items-center justify-between">
               <div className="flex items-baseline gap-1">
-                <span className="text-sm font-serif font-medium text-[#072720]">
+                <span className="text-sm  font-medium text-[#072720]">
                   ₹{(villa.pricePerNight || villa.price || 0).toLocaleString('en-IN')}
                 </span>
                 <span className="text-[10px] text-gray-400">/ night</span>

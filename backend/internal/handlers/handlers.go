@@ -76,6 +76,23 @@ func (h *AppHandler) HandleRequest(ctx context.Context, req events.APIGatewayPro
 		return h.handleCreatePaymentOrder(ctx, req)
 	case strings.HasPrefix(finalPath, "/api/payments/verify"):
 		return h.handleVerifyPayment(ctx, req)
+
+	// ─── ADMIN ROUTES ───
+	case finalPath == "/api/admin/block-dates" && method == http.MethodPost:
+		return h.handleAdminBlockDates(ctx, req)
+	case finalPath == "/api/admin/block-dates" && method == http.MethodGet:
+		return h.handleAdminListBlockedDates(ctx, req)
+	case strings.HasPrefix(finalPath, "/api/admin/block-dates/") && method == http.MethodDelete:
+		return h.handleAdminUnblockDates(ctx, req, finalPath)
+	case finalPath == "/api/admin/pricing" && method == http.MethodPost:
+		return h.handleAdminSetDatePrice(ctx, req)
+	case finalPath == "/api/admin/pricing" && method == http.MethodGet:
+		return h.handleAdminListDatePricing(ctx, req)
+	case strings.HasPrefix(finalPath, "/api/admin/pricing/") && method == http.MethodDelete:
+		return h.handleAdminDeleteDatePrice(ctx, req, finalPath)
+	case strings.HasPrefix(finalPath, "/api/admin/villas/") && strings.HasSuffix(finalPath, "/price") && method == http.MethodPut:
+		return h.handleAdminUpdateBasePrice(ctx, req, finalPath)
+
 	default:
 		return errorResponse(http.StatusNotFound, fmt.Sprintf("Endpoint not found: %s (Method: %s, RawPath: %s)", finalPath, method, rawPath))
 	}
@@ -444,6 +461,183 @@ func (h *AppHandler) handleVerifyPayment(ctx context.Context, req events.APIGate
 	}
 
 	return successResponse(map[string]string{"message": "Payment verified and booking confirmed"})
+}
+
+// ─── ADMIN HANDLERS ───
+
+const adminKey = "stayxl-admin-secret-2026"
+
+func checkAdminAuth(req events.APIGatewayProxyRequest) error {
+	key := req.Headers["x-admin-key"]
+	if key == "" {
+		key = req.Headers["X-Admin-Key"]
+	}
+	if key != adminKey {
+		return fmt.Errorf("unauthorized")
+	}
+	return nil
+}
+
+func (h *AppHandler) handleAdminBlockDates(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	if err := checkAdminAuth(req); err != nil {
+		return errorResponse(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	var body models.AdminBlockDateRequest
+	if err := json.Unmarshal([]byte(req.Body), &body); err != nil {
+		return errorResponse(http.StatusBadRequest, "Invalid request body")
+	}
+
+	startDate, err1 := time.Parse("2006-01-02", body.StartDate)
+	endDate, err2 := time.Parse("2006-01-02", body.EndDate)
+	if err1 != nil || err2 != nil {
+		return errorResponse(http.StatusBadRequest, "Invalid date format. Use YYYY-MM-DD")
+	}
+
+	bd := &models.BlockedDate{
+		ID:        "block_" + time.Now().Format("20060102150405"),
+		VillaID:   body.VillaID,
+		StartDate: startDate,
+		EndDate:   endDate,
+		Reason:    body.Reason,
+		CreatedAt: time.Now(),
+	}
+
+	if err := h.DB.SaveBlockedDate(ctx, bd); err != nil {
+		return errorResponse(http.StatusInternalServerError, "Failed to block dates: "+err.Error())
+	}
+
+	return successResponse(bd)
+}
+
+func (h *AppHandler) handleAdminListBlockedDates(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	if err := checkAdminAuth(req); err != nil {
+		return errorResponse(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	villaID := req.QueryStringParameters["villaId"]
+	if villaID == "" {
+		return errorResponse(http.StatusBadRequest, "villaId is required")
+	}
+
+	dates, err := h.DB.GetBlockedDatesByVilla(ctx, villaID)
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, err.Error())
+	}
+
+	return successResponse(dates)
+}
+
+func (h *AppHandler) handleAdminUnblockDates(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
+	if err := checkAdminAuth(req); err != nil {
+		return errorResponse(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	parts := strings.Split(normalizedPath, "/")
+	if len(parts) < 5 {
+		return errorResponse(http.StatusBadRequest, "Block ID is required")
+	}
+	blockID := parts[4]
+
+	if err := h.DB.DeleteBlockedDate(ctx, blockID); err != nil {
+		return errorResponse(http.StatusInternalServerError, "Failed to unblock dates: "+err.Error())
+	}
+
+	return successResponse(map[string]string{"message": "Dates unblocked", "id": blockID})
+}
+
+func (h *AppHandler) handleAdminSetDatePrice(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	if err := checkAdminAuth(req); err != nil {
+		return errorResponse(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	var body models.AdminPriceOverrideRequest
+	if err := json.Unmarshal([]byte(req.Body), &body); err != nil {
+		return errorResponse(http.StatusBadRequest, "Invalid request body")
+	}
+
+	if body.Price <= 0 {
+		return errorResponse(http.StatusBadRequest, "Price must be positive")
+	}
+
+	dp := &models.DatePricing{
+		ID:        "price_" + time.Now().Format("20060102150405"),
+		VillaID:   body.VillaID,
+		Date:      body.Date,
+		Price:     body.Price,
+		Reason:    body.Reason,
+		CreatedAt: time.Now(),
+	}
+
+	if err := h.DB.SaveDatePricing(ctx, dp); err != nil {
+		return errorResponse(http.StatusInternalServerError, "Failed to set date price: "+err.Error())
+	}
+
+	return successResponse(dp)
+}
+
+func (h *AppHandler) handleAdminListDatePricing(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	if err := checkAdminAuth(req); err != nil {
+		return errorResponse(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	villaID := req.QueryStringParameters["villaId"]
+	if villaID == "" {
+		return errorResponse(http.StatusBadRequest, "villaId is required")
+	}
+
+	pricing, err := h.DB.GetDatePricingByVilla(ctx, villaID)
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, err.Error())
+	}
+
+	return successResponse(pricing)
+}
+
+func (h *AppHandler) handleAdminDeleteDatePrice(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
+	if err := checkAdminAuth(req); err != nil {
+		return errorResponse(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	parts := strings.Split(normalizedPath, "/")
+	if len(parts) < 5 {
+		return errorResponse(http.StatusBadRequest, "Pricing ID is required")
+	}
+	pricingID := parts[4]
+
+	if err := h.DB.DeleteDatePricing(ctx, pricingID); err != nil {
+		return errorResponse(http.StatusInternalServerError, "Failed to delete pricing: "+err.Error())
+	}
+
+	return successResponse(map[string]string{"message": "Date pricing removed", "id": pricingID})
+}
+
+func (h *AppHandler) handleAdminUpdateBasePrice(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {
+	if err := checkAdminAuth(req); err != nil {
+		return errorResponse(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	// Extract villaId from /api/admin/villas/{villaId}/price
+	parts := strings.Split(normalizedPath, "/")
+	if len(parts) < 5 {
+		return errorResponse(http.StatusBadRequest, "Villa ID is required")
+	}
+	villaID := parts[4]
+
+	var body models.AdminUpdateBasePriceRequest
+	if err := json.Unmarshal([]byte(req.Body), &body); err != nil {
+		return errorResponse(http.StatusBadRequest, "Invalid request body")
+	}
+
+	if body.Price <= 0 {
+		return errorResponse(http.StatusBadRequest, "Price must be positive")
+	}
+
+	if err := h.DB.UpdateVillaPrice(ctx, villaID, body.Price); err != nil {
+		return errorResponse(http.StatusInternalServerError, "Failed to update price: "+err.Error())
+	}
+
+	return successResponse(map[string]interface{}{"message": "Base price updated", "villaId": villaID, "newPrice": body.Price})
 }
 
 // ─── HELPERS ───

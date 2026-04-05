@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { BadgeIcon } from './villa/VillaBadges';
 
 export default function VillaCard({
   images = [],
@@ -12,6 +13,7 @@ export default function VillaCard({
   bathrooms,
   amenities = [],
   price,
+  tags = [],
 }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -47,9 +49,18 @@ export default function VillaCard({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 cursor-pointer overflow-hidden group">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 cursor-pointer overflow-hidden group flex flex-col h-full">
       {/* Image Section */}
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+        {/* Luxury Badge Overlay */}
+        {tags?.includes('StayXL Luxury') && (
+          <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm border border-[#C6A87D]/30 rounded-full shadow-lg pointer-events-none group-hover:scale-105 transition-transform duration-300">
+            <span className="text-[#C6A87D]">
+              <BadgeIcon type="StayXL Luxury" />
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.1em] font-bold text-[#072720]">StayXL Luxury</span>
+          </div>
+        )}
         {/* Image Display */}
         <div className="relative w-full h-full">
           {images.map((image, index) => (
@@ -116,9 +127,9 @@ export default function VillaCard({
       </div>
 
       {/* Card Content */}
-      <div className="px-5 pt-4 pb-5">
+      <div className="px-5 pt-4 pb-5 flex flex-col flex-1">
         {/* Title */}
-        <h3 className="text-xl font-bold text-[#072720] mb-1.5 line-clamp-2 font-serif leading-snug">
+        <h3 className="text-xl font-bold text-[#072720] mb-1.5 line-clamp-2 leading-snug">
           {title}
         </h3>
 
@@ -165,8 +176,8 @@ export default function VillaCard({
         </div>
 
         {/* Price Section */}
-        <div className="pt-4 border-t border-gray-100">
-          <p className="font-serif text-xl font-bold text-[#072720] tracking-tight">
+        <div className="pt-4 border-t border-gray-100 mt-auto">
+          <p className="text-xl font-bold text-[#072720] tracking-tight">
             ₹{price.toLocaleString('en-IN')}
             <span className="text-xs font-sans font-normal text-gray-400 ml-1">/ night</span>
           </p>

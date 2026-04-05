@@ -17,7 +17,7 @@ export default function VillaShowcase() {
             </div>
 
             {/* Tagline */}
-            <h2 className="text-2xl md:text-3xl lg:text-[2.5rem] font-serif font-light text-white tracking-wide leading-snug">
+            <h2 className="text-2xl md:text-3xl lg:text-[2.5rem]  font-light text-white tracking-wide leading-snug">
               Where exclusivity meets
               <br className="hidden md:block" />
               <span className="text-white/35"> timeless luxury</span>
