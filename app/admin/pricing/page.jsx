@@ -16,11 +16,18 @@ export default function AdminPricingPage() {
   const [modalReason, setModalReason] = useState('');
   const [editBasePrice, setEditBasePrice] = useState(false);
   const [newBasePrice, setNewBasePrice] = useState('');
+  const [dynamicBasePrice, setDynamicBasePrice] = useState(0);
   const [toast, setToast] = useState(null);
 
   const villa = staticVillas.find(v => v.id === selectedVilla);
   const villaName = villa?.name || '';
-  const basePrice = villa?.pricePerNight || 0;
+  
+  // Initialize dynamicBasePrice whenever selectedVilla changes
+  useEffect(() => {
+    if (villa) {
+      setDynamicBasePrice(villa.pricePerNight || 0);
+    }
+  }, [villa]);
 
   useEffect(() => {
     if (!selectedVilla) return;
@@ -109,6 +116,10 @@ export default function AdminPricingPage() {
         method: 'PUT',
         body: JSON.stringify({ price: Number(newBasePrice) }),
       });
+      
+      // Update local state so UI reflects the change immediately
+      setDynamicBasePrice(Number(newBasePrice));
+      
       showToast(`Base price updated to ₹${Number(newBasePrice).toLocaleString()}`);
       setEditBasePrice(false);
     } catch (e) {
@@ -167,8 +178,8 @@ export default function AdminPricingPage() {
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-[#C6A87D]">{formatPrice(basePrice)}</span>
-                  <button onClick={() => { setEditBasePrice(true); setNewBasePrice(String(basePrice)); }}
+                  <span className="text-3xl font-bold text-[#C6A87D]">{formatPrice(dynamicBasePrice)}</span>
+                  <button onClick={() => { setEditBasePrice(true); setNewBasePrice(String(dynamicBasePrice)); }}
                     className="text-xs text-white/40 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg transition-all">
                     ✏️ Edit
                   </button>
@@ -210,7 +221,7 @@ export default function AdminPricingPage() {
                 if (!cell) return <div key={`empty-${i}`} className="aspect-square" />;
                 const override = getOverrideForDate(cell.date);
                 const isPast = cell.date < new Date().toISOString().split('T')[0];
-                const price = override ? override.price : basePrice;
+                const price = override ? override.price : dynamicBasePrice;
 
                 return (
                   <button
@@ -282,7 +293,7 @@ export default function AdminPricingPage() {
                 value={modalPrice}
                 onChange={(e) => setModalPrice(e.target.value)}
                 type="number"
-                placeholder={String(basePrice)}
+                placeholder={String(dynamicBasePrice)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-lg font-bold focus:outline-none focus:border-[#C6A87D] mb-4"
               />
 
