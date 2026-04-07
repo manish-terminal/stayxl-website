@@ -180,8 +180,12 @@ func (h *AppHandler) handleVillas(ctx context.Context, req events.APIGatewayProx
 		}
 		return successResponse(villa)
 	}
-	// Listing handled by frontend for now
-	return successResponse(map[string]interface{}{"message": "Villa listing handled by frontend static data"})
+	// Listing
+	villas, err := h.DB.GetAllVillas(ctx)
+	if err != nil {
+		return errorResponse(http.StatusInternalServerError, err.Error())
+	}
+	return successResponse(villas)
 }
 
 func (h *AppHandler) handleUnavailableDates(ctx context.Context, req events.APIGatewayProxyRequest, normalizedPath string) (events.APIGatewayProxyResponse, error) {

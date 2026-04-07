@@ -11,8 +11,9 @@ import { villas as staticVillas } from '../data/villas';
 
 function VillasList() {
   const searchParams = useSearchParams();
-  const [villas, setVillas] = useState(staticVillas);
-  const [loading, setLoading] = useState(false);
+  const [villas, setVillas] = useState([]);
+  const [allVillas, setAllVillas] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     location: searchParams.get('location') || '',
     minGuests: searchParams.get('minGuests') || '',
@@ -20,8 +21,8 @@ function VillasList() {
     maxPrice: searchParams.get('maxPrice') || '',
   });
 
-  const applyLocalFilters = () => {
-    let filtered = staticVillas;
+  const applyLocalFilters = (list = allVillas) => {
+    let filtered = list;
     if (filters.location) {
       filtered = filtered.filter(v => v.location.toLowerCase().includes(filters.location.toLowerCase()));
     }
@@ -38,8 +39,39 @@ function VillasList() {
   };
 
   useEffect(() => {
-    applyLocalFilters();
-  }, [filters, searchParams]);
+    const fetchVillas = async () => {
+      try {
+        const response = await fetch('/api/villas');
+        const data = await response.json();
+        
+        let villaList = [...staticVillas];
+        if (data && data.success && Array.isArray(data.data?.villas)) {
+          // Merge dynamic data into static list
+          const dynamicMap = new Map(data.data.villas.map(v => [v.id, v]));
+          villaList = staticVillas.map(sv => {
+            const dv = dynamicMap.get(sv.id);
+            return dv ? { ...sv, ...dv } : sv;
+          });
+        }
+        setAllVillas(villaList);
+        applyLocalFilters(villaList);
+      } catch (e) {
+        console.error('Failed to fetch dynamic villas', e);
+        setAllVillas(staticVillas);
+        applyLocalFilters(staticVillas);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVillas();
+  }, []);
+
+  useEffect(() => {
+    if (allVillas.length > 0) {
+      applyLocalFilters();
+    }
+  }, [filters, searchParams, allVillas]);
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });

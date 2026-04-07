@@ -10,9 +10,31 @@ export default function RecentlyVisited() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Show top 8 villas (we currently have 5)
-    setVillas(staticVillas.slice(0, 8));
-    setLoading(false);
+    const fetchVillas = async () => {
+      try {
+        const response = await fetch('/api/villas');
+        const data = await response.json();
+        
+        let villaList = [...staticVillas];
+        if (data && data.success && Array.isArray(data.data?.villas)) {
+          // Merge dynamic data into static list
+          const dynamicMap = new Map(data.data.villas.map(v => [v.id, v]));
+          villaList = staticVillas.map(sv => {
+            const dv = dynamicMap.get(sv.id);
+            return dv ? { ...sv, ...dv } : sv;
+          });
+        }
+
+        setVillas(villaList.slice(0, 8));
+      } catch (e) {
+        console.error('Failed to fetch dynamic villas', e);
+        setVillas(staticVillas.slice(0, 8));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVillas();
   }, []);
 
   const mapVilla = (villa) => {

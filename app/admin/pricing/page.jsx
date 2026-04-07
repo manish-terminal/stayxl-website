@@ -16,21 +16,33 @@ export default function AdminPricingPage() {
   const [modalReason, setModalReason] = useState('');
   const [editBasePrice, setEditBasePrice] = useState(false);
   const [newBasePrice, setNewBasePrice] = useState('');
+  const [villaData, setVillaData] = useState(null);
   const [dynamicBasePrice, setDynamicBasePrice] = useState(0);
   const [toast, setToast] = useState(null);
 
   const villa = staticVillas.find(v => v.id === selectedVilla);
   const villaName = villa?.name || '';
   
-  // Initialize dynamicBasePrice whenever selectedVilla changes
-  useEffect(() => {
-    if (villa) {
+  const fetchVillaData = async () => {
+    if (!villa) return;
+    try {
+      const data = await apiFetch(`/api/villas/${villa.slug}`);
+      if (data && data.success) {
+        setVillaData(data.data);
+        setDynamicBasePrice(data.data.pricePerNight || 0);
+      } else {
+        // Fallback to static if backend fails
+        setDynamicBasePrice(villa.pricePerNight || 0);
+      }
+    } catch (e) {
+      console.error('Failed to fetch villa data', e);
       setDynamicBasePrice(villa.pricePerNight || 0);
     }
-  }, [villa]);
+  };
 
   useEffect(() => {
     if (!selectedVilla) return;
+    fetchVillaData();
     fetchPricing();
   }, [selectedVilla]);
 
@@ -117,8 +129,9 @@ export default function AdminPricingPage() {
         body: JSON.stringify({ price: Number(newBasePrice) }),
       });
       
-      // Update local state so UI reflects the change immediately
+      // Update local state and refresh from backend to be safe
       setDynamicBasePrice(Number(newBasePrice));
+      fetchVillaData();
       
       showToast(`Base price updated to ₹${Number(newBasePrice).toLocaleString()}`);
       setEditBasePrice(false);
@@ -170,7 +183,7 @@ export default function AdminPricingPage() {
                     value={newBasePrice}
                     onChange={(e) => setNewBasePrice(e.target.value)}
                     type="number"
-                    placeholder={String(basePrice)}
+                    placeholder={String(dynamicBasePrice)}
                     className="bg-white/5 border border-[#C6A87D]/50 rounded-lg px-3 py-2 text-white text-xl font-bold w-40 focus:outline-none"
                   />
                   <button onClick={handleUpdateBasePrice} className="px-4 py-2 bg-[#C6A87D] text-black rounded-lg text-sm font-bold hover:bg-[#b89a6f] transition-all">Save</button>

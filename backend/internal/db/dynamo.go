@@ -63,6 +63,22 @@ func (d *DynamoClient) GetVilla(ctx context.Context, id string) (*models.Villa, 
 	return &villa, err
 }
 
+// GetAllVillas retrieves all villas from the database
+func (d *DynamoClient) GetAllVillas(ctx context.Context) ([]models.Villa, error) {
+	input := &dynamodb.ScanInput{
+		TableName: aws.String(d.VillasTable),
+	}
+
+	result, err := d.Client.Scan(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	var villas []models.Villa
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &villas)
+	return villas, err
+}
+
 // GetOfferByCode retrieves an offer by its coupon code
 func (d *DynamoClient) GetOfferByCode(ctx context.Context, code string) (*models.Offer, error) {
 	input := &dynamodb.GetItemInput{

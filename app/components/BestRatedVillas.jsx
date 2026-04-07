@@ -10,12 +10,38 @@ export default function BestRatedVillas() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Sort by rating and take top 4
-    const topVillas = [...staticVillas]
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 4);
-    setVillas(topVillas);
-    setLoading(false);
+    const fetchTopVillas = async () => {
+      try {
+        const response = await fetch('/api/villas');
+        const data = await response.json();
+        
+        let villaList = [...staticVillas];
+        if (data && data.success && Array.isArray(data.data?.villas)) {
+          // Merge dynamic data into static list
+          const dynamicMap = new Map(data.data.villas.map(v => [v.id, v]));
+          villaList = staticVillas.map(sv => {
+            const dv = dynamicMap.get(sv.id);
+            return dv ? { ...sv, ...dv } : sv;
+          });
+        }
+
+        // Sort by rating and take top 4
+        const top = villaList
+          .sort((a, b) => b.rating - a.rating)
+          .slice(0, 4);
+        setVillas(top);
+      } catch (e) {
+        console.error('Failed to fetch dynamic villas', e);
+        const topVillas = [...staticVillas]
+          .sort((a, b) => b.rating - a.rating)
+          .slice(0, 4);
+        setVillas(topVillas);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopVillas();
   }, []);
 
   const mapVilla = (villa) => {
