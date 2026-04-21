@@ -4,7 +4,7 @@ export const villas = [
     slug: 'samaya-villa-hyderabad',
     name: 'Samaya',
     tagline: 'Luxury Modern Private Pool Villa in Hyderabad for Weddings & Premium Stays',
-    location: 'Hyderabad',
+    location: 'Shamirpet',
     locationInfo: {
       address: 'Shamirpet Keesara ORR, Narsampalle, Hyderabad, Telangana 501303',
       mapUrl: 'https://maps.app.goo.gl/CRbmpZbxoAZWpCSy8',
@@ -59,7 +59,7 @@ export const villas = [
       { count: 3 },
     ],
     amenities: {
-      popular: ['🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🔥 Bonfire Area', '🏛️ Amphitheater'],
+      popular: ['🏛️ Amphitheater', '🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🔥 Bonfire Area'],
       kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
       outdoor: ['🛖 Gazebo', '🍸 Bar Deck', '🌅 Balcony/Terrace', '🍀 Lawn'],
       entertainment: ['🔊 Music System', '📺 TV', '🎮 Indoor/Outdoor Games'],
@@ -120,6 +120,7 @@ export const villas = [
     tags: [
       'StayXL Luxury', 'Luxury Stay', 'Wedding Friendly', 'Event Friendly', 'Shoot Friendly',
     ],
+
     media: {
       brochure: 'https://www.canva.com/design/DAHBgKS4Kh8/3k1oRgLVyvv6RtTb9M3Bvg/edit',
     },
@@ -257,7 +258,7 @@ export const villas = [
       { count: 4 },
     ],
     amenities: {
-      popular: ['🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🌅 Balcony/Terrace', '🔥 Bonfire', '🛖 Gazebo', '🍸 1st floor elevated eating / lounge'],
+      popular: ['🍸 Rooftop Lounge', '🛖 Gazebo', '🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🌅 Balcony/Terrace', '🔥 Bonfire'],
       kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
       outdoor: ['🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🌅 Balcony/Terrace', '🔥 Bonfire', '🛖 Gazebo', '🍸 1st floor elevated eating / lounge'],
       entertainment: ['🔊 Music System/Speaker', '📺 TV', '🎮 Indoor/Outdoor Games'],
@@ -324,6 +325,7 @@ export const villas = [
     tags: [
       'StayXL Luxury', 'Budget Luxury', 'Rooftop Bar', 'Boho Chic', 'Shoot Friendly', 'Family Retreat',
     ],
+
     similarVillas: [
       { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Hyderabad', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
       { slug: 'kodur', name: 'Kodur', location: 'Hyderabad', pricePerNight: 12500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Full%20Villa%20Exterior%20with%20Private%20Lawn.webp' },
@@ -335,7 +337,7 @@ export const villas = [
     slug: 'kodur',
     name: 'Kodur',
     tagline: 'Scenic Private Pool Farmhouse in Hyderabad with Gazebo for Events & Celebrations',
-    location: 'Shahazadiguda, Telangana',
+    location: 'Shahazadiguda',
     locationInfo: {
       address: 'Shahazadiguda, Telangana',
       mapUrl: 'https://maps.app.goo.gl/9Lox4LEPH3fveDEx9',
@@ -383,7 +385,7 @@ export const villas = [
       { count: 3 },
     ],
     amenities: {
-      popular: ['🏊 Private Pool', '🍀 Lawn', '🛖 Gazebo', '🏏 Box Cricket', '🅿️ Parking'],
+      popular: ['🏏 Box Cricket', '🧒 Play Area', '🏊 Private Pool', '🍀 Lawn', '🛖 Gazebo', '🅿️ Parking'],
       kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
       outdoor: ['🏊 Private Pool', '🍀 Lawn', '🛖 Gazebo', '🧒 Children Play Area', '🏏 Box Cricket', '🍸 Bar Deck'],
       entertainment: ['🔊 Music System', '📺 TV', '🎮 Indoor/Outdoor Games', '📽️ Projector'],
@@ -443,6 +445,7 @@ export const villas = [
     tags: [
       'StayXL Luxury', 'Women Preferred', 'Scenic', 'Event Friendly', 'Private Pool', 'Farmhouse',
     ],
+
     images: [
       'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Full%20Villa%20Exterior%20with%20Private%20Lawn.webp',
       'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Private%20Swimming%20Pool%20with%20Loungers.webp',
@@ -452,9 +455,9 @@ export const villas = [
       'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Spacious%20Lawn%20with%20Villa%20Exterior%20View.webp',
     ],
     similarVillas: [
-      { slug: 'sagewood-villa-hyderabad', name: 'Sagewood', location: 'Hyderabad', pricePerNight: 16500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp' },
-      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Hyderabad', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
-      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Hyderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
+      { slug: 'sagewood-villa-hyderabad', name: 'Sagewood', location: 'Secunderabad', pricePerNight: 16500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp' },
+      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Shamirpet', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
+      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Secunderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
     ]
   },
   {
@@ -462,7 +465,7 @@ export const villas = [
     slug: 'tranquilla',
     name: 'Tranquilla',
     tagline: 'Luxury Farmhouse in Hyderabad Inside a Resort with Private Pool for Family & Group Stays',
-    location: 'Shamirpet, Bommarasipet, Hyderabad, Telangana',
+    location: 'Shamirpet',
     locationInfo: {
       address: 'Shamirpet, Bommarasipet, Hyderabad, Telangana',
       mapUrl: 'https://maps.app.goo.gl/uEaJDHi3E661Rg7f6',
@@ -510,7 +513,7 @@ export const villas = [
       { count: 6 },
     ],
     amenities: {
-      popular: ['🏊 Private Pool', '🍀 Lawn', '🚿 Outdoor Rain Shower', '🛖 Gazebo', '🪑 Hammock'],
+      popular: ['🚿 Outdoor Rain Shower', '🪑 Hammock', '🏊 Private Pool', '🍀 Lawn', '🛖 Gazebo'],
       kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
       outdoor: ['🏊 Private Pool', '🍀 Lawn', '🛖 Gazebo', '🪑 Hammock', '🚿 Outdoor Shower', '🌅 Balcony/Terrace'],
       entertainment: ['🔊 Music System', '📺 TV', '⚽ Football', '🃏 Carrom Board', '🏸 Badminton'],
@@ -570,6 +573,7 @@ export const villas = [
     tags: [
       'StayXL Luxury', 'Resort Estate', 'Luxury', 'Family Retreat', 'Group Stays', 'Intimate Event',
     ],
+
     images: [
       'https://dsjeotxrgpksr.cloudfront.net/villas/tranquilla/Outdoor%20%7C%20Exterior%20%3A%20Poolside%20View.webp',
       'https://dsjeotxrgpksr.cloudfront.net/villas/tranquilla/Outdoor%20%7C%20Private%20Pool.webp',
@@ -579,8 +583,8 @@ export const villas = [
       'https://dsjeotxrgpksr.cloudfront.net/villas/tranquilla/Indoor%20%7C%20Bedroom.webp',
     ],
     similarVillas: [
-      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Hyderabad', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
-      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Hyderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
+      { slug: 'samaya-villa-hyderabad', name: 'Samaya', location: 'Shamirpet', pricePerNight: 28500, guests: 14, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/samaya/hero.webp' },
+      { slug: 'rise-villa-hyderabad', name: 'Rise', location: 'Secunderabad', pricePerNight: 9500, guests: '12+', image: 'https://dsjeotxrgpksr.cloudfront.net/villas/rise/Outdoor%20%7C%20Private%20Pool%20%2B%20Exterior.webp' },
     ]
   },
   {
@@ -588,7 +592,7 @@ export const villas = [
     slug: 'rise-villa-hyderabad',
     name: 'Rise',
     tagline: 'Affordable Private Pool Farmhouse in Hyderabad for Weekend & Budget Stays',
-    location: 'Medchal Kaman Road, Hyderabad',
+    location: 'Secunderabad',
     locationInfo: {
       address: 'Medchal Kaman Road, Dabilpur, Yellampet, Telangana',
       mapUrl: 'https://maps.app.goo.gl/HdkyksNEQ9wQR6cV7',
@@ -636,7 +640,7 @@ export const villas = [
       { count: 4 },
     ],
     amenities: {
-      popular: ['🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🔥 Bonfire', '📽️ Projector'],
+      popular: ['📽️ Projector Setup', '🔊 Party Speakers', '🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🔥 Bonfire'],
       kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
       outdoor: ['🏊 Private Pool', '🍀 Lawn', '🌅 Balcony/Terrace', '🔥 Bonfire'],
       entertainment: ['🔊 Music System', '📺 TV', '🎮 Indoor/Outdoor Games', '📽️ Projector', '🏏 Cricket', '🏸 Badminton'],
@@ -705,6 +709,7 @@ export const villas = [
     tags: [
       'Affordable Luxury', 'Budget Stay', 'Youth Friendly', 'Large Events', 'Private Pool', 'Projector Room',
     ],
+
     similarVillas: [
       { slug: 'sagewood-villa-hyderabad', name: 'Sagewood', location: 'Hyderabad', pricePerNight: 16500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/sagewood/Outdoor%20%7C%20Lawn%20%2B%20Pool%20View.webp' },
       { slug: 'kodur', name: 'Kodur', location: 'Hyderabad', pricePerNight: 12500, guests: 12, image: 'https://dsjeotxrgpksr.cloudfront.net/villas/kodur/Full%20Villa%20Exterior%20with%20Private%20Lawn.webp' },

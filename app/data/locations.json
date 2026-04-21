@@ -1,0 +1,52 @@
+{
+  "locations": [
+    {
+      "id": "hyderabad",
+      "name": "Hyderabad",
+      "subtitle": "All StayXL villas",
+      "isLocked": false
+    },
+    {
+      "id": "shamirpet",
+      "name": "Shamirpet, Hyderabad",
+      "subtitle": "Lakeside & luxury villas",
+      "isLocked": false
+    },
+    {
+      "id": "shankarpally",
+      "name": "Shankarpally, Hyderabad",
+      "subtitle": "Farmhouses & open spaces",
+      "isLocked": false
+    },
+    {
+      "id": "moinabad",
+      "name": "Moinabad, Hyderabad",
+      "subtitle": "Party-friendly villas",
+      "isLocked": false
+    },
+    {
+      "id": "shamshabad",
+      "name": "Shamshabad, Hyderabad",
+      "subtitle": "Close to airport villas",
+      "isLocked": false
+    },
+    {
+      "id": "chevella",
+      "name": "Chevella, Hyderabad",
+      "subtitle": "Nature & weekend retreats",
+      "isLocked": false
+    },
+    {
+      "id": "vikarabad",
+      "name": "Vikarabad (Near Hyderabad)",
+      "subtitle": "Hills & forest stays",
+      "isLocked": false
+    },
+    {
+      "id": "goa",
+      "name": "Goa",
+      "subtitle": "Coming soon",
+      "isLocked": true
+    }
+  ]
+}

@@ -1,18 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
   --background: #ffffff;
   --foreground: #072720;
-  --primary-dark: #072720;
-  --accent-soft: #EFE7E7;
+  --accent: #C6A87D;
+  --bg-soft: #F8F5F2;
+  --text-muted: #717171;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-serif: var(--font-sans);
+  --color-accent: var(--accent);
+  --color-bg-soft: var(--bg-soft);
+  --color-text-muted: var(--text-muted);
+  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 body {
@@ -20,159 +23,102 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Smooth Reveal Animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out;
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* React Day Picker Custom Styling */
-.rdp-custom {
-  --rdp-accent-color: #072720;
-  --rdp-background-color: #EFE7E7;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+/* Instagram Story Ring */
+.insta-ring {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  padding: 2px;
+  border-radius: 9999px;
 }
 
-.rdp-custom .rdp-months {
-  display: flex;
-  gap: 2rem;
-}
-
-.rdp-custom .rdp-month {
-  flex: 1;
-}
-
-.rdp-custom .rdp-caption {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.rdp-custom .rdp-caption_label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #072720;
-  font-family: 'Playfair Display', Georgia, serif;
-}
-
-.rdp-custom .rdp-nav {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.rdp-custom .rdp-button {
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s;
-}
-
-.rdp-custom .rdp-button:hover:not(:disabled) {
-  background-color: #EFE7E7;
-}
-
-.rdp-custom .rdp-nav_button {
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.rdp-custom .rdp-head_cell {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b7280;
-  text-transform: uppercase;
-  padding: 0.5rem;
-  text-align: center;
-}
-
-.rdp-custom .rdp-weekday:nth-child(6),
-.rdp-custom .rdp-weekday:nth-child(7) {
-  color: #ef4444;
-}
-
-.rdp-custom .rdp-day {
-  width: 2.5rem;
-  height: 2.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-}
-
-.rdp-custom .rdp-day_button {
+.insta-ring-inner {
+  background: white;
+  padding: 2px;
+  border-radius: 9999px;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #072720;
-  font-weight: 500;
 }
 
-.rdp-custom .rdp-day:hover:not(.rdp-day_disabled) .rdp-day_button {
-  background-color: #EFE7E7;
+/* Subtle Lift for Cards */
+.lift-on-hover {
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.rdp-custom .rdp-day_selected .rdp-day_button {
-  background-color: #3b82f6;
-  color: white;
-  font-weight: 600;
+.lift-on-hover:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
 }
 
-.rdp-custom .rdp-day_range_middle .rdp-day_button {
-  background-color: #dbeafe;
-  color: #072720;
+/* Section Spacing */
+.section-tight {
+  @apply py-14 md:py-24;
 }
 
-.rdp-custom .rdp-day_disabled .rdp-day_button {
-  color: #d1d5db;
-  cursor: not-allowed;
+.section-tighter {
+  @apply py-12 md:py-20;
 }
 
-.rdp-custom .rdp-day_today:not(.rdp-day_selected) .rdp-day_button {
-  font-weight: 600;
-  color: #072720;
+/* Glow Burst Button Animation */
+@keyframes glow-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(21, 122, 102, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(21, 122, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(21, 122, 102, 0); }
 }
 
-/* Mobile: Single month view */
-@media (max-width: 768px) {
-  .rdp-custom .rdp-months {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .rdp-custom .rdp-month:nth-child(2) {
-    display: none;
-  }
-}
-/* Custom scale for villa card image hover */
-.group:hover .group-hover\:scale-103 {
-  transform: scale(1.03);
+@keyframes color-burst {
+  0% { background-color: #072720; }
+  50% { background-color: #157a66; }
+  100% { background-color: #072720; }
 }
 
-/* Hide scrollbar for horizontal scroll */
-.scrollbar-hide::-webkit-scrollbar {
+.glow-burst {
+  animation: color-burst 3s infinite ease-in-out, glow-pulse 2s infinite;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glow-burst:hover {
+  transform: scale(1.05);
+  background-color: #157a66;
+  box-shadow: 0 0 30px rgba(21, 122, 102, 0.6);
+  animation: none;
+}
+
+.glow-burst:active {
+  transform: scale(0.95);
+}
+
+/* Typography Utilities */
+.heading-display {
+  @apply font-bold tracking-tighter leading-[1.1];
+}
+
+.heading-section {
+  @apply font-bold tracking-tight leading-tight;
+}
+
+.tagline {
+  @apply font-bold uppercase tracking-[0.3em] text-accent;
+}
+
+/* Hide scrollbars for horizontal scrolling elements */
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
-.scrollbar-hide {
+.no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
