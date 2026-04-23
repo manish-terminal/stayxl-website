@@ -182,6 +182,7 @@ export default function VillaClientPage({ villa }) {
               onToggleAddon={toggleAddon}
               applyCouponCode={couponToApply}
               pricing={villa.pricing}
+              amenities={villa.amenities}
             />
           </div>
         </div>
