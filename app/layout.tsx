@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "./contexts/AuthContext";
+import { LoyaltyProvider } from "./contexts/LoyaltyContext";
 import Navbar from "./components/Navbar";
 import MobileNav from "./components/MobileNav";
 import "./globals.css";
@@ -32,10 +33,12 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
-          <div className="pb-20 md:pb-0">
-            {children}
-          </div>
-          <MobileNav />
+          <LoyaltyProvider>
+            <div className="pb-20 md:pb-0">
+              {children}
+            </div>
+            <MobileNav />
+          </LoyaltyProvider>
         </AuthProvider>
       </body>
     </html>

@@ -59,7 +59,7 @@ export const villas = [
       { count: 3 },
     ],
     amenities: {
-      popular: ['🏛️ Amphitheater', '🏊 Private Pool', '🍀 Lawn', '🅿️ Parking', '🔥 Bonfire Area'],
+      popular: ['🏛️ Amphitheater', '🏊 Private Pool', '🔥 BBQ', '🍀 Lawn', '🅿️ Parking', '🔥 Bonfire Area'],
       kitchen: ['🧊 Refrigerator', '💧 Water Purifier', '🔥 Stove', '📻 Microwave', '🍴 Utensils'],
       outdoor: ['🛖 Gazebo', '🍸 Bar Deck', '🌅 Balcony/Terrace', '🍀 Lawn'],
       entertainment: ['🔊 Music System', '📺 TV', '🎮 Indoor/Outdoor Games'],

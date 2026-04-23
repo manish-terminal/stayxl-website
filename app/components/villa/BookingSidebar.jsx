@@ -2,13 +2,16 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLoyalty } from '../../contexts/LoyaltyContext';
+import { Award, Zap, Coins, Gift } from 'lucide-react';
 import { apiFetch } from '../../lib/api';
 import LoginModal from '../LoginModal';
 import BookingConfirmation from '../BookingConfirmation';
 import DatePicker from './DatePicker';
 
-export default function BookingSidebar({ villaId, villaSlug, pricePerNight, originalPrice, maxGuests, selectedAddons = [], experiences = [], onToggleAddon, applyCouponCode, pricing = {} }) {
+export default function BookingSidebar({ villaId, villaSlug, pricePerNight, originalPrice, maxGuests, selectedAddons = [], experiences = [], onToggleAddon, applyCouponCode, pricing = {}, amenities = {} }) {
   const [showAddons, setShowAddons] = useState(false);
+  const { loyaltyUser, tiers, pointValue, scratchCardResult } = useLoyalty();
   const { user } = useAuth();
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
@@ -30,8 +33,8 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showCoupons, setShowCoupons] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-  const [unavailableDates, setUnavailableDates] = useState(new Set());
   const [showCalendar, setShowCalendar] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
 
   const formatINR = (amount) => {
     return (amount || 0).toLocaleString('en-IN');
@@ -55,11 +58,24 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
   
   // Security deposit is usually paid but refundable, so we list it separately or add to total
   const securityDeposit = pricing.securityDeposit || 0;
-  const total = subtotal + addonTotal - couponDiscount + taxes + securityDeposit;
   
-  const advanceAmount = Math.round((total - securityDeposit) * 0.30) + securityDeposit;
-  const balanceAmount = total - advanceAmount;
-  const payNow = paymentMode === 'ADVANCE' ? advanceAmount : total;
+  // Membership Discount
+  const currentTier = loyaltyUser ? tiers[loyaltyUser.tier] : null;
+  const membershipDiscountPercent = currentTier ? currentTier.discount : 0;
+  const membershipDiscount = Math.round((subtotal * membershipDiscountPercent) / 100);
+
+  const total = subtotal + addonTotal - couponDiscount - membershipDiscount + taxes + securityDeposit;
+  
+  const pointsToRedeem = usePoints ? Math.min(loyaltyUser?.points || 0, (total - securityDeposit) / pointValue) * pointValue : 0;
+  const finalTotal = total - pointsToRedeem;
+
+  const advanceAmount = Math.round((finalTotal - securityDeposit) * 0.30) + securityDeposit;
+  const balanceAmount = finalTotal - advanceAmount;
+  const payNow = paymentMode === 'ADVANCE' ? advanceAmount : finalTotal;
+
+  const hasBBQAmenity = JSON.stringify(amenities).toLowerCase().includes('bbq') || JSON.stringify(amenities).toLowerCase().includes('barbecue');
+  const isInsuranceSelected = selectedAddons.some(a => a.name === 'Cancellation Insurance');
+  const freeBBQ = hasBBQAmenity && isInsuranceSelected;
 
   useEffect(() => {
     if (user) {
@@ -602,7 +618,7 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                   </div>
                 )}
                 <p className="text-xs font-medium text-[#072720]">Pay Full</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">₹{formatINR(total)}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">₹{formatINR(finalTotal)}</p>
               </button>
               <button
                 onClick={() => setPaymentMode('ADVANCE')}
@@ -707,6 +723,73 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
             />
           )}
 
+          {/* Tier Perks & Rewards */}
+          {(currentTier || scratchCardResult) && (
+            <div className="mb-4 space-y-2">
+              <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400">Unlocked Rewards</p>
+              
+              {currentTier && (
+                <div className="p-3 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-between">
+                   <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-blue-500" />
+                      <span className="text-xs font-bold text-blue-900">{currentTier.name} Benefits</span>
+                   </div>
+                   <div className="flex -space-x-1">
+                      {currentTier.perks.slice(0, 3).map((_, i) => (
+                        <div key={i} className="w-5 h-5 rounded-full bg-white border border-blue-100 flex items-center justify-center text-[8px]">✨</div>
+                      ))}
+                   </div>
+                </div>
+              )}
+
+              {scratchCardResult && (
+                <div className="p-3 rounded-xl bg-orange-50 border border-orange-100 flex items-center gap-2">
+                   <Gift className="w-4 h-4 text-orange-500" />
+                   <span className="text-xs font-bold text-orange-900">{scratchCardResult.label}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Loyalty Points Redemption */}
+          {loyaltyUser && loyaltyUser.points > 0 && (
+            <div className="mb-4 p-4 rounded-xl bg-gray-900 text-white shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                 <Coins className="w-12 h-12" />
+              </div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-[#C6A87D] rounded-full flex items-center justify-center text-xs text-black font-bold">e</div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold">Use StayXLCash</span>
+                    <span className="text-[10px] text-gray-400">Available: ₹{(loyaltyUser.points * pointValue).toFixed(2)}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setUsePoints(!usePoints)}
+                  className={`w-10 h-6 rounded-full transition-all relative ${usePoints ? 'bg-[#C6A87D]' : 'bg-white/20'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${usePoints ? 'left-5' : 'left-1'}`} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Free BBQ Badge */}
+          {freeBBQ && (
+            <div className="mb-4 p-4 rounded-xl bg-orange-50 border border-orange-100 animate-pulse">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                  🔥
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-orange-900 uppercase tracking-wider">Free BBQ Included!</p>
+                  <p className="text-[10px] text-orange-700">Unlocked with Cancellation Insurance</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Price Breakdown */}
           <div className="space-y-2 mb-5 text-sm">
             <div className="flex justify-between text-gray-500">
@@ -733,6 +816,15 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 <span>−₹{formatINR(couponDiscount)}</span>
               </div>
             )}
+            {membershipDiscount > 0 && (
+              <div className="flex justify-between text-blue-600 font-medium">
+                <span className="flex items-center gap-1">
+                   <Award className="w-3 h-3" />
+                   {currentTier.name} Discount ({membershipDiscountPercent}%)
+                </span>
+                <span>−₹{formatINR(membershipDiscount)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-gray-500">
               <span>Taxes & fees (18%)</span>
               <span>₹{formatINR(taxes)}</span>
@@ -751,9 +843,15 @@ export default function BookingSidebar({ villaId, villaSlug, pricePerNight, orig
                 <span>₹{formatINR(securityDeposit)}</span>
               </div>
             )}
+            {pointsToRedeem > 0 && (
+              <div className="flex justify-between text-blue-600 font-medium">
+                <span>Loyalty Points Redeemed</span>
+                <span>−₹{formatINR(pointsToRedeem)}</span>
+              </div>
+            )}
             <div className="border-t border-gray-100 pt-2 flex justify-between font-medium text-[#072720]">
               <span>Total</span>
-              <span>₹{formatINR(total)}</span>
+              <span>₹{formatINR(finalTotal)}</span>
             </div>
             {paymentMode === 'ADVANCE' && (
               <>

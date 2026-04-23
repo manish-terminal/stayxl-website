@@ -3,6 +3,7 @@ import StayVistaHero from './components/StayVistaHero';
 import StayXLSearchBar from './components/search/StayXLSearchBar';
 import StayVistaCollections from './components/StayVistaCollections';
 import AestheticStories from './components/AestheticStories';
+import MembershipSection from './components/MembershipSection';
 import ClassyVillaGrid from './components/ClassyVillaGrid';
 import Footer from './components/Footer';
 
@@ -14,6 +15,7 @@ export default function Home() {
       <StayXLSearchBar />
       <StayVistaCollections />
       <AestheticStories />
+      <MembershipSection />
       <div className="bg-white">
         <ClassyVillaGrid />
       </div>
