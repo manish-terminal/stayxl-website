@@ -1,0 +1,31 @@
+name: Deploy Frontend (S3/CloudFront)
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+
+      - name: Build Successful
+        run: echo "Build passed successfully. Connect to AWS Amplify for automatic SSR deployment."

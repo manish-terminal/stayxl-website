@@ -1,0 +1,152 @@
+'use client';
+
+import { useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+export default function ExperiencesSlider({ experiences = [], selectedAddons = [], onToggle }) {
+  const scrollRef = useRef(null);
+
+  const scroll = (dir) => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: dir === 'left' ? -280 : 280, behavior: 'smooth' });
+  };
+
+  if (experiences.length === 0) return null;
+
+  const isSelected = (name) => selectedAddons.some((a) => a.name === name);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-lg  font-medium text-[#072720]">Experiences & Add-Ons</h2>
+          <p className="text-xs text-gray-400 mt-0.5">Enhance your stay with curated services</p>
+        </div>
+        <div className="flex gap-1.5">
+          <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-[#072720] hover:text-[#072720] transition-colors" aria-label="Previous">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button onClick={() => scroll('right')} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-[#072720] hover:text-[#072720] transition-colors" aria-label="Next">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide pb-1" style={{ scrollSnapType: 'x mandatory' }}>
+        {experiences.map((exp, i) => {
+          const selected = isSelected(exp.name);
+
+          return (
+            <div key={i} className="flex-shrink-0 w-[240px] group flex flex-col" style={{ scrollSnapAlign: 'start' }} >
+              {/* Clickable Card Header & Image */}
+              <div className="relative mb-3 flex-shrink-0 transition-all duration-300 group-hover:-translate-y-1">
+                {exp.slug ? (
+                  <Link href={`/experiences/${exp.slug}`} className="block">
+                    <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-300 bg-gray-100">
+                    {exp.image && (
+                      <Image
+                        src={exp.image}
+                        alt={exp.name}
+                        fill
+                        sizes="240px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    )}
+                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span className="text-white text-[10px] uppercase tracking-widest font-semibold border border-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm">Explore Experience</span>
+                      </div>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-sm bg-gray-100">
+                  {exp.image && (
+                    <Image
+                      src={exp.image}
+                      alt={exp.name}
+                      fill
+                      sizes="240px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  )}
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex items-center justify-between mb-0.5">
+                <h3 className="text-sm font-medium text-[#072720]">{exp.name}</h3>
+                {exp.slug && (
+                  <Link 
+                    href={`/experiences/${exp.slug}`} 
+                    className="text-[10px] text-[#C09A59] border-b border-[#C09A59]/0 hover:border-[#C09A59]/50 transition-all uppercase tracking-wider font-semibold"
+                  >
+                    Explore
+                  </Link>
+                )}
+              </div>
+
+              {exp.description && <p className="text-xs text-gray-400 leading-relaxed mb-2 line-clamp-2">{exp.description}</p>}
+              <div className="flex items-center justify-between">
+                <span className="text-sm  font-medium text-[#072720]">
+                  {exp.price !== null ? `₹${exp.price.toLocaleString('en-IN')}` : 'Request Price'}
+                </span>
+                {onToggle && exp.price !== null ? (
+                  <button
+                    onClick={() => onToggle(exp)}
+                    className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all duration-300 flex items-center gap-1 ${
+                      selected
+                        ? 'border-[#072720] bg-[#072720] text-white'
+                        : 'border-[#072720]/15 text-[#072720] hover:bg-[#072720] hover:text-white'
+                    }`}
+                  >
+                    {selected ? (
+                      <>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Added
+                      </>
+                    ) : (
+                      'Add to Stay'
+                    )}
+                  </button>
+                ) : exp.price !== null ? (
+                  <button className="text-[11px] font-medium px-3 py-1.5 rounded-lg border border-[#072720]/15 text-[#072720] hover:bg-[#072720] hover:text-white transition-all duration-300">
+                    Add to Stay
+                  </button>
+                ) : (
+                   <div className="text-[10px] text-gray-300 font-medium">Contact for details</div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Selected addons summary pill */}
+      {selectedAddons.length > 0 && (
+        <div className="mt-4 flex items-center gap-2 flex-wrap">
+          <span className="text-[10px] font-semibold tracking-widest uppercase text-gray-400">Selected:</span>
+          {selectedAddons.map((addon) => (
+            <span
+              key={addon.name}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-[#072720] bg-[#072720]/5 border border-[#072720]/10 px-2.5 py-1 rounded-full"
+            >
+              {addon.name}
+              <button
+                onClick={() => onToggle && onToggle(addon)}
+                className="ml-0.5 hover:text-red-500 transition-colors"
+              >
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
